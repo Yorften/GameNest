@@ -1,0 +1,5 @@
+# src/main/resources/db/changelog/db.changelog-master.yaml
+databaseChangeLog:
+  - include:
+      file: changes/changelog-1-schema.yaml
+      relativeToChangelogFile: true

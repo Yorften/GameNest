@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:jdbc:postgresql://localhost:5432/citronix}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:paxxword}
