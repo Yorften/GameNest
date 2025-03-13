@@ -2,22 +2,18 @@ server:
   port: 8085
 
 logging:
-  level:
-    "[org.hibernate.sql]": debug
   file:
     path: logs
+    max-size: 1MB
+    max-history: 7
+
+security:
+  jwt:
+    secret: ${SPRING_JWT_TOKEN:mZfpLztVGV1ROkxXpXNRwFdoIUuJArRI4k+ouB+Hr4rfydy7hGfMY0+tnXJkmDuMgQkPQ1O6s5VUg5LoepC42g==}
+    expiration: ${SPRING_JWT_EXPIRATION:7200000}
 
 spring:
-  jackson:
-    default-property-inclusion: NON_NULL
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+  jackson:
+    default-property-inclusion: NON_NULL
