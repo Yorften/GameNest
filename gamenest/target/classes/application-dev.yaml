@@ -3,19 +3,16 @@ spring:
     activate:
       on-profile: dev
 
-  liquibase:
-      change-log: classpath:db/changelog/db.changelog-master.yaml
-
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 
   datasource:
-    url: jdbc:h2:mem:citronix;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:gamenest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
+    password:
 
     hikari:
       transaction-isolation: TRANSACTION_SERIALIZABLE
