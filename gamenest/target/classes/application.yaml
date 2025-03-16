@@ -21,3 +21,5 @@ spring:
 github:
   webhook:
     secret: i am the storm that is approaching
+    app-id: 1180556
+    private-key-path: C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.pem
