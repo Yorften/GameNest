@@ -6,6 +6,8 @@ C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamen
 C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\config\security\SecurityConstants.java
 C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\config\swagger\OpenApiConfig.java
 C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\controller\auth\AuthController.java
+C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\controller\user\UserController.java
+C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\controller\webhook\WebhookController.java
 C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\dto\auth\AuthResponse.java
 C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\dto\auth\LoginRequest.java
 C:\Users\Yorften\Documents\github\2222\GameNest\gamenest\src\main\java\com\gamenest\dto\error\ErrorResponse.java
