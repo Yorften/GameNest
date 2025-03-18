@@ -1,25 +1,17 @@
 package com.gamenest.controller.user;
 
-import jakarta.validation.Valid;
-
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gamenest.dto.user.UpdateUserDTO;
-import com.gamenest.dto.user.UserDTO;
+import com.gamenest.dto.user.UserRequest;
 import com.gamenest.service.interfaces.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +35,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping
-    public List<UserDTO> getAllUsers() {
+    public List<UserRequest> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -53,23 +45,10 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized, user not authenticated")
     })
     @GetMapping("/@me")
-    public UserDTO getUserInfo() {
+    public UserRequest getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         return userService.getByUserName(username);
-    }
-
-    @Operation(summary = "Update user role", description = "Updates the role of a specific user by their ID.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User role updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid role data provided"),
-            @ApiResponse(responseCode = "404", description = "User not found")
-    })
-    @PutMapping("/{id}/role")
-    public UserDTO updateUserRole(
-            @Parameter(description = "Details of the updated role", required = true) @RequestBody @Valid UpdateUserDTO updateUserDTO,
-            @Parameter(description = "ID of the user whose role is to be updated", required = true, in = ParameterIn.PATH) @PathVariable("id") Long userId) {
-        return userService.updateUser(userId, updateUserDTO);
     }
 
 }
