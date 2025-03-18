@@ -1,15 +1,7 @@
-import React, { Component } from 'react'
+import React from 'react';
 
-type Props = {}
+const NotFound = () => {
+  return <div>Not Found 404</div>;
+};
 
-type State = {}
-
-export default class NotFound extends Component<Props, State> {
-  state = {}
-
-  render() {
-    return (
-      <div>NotFound</div>
-    )
-  }
-}
+export default NotFound;
