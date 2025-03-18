@@ -4,12 +4,14 @@ spring:
       on-profile: prod
 
   jpa:
+    hibernate:
+      ddl-auto: ${SPRING_DDL_AUTO:update}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:jdbc:postgresql://localhost:5432/gamenest}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/gamenest}
     driver-class-name: org.postgresql.Driver
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:password}

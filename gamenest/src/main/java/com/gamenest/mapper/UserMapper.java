@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class UserMapper {
-    private final List<String> VALID_INCLUDES = Arrays.asList("role");
+    private final List<String> VALID_INCLUDES = Arrays.asList("role", "installation ");
 
     private final RoleService roleService;
 

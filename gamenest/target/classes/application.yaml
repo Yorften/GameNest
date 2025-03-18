@@ -14,7 +14,7 @@ security:
 
 spring:
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: ${SPRING_PROFILES_ACTIVE:prod}
   jackson:
     default-property-inclusion: NON_NULL
 

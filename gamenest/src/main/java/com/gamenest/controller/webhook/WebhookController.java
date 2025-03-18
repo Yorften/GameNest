@@ -25,6 +25,7 @@ public class WebhookController {
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(
             @RequestHeader("X-Hub-Signature-256") String signatureHeader,
+            @RequestHeader("X-GitHub-Event") String eventType,
             @RequestBody byte[] payload) {
 
         String computedSignature = "sha256=" + computeHmac256(payload, secret);
@@ -35,8 +36,19 @@ public class WebhookController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature");
         }
 
-        String payloadJson = new String(payload, StandardCharsets.UTF_8);
-        log.info("Received webhook payload: {}", payloadJson);
+        // String payloadJson = new String(payload, StandardCharsets.UTF_8);
+        // log.info("Received webhook payload: {}", payloadJson);
+        log.info(eventType);
+        switch (eventType) {
+            case "push":
+                log.info("Handling push event...");
+                break;
+            case "installation":
+                log.info("Handling installation event...");
+                break;
+            default:
+                log.info("Ignoring event: {}", eventType);
+        }
 
         return ResponseEntity.ok("Webhook received");
     }

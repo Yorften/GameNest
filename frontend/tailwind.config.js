@@ -6,10 +6,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary": "#4c9cdb",
-        "secondary": "#3b4856",
-        "gray": "#9fadbd",
-        "white": "#fffefe",
+        primary: "#4c9cdb",
+        secondary: "#3b4856",
+        gray: "#9fadbd",
+        white: "#fffefe",
+      },
+      fontFamily: {
+        sans: ["Poppins", "sans-serif"],
       },
     },
   },

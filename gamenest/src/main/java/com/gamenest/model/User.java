@@ -45,6 +45,8 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private Long installationId;
+
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
