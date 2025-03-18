@@ -12,7 +12,7 @@ const App = () => {
           {/* <ProtectedRoute> */}
           {/* </ProtectedRoute> */}
           <div>
-            <Breadcrumbs />
+            {/* <Breadcrumbs /> */}
             <Outlet />
           </div>
         </div>
