@@ -5,5 +5,5 @@
     "strings": true
   },
   "editor.wordWrap": "on",
-  "editor.wordWrapColumn": 130
+  "editor.wordWrapColumn": 130,
 }

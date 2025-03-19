@@ -27,7 +27,7 @@ public class UserRequest {
     @Size(min = 8, max = 32, message = "Password must be between 8 and 32 characters")
     private String password;
 
-    @NotNull(message = "Password cannot be null")
+    @NotNull(message = "Password cannot be null")   
     @Size(min = 8, max = 32, message = "Password must be between 8 and 32 characters")
     private String repeatPassword;
 

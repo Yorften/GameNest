@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import com.gamenest.config.jwt.JWTAuthEntryPoint;
@@ -41,12 +45,13 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.csrf(csrf -> csrf.disable())
 				.formLogin(login -> login.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/auth/login").permitAll()
-						.requestMatchers("/api/auth/register").permitAll()
-						.requestMatchers("/webhook").permitAll()
+						.requestMatchers("/api/v1/auth/login").permitAll()
+						.requestMatchers("/api/v1/auth/register").permitAll()
+						.requestMatchers("/api/v1/webhook").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "v1/swagger-ui/**")
 						.permitAll()
@@ -62,4 +67,18 @@ public class SecurityConfig {
 
 		return httpSecurity.build();
 	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.addAllowedOrigin("http://localhost:5173");
+		configuration.addAllowedMethod("*");
+		configuration.addAllowedHeader("*");
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
 }
