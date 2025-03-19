@@ -44,9 +44,9 @@ public class SecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				.formLogin(login -> login.disable())
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/auth/login").permitAll()
-						.requestMatchers("/api/auth/register").permitAll()
-						.requestMatchers("/webhook").permitAll()
+						.requestMatchers("/api/v1/auth/login").permitAll()
+						.requestMatchers("/api/v1/auth/register").permitAll()
+						.requestMatchers("/api/v1/webhook").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "v1/swagger-ui/**")
 						.permitAll()
