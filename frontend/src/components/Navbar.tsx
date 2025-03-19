@@ -1,8 +1,10 @@
-import React from "react";
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function NavBar() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   const scrollToAboutUs = () => {
     const joinUsElement = document.getElementById("about_us");
     if (joinUsElement) {
@@ -23,12 +25,13 @@ export default function NavBar() {
   };
 
   return (
-    <Navbar className="shadow-xl fixed z-20 w-full bg-transparent backdrop-blur-sm h-[8vh] " fluid>
+    <Navbar
+      className={`shadow-xl fixed z-20 w-full ${isHome ? "bg-transparent" : "bg-gray-primary"} backdrop-blur-sm h-[7.5vh]`}
+      fluid
+    >
       <Navbar.Brand as={Link} to="/">
         <img src="/assets/GameNest_logo.png" className="mr-3 h-12" alt="Flowbite React Logo" />
-        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white text-white">
-          GameNest
-        </span>
+        <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white text-white">GameNest</span>
       </Navbar.Brand>
       <div className="flex md:order-2">
         <Dropdown
@@ -48,17 +51,17 @@ export default function NavBar() {
         </Dropdown>
         <Navbar.Toggle />
       </div>
-      <Navbar.Collapse className="mr-24">
-        <Navbar.Link as={Link} to="/" className="cursor-pointer text-white hover:text-[#5696c3] font-medium">
+      <Navbar.Collapse className="mr-24 *:!text-[16px]">
+        <Navbar.Link as={Link} to="/" className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
           Home
         </Navbar.Link>
-        <Navbar.Link onClick={scrollToAboutUs} className="cursor-pointer text-white hover:text-[#5696c3] font-medium">
+        <Navbar.Link onClick={scrollToAboutUs} className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
           About
         </Navbar.Link>
-        <Navbar.Link onClick={scrollToServices} className="cursor-pointer text-white hover:text-[#5696c3] font-medium">
+        <Navbar.Link onClick={scrollToServices} className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
           Services
         </Navbar.Link>
-        <Navbar.Link onClick={scrollToContact} className="cursor-pointer text-white hover:text-[#5696c3] font-medium">
+        <Navbar.Link onClick={scrollToContact} className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
           Contact
         </Navbar.Link>
       </Navbar.Collapse>
