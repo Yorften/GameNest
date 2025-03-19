@@ -35,6 +35,7 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String title;
 
     private String description;
@@ -43,7 +44,7 @@ public class Game {
 
     private String path;
 
-    private Long repositoryId;
+    private String repositoryName;
 
     private boolean privateRepository;
 

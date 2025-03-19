@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  * Handles HTTP requests and routes them to the appropriate service methods.
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 @Slf4j
 @Tag(name = "Authentication", description = "APIs for user authentication and account management")

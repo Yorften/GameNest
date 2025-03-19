@@ -1,7 +1,8 @@
-package com.gamenest.controller.user;
+package com.gamenest.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  * Handles HTTP requests and routes them to the appropriate service methods.
  */
 @RestController // Marks this class as a RESTful controller.
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "APIs for managing user accounts and roles")
 public class UserController {
@@ -35,8 +36,9 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @GetMapping
-    public List<UserRequest> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserRequest>> getAllUsers() {
+        List<UserRequest> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     @Operation(summary = "Get current user info", description = "Retrieves information about the currently authenticated user.")
@@ -45,10 +47,11 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized, user not authenticated")
     })
     @GetMapping("/@me")
-    public UserRequest getUserInfo() {
+    public ResponseEntity<UserRequest> getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        return userService.getByUserName(username);
+        UserRequest user = userService.getByUserName(username);
+        return ResponseEntity.ok(user);
     }
 
 }

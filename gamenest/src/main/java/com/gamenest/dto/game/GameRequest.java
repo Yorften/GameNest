@@ -1,11 +1,7 @@
 package com.gamenest.dto.game;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import com.gamenest.dto.role.RoleDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,24 +15,20 @@ public class GameRequest {
 
     private Long id;
 
-    @NotNull(message = "Gamename cannot be null")
-    @Size(min = 4, max = 32, message = "Gamename must be between 6 and 32 characters")
-    private String username;
+    @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title must be at most 255 characters")
+    private String title;
 
-    @NotNull(message = "Password cannot be null")
-    @Size(min = 8, max = 32, message = "Password must be between 8 and 32 characters")
-    private String password;
+    @NotBlank(message = "Description is required")
+    private String description;
 
-    @NotNull(message = "Password cannot be null")
-    @Size(min = 8, max = 32, message = "Password must be between 8 and 32 characters")
-    private String repeatPassword;
+    @NotBlank(message = "Version is required")
+    private String version;
 
-    @NotNull(message = "Email cannot be null")
-    @Size(min = 8, max = 32, message = "Email must be between 8 and 32 characters")
-    @Email(message = "Error in email format")
-    private String email;
+    private String path;
 
-    @NotNull(message = "Role not provided")
-    private RoleDTO role;
+    @NotBlank(message = "Repository name is required")
+    private String repositoryName;
 
+    private boolean privateRepository;
 }

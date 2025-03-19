@@ -12,12 +12,12 @@ public interface UserService {
 
     UserRequest getUserById(Long id);
 
-    public UserRequest getByUserName(String userName);
+    UserRequest getByUserName(String userName);
 
     List<UserRequest> getAllUsers();
 
     UserRequest addUser(UserRequest User);
 
-    public void deleteUserById(Long UserId);
+    void deleteUserById(Long UserId);
 
 }
