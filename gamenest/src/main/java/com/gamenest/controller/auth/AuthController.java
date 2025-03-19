@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gamenest.config.jwt.JWTGenerator;
 import com.gamenest.dto.auth.AuthResponse;
 import com.gamenest.dto.auth.LoginRequest;
-import com.gamenest.dto.user.UserDTO;
+import com.gamenest.dto.user.UserRequest;
 import com.gamenest.model.TokenBlacklist;
 import com.gamenest.repository.TokenBlacklistRepository;
 import com.gamenest.service.interfaces.UserService;
@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  * Handles HTTP requests and routes them to the appropriate service methods.
  */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 @Slf4j
 @Tag(name = "Authentication", description = "APIs for user authentication and account management")
@@ -81,7 +81,7 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<String> register(
-            @Parameter(description = "User registration details: username, email, password, and role", required = true) @RequestBody @Valid UserDTO userDTO) {
+            @Parameter(description = "User registration details: username, email, password, and role", required = true) @RequestBody @Valid UserRequest userDTO) {
 
         if (userValidationService.isUsernameTaken(userDTO.getUsername())) {
             log.info("Username is already taken");

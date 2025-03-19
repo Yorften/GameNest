@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.security.MessageDigest;
 
 @Slf4j
 @RestController
+@RequestMapping("/api/v1")
 public class WebhookController {
 
     @Value("${github.webhook.secret}")
@@ -25,6 +27,7 @@ public class WebhookController {
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(
             @RequestHeader("X-Hub-Signature-256") String signatureHeader,
+            @RequestHeader("X-GitHub-Event") String eventType,
             @RequestBody byte[] payload) {
 
         String computedSignature = "sha256=" + computeHmac256(payload, secret);
@@ -35,8 +38,19 @@ public class WebhookController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature");
         }
 
-        String payloadJson = new String(payload, StandardCharsets.UTF_8);
-        log.info("Received webhook payload: {}", payloadJson);
+        // String payloadJson = new String(payload, StandardCharsets.UTF_8);
+        // log.info("Received webhook payload: {}", payloadJson);
+        log.info(eventType);
+        switch (eventType) {
+            case "push":
+                log.info("Handling push event...");
+                break;
+            case "installation":
+                log.info("Handling installation event...");
+                break;
+            default:
+                log.info("Ignoring event: {}", eventType);
+        }
 
         return ResponseEntity.ok("Webhook received");
     }

@@ -1,23 +1,24 @@
 package com.gamenest.dto.user;
 
-import jakarta.validation.constraints.NotNull;
-
 import com.gamenest.dto.role.RoleDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
-public class UpdateUserDTO {
+public class UserResponse {
 
-    @NotNull(message = "Role shouldn't be null")
+    private Long id;
+
+    private String username;
+
+    private String email;
+
     private RoleDTO role;
 
 }

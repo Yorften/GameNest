@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.gamenest.dto.role.RoleDTO;
-import com.gamenest.dto.user.UserDTO;
+import com.gamenest.dto.user.UserRequest;
 import com.gamenest.exception.InvalidDataException;
 import com.gamenest.model.Role;
 import com.gamenest.model.User;
@@ -35,7 +35,7 @@ public class UserMapper {
         }
     }
 
-    public User convertToEntity(UserDTO userDTO) {
+    public User convertToEntity(UserRequest userDTO) {
         Role role = roleService.getRoleByName(userDTO.getRole().getName());
 
         return User.builder()
@@ -46,20 +46,20 @@ public class UserMapper {
                 .build();
     }
 
-    public UserDTO convertToDTO(User user) {
-        return UserDTO.builder()
+    public UserRequest convertToDTO(User user) {
+        return UserRequest.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .build();
     }
 
-    public List<UserDTO> convertToDTOList(List<User> users) {
+    public List<UserRequest> convertToDTOList(List<User> users) {
         return users.stream()
                 .map(user -> convertToDTO(user))
                 .collect(Collectors.toList());
     }
 
-    public UserDTO convertToDTO(User user, String... with) {
+    public UserRequest convertToDTO(User user, String... with) {
         List<String> includesList = Arrays.asList(with);
 
         RoleDTO roleDTO = null;
@@ -75,14 +75,14 @@ public class UserMapper {
 
         }
 
-        return UserDTO.builder()
+        return UserRequest.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .role(roleDTO)
                 .build();
     }
 
-    public List<UserDTO> convertToDTOList(List<User> users, String... with) {
+    public List<UserRequest> convertToDTOList(List<User> users, String... with) {
         verifyIncludes(with);
         return users.stream()
                 .map(user -> convertToDTO(user, with))

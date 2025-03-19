@@ -2,8 +2,7 @@ package com.gamenest.service.interfaces;
 
 import java.util.List;
 
-import com.gamenest.dto.user.UpdateUserDTO;
-import com.gamenest.dto.user.UserDTO;
+import com.gamenest.dto.user.UserRequest;
 
 /**
  * Service interface for User entity.
@@ -11,16 +10,16 @@ import com.gamenest.dto.user.UserDTO;
  */
 public interface UserService {
 
-    UserDTO getUserById(Long id);
+    UserRequest getUserById(Long id);
 
-    public UserDTO getByUserName(String userName);
+    UserRequest getByUserName(String userName);
 
-    List<UserDTO> getAllUsers();
+    List<UserRequest> getAllUsers();
 
-    UserDTO addUser(UserDTO User);
+    UserRequest addUser(UserRequest User);
 
-    public UserDTO updateUser(Long UserId, UpdateUserDTO User);
+    void deleteUserById(Long UserId);
 
-    public void deleteUserById(Long UserId);
+    void updateUserInstallation(Long installationId, String username);
 
 }
