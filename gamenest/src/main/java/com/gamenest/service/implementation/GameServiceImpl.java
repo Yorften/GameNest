@@ -75,7 +75,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public GameRequest getGameById(Long gameId) {
         Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new RuntimeException("Game not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
         return gameMapper.convertToDTO(game);
     }
 
@@ -89,11 +89,11 @@ public class GameServiceImpl implements GameService {
     @Override
     public void deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new RuntimeException("Game not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
         gameRepository.delete(game);
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         return userRepository.findByUsername(username)

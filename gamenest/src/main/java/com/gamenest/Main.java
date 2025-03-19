@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.gamenest.util.DataSeeder;
 
+@SuppressWarnings("unused")
 @EnableAsync
 @SpringBootApplication
 public class Main {
