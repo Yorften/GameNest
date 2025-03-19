@@ -47,9 +47,12 @@ public class UserMapper {
     }
 
     public UserRequest convertToDTO(User user) {
+        Role role = roleService.getRoleByName(user.getRole().getName());
+
         return UserRequest.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .role(RoleDTO.builder().id(role.getId()).name(role.getName()).build())
                 .build();
     }
 

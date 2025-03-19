@@ -10,8 +10,8 @@ export default function Home() {
       <div className='absolute w-full h-full bg-cover bg-no-repeat bg-fixed bg-blend-darken bg-[50%] opacity-60 bg-[url("/assets/images/bg-1.webp")]'></div>
       <div className="max-w-[1200px] relative my-0 mx-auto pt-56 px-5 pb-32">
         <div className="relative ml-0 z-10 w-[90vw] max-w-[1200px] mx-auto">
-          <h1 className="text-7xl text-white mb-5 drop-shadow-lg font-extrabold">Welcome to your platform<br /> GameNest</h1>
-          <p className="text-[20px] my-5 font-medium drop-shadow-lg text-white">
+          <h1 className="text-7xl text-white mb-5 drop-shadow-2xl font-extrabold">Welcome to your platform<br /> GameNest</h1>
+          <p className="text-[20px] my-5 font-medium drop-shadow-xl text-white">
             Effortlessly deploy and host your personal games. Integrate with GitHub for automatic builds, real-time
             logs, and seamless game deployment.
           </p>

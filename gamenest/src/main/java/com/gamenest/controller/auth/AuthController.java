@@ -69,9 +69,12 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        String username = authentication.getName();
+        UserRequest user = userService.getByUserName(username);
+
         String token = tokenGenerator.generateToken(authentication);
 
-        return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponse(token, user), HttpStatus.OK);
     }
 
     @Operation(summary = "Register user", description = "Registers a new user with the provided details.")
