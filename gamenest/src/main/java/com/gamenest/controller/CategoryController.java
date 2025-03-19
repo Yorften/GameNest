@@ -1,17 +1,17 @@
 package com.gamenest.controller;
 
-import com.gamenest.dto.category.CategoryRequest;
-import com.gamenest.dto.category.UpdateCategoryRequest;
-import com.gamenest.service.interfaces.CategoryService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.gamenest.dto.category.CategoryRequest;
+import com.gamenest.dto.category.UpdateCategoryRequest;
+import com.gamenest.service.interfaces.CategoryService;
 
 @RestController
 @RequestMapping("/api/v1/categories")

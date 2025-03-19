@@ -1,17 +1,18 @@
 package com.gamenest.controller;
 
-import com.gamenest.dto.game.GameRequest;
-import com.gamenest.dto.game.UpdateGameRequest;
-import com.gamenest.service.interfaces.GameService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.gamenest.dto.game.GameRequest;
+import com.gamenest.dto.game.UpdateGameRequest;
+import com.gamenest.service.interfaces.GameService;
+
 
 @RestController
 @RequestMapping("/api/v1/games")
