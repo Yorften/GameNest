@@ -60,6 +60,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     try {
       await dispatch(login({ username, password })).unwrap();
       setServerError("");
+      setUsername("");
+      setPassword("");
       onClose();
     } catch (err: any) {
       setServerError(err);
@@ -76,7 +78,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <Label htmlFor="username" value="Username" />
             <TextInput
               id="username"
-              placeholder="admin"
+              placeholder="username"
               required
               value={username}
               onChange={handleUsernameChange}

@@ -2,6 +2,8 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { Modal, Button, Label, TextInput } from "flowbite-react";
 import { useAppDispatch } from "../app/hooks";
 import { registerUser } from "../features/auth/authSlice";
+import { toast } from "react-toastify";
+
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -112,6 +114,11 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         try {
             await dispatch(registerUser(payload)).unwrap();
             setServerError("");
+            toast.success("Registration successful!");
+            setUsername("");
+            setEmail("");
+            setPassword("");
+            setRepeatPassword("");
             onClose();
         } catch (err: any) {
             console.log(err);

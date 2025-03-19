@@ -1,5 +1,5 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logout, selectCurrentUser } from "../features/auth/authSlice";
 import Button from "./miscs/Button";
@@ -9,6 +9,7 @@ import { LoginModal } from "./LoginModal";
 import { RegisterModal } from "./RegisterModal";
 
 export default function NavBar() {
+  const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
@@ -61,9 +62,7 @@ export default function NavBar() {
                 <span className="block text-sm">{user.username}</span>
                 <span className="block truncate text-sm font-medium">{user.email}</span>
               </Dropdown.Header>
-              <Dropdown.Item>Dashboard</Dropdown.Item>
-              <Dropdown.Item>Settings</Dropdown.Item>
-              <Dropdown.Item>Earnings</Dropdown.Item>
+              <Dropdown.Item onClick={() => navigate("/dashboard")}>Dashboard</Dropdown.Item>
               <Dropdown.Divider />
               <Dropdown.Item onClick={() => dispatch(logout())}> Sign out </Dropdown.Item>
             </Dropdown>
