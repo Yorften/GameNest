@@ -1,5 +1,7 @@
 package com.gamenest.dto.game;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -31,4 +33,9 @@ public class GameRequest {
     private String repositoryName;
 
     private boolean privateRepository;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
 }

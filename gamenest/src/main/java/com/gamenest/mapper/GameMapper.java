@@ -43,6 +43,8 @@ public class GameMapper {
                 .path(game.getPath())
                 .repositoryName(game.getRepositoryName())
                 .privateRepository(game.isPrivateRepository())
+                .createdAt(game.getCreatedAt())
+                .updatedAt(game.getUpdatedAt())
                 .build();
     }
 

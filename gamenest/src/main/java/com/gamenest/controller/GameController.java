@@ -5,6 +5,8 @@ import com.gamenest.dto.game.UpdateGameRequest;
 import com.gamenest.service.interfaces.GameService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class GameController {
 
     @Operation(summary = "Create a new game", description = "Creates a new game and associates it with the currently authenticated user.")
     @PostMapping
-    public ResponseEntity<GameRequest> createGame(@RequestBody GameRequest gameRequest) {
+    public ResponseEntity<GameRequest> createGame(@RequestBody @Valid GameRequest gameRequest) {
         GameRequest createdGame = gameService.createGame(gameRequest);
         return new ResponseEntity<>(createdGame, HttpStatus.CREATED);
     }
