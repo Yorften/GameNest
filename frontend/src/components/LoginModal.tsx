@@ -1,6 +1,7 @@
 import { useState, FormEvent, ChangeEvent } from "react";
-import { Modal, Button, Label, TextInput, Checkbox } from "flowbite-react";
+import { Modal, Button, Label, TextInput } from "flowbite-react";
 import { useAppDispatch } from "../app/hooks";
+import { login } from "../features/auth/authSlice";
 
 
 interface LoginModalProps {
@@ -11,12 +12,10 @@ interface LoginModalProps {
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
 
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
-  const [error, setError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -43,7 +42,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   };
 
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     let isValid = true;
 
@@ -58,15 +57,13 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
     if (!isValid) return;
 
-    // Here you'd typically dispatch your login action
-    // dispatch(login({ username, password }))
-    //   .unwrap()
-    //   .then(() => onClose())
-    //   .catch((err) => /* handle error */);
-
-    console.log("Login payload:", { username, password });
-
-    onClose();
+    try {
+      await dispatch(login({ username, password })).unwrap();
+      setServerError("");
+      onClose();
+    } catch (err: any) {
+      setServerError(err);
+    }
   };
 
   return (
@@ -74,7 +71,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       <Modal.Header>Login</Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {error && <p className="text-red-600 text-sm">{error}</p>}
+          {serverError && <p className="text-red-600 text-sm">{serverError}</p>}
           <div>
             <Label htmlFor="username" value="Username" />
             <TextInput
