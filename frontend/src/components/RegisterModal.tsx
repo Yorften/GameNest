@@ -1,8 +1,7 @@
 import { useState, FormEvent, ChangeEvent } from "react";
-import { Modal, Button, Label, TextInput, Select } from "flowbite-react";
+import { Modal, Button, Label, TextInput } from "flowbite-react";
 import { useAppDispatch } from "../app/hooks";
-// import { useAppDispatch } from "../../store/hooks";
-// import { registerUser } from "../../store/authSlice"; // hypothetical register action
+import { registerUser } from "../features/auth/authSlice";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,7 +11,6 @@ interface RegisterModalProps {
 }
 
 export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
-    // Local states
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -22,13 +20,13 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [repeatPasswordError, setRepeatPasswordError] = useState("");
+    const [serverError, setServerError] = useState("");
 
     const dispatch = useAppDispatch();
 
     const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setUsername(value);
-
         if (!value.trim()) {
             setUsernameError("Username is required.");
         } else {
@@ -39,7 +37,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setEmail(value);
-
         if (!value.trim()) {
             setEmailError("Email is required.");
         } else if (!emailRegex.test(value)) {
@@ -52,7 +49,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setPassword(value);
-
         if (!value.trim()) {
             setPasswordError("Password is required.");
         } else if (value.trim().length < 6) {
@@ -65,7 +61,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     const handleRepeatPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setRepeatPassword(value);
-
         if (!value.trim()) {
             setRepeatPasswordError("Please confirm your password.");
         } else if (value !== password) {
@@ -75,13 +70,10 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         }
     };
 
-    // Final check on submit
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         let isValid = true;
-
-        // Ensure no fields are empty
         if (!username.trim()) {
             setUsernameError("Username is required.");
             isValid = false;
@@ -107,26 +99,37 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             setRepeatPasswordError("Passwords do not match.");
             isValid = false;
         }
-
         if (!isValid) return;
 
-        // Build the final registration payload
         const payload = {
             username,
+            email,
             password,
             repeatPassword,
-            email,
             role: { name: "ROLE_USER" }, // default role
         };
 
-        // Usually you'd dispatch your registration action:
-        // dispatch(registerUser(payload))
-        //   .unwrap()
-        //   .then(() => onClose())
-        //   .catch((err) => /* handle error */);
-
-        console.log("Register payload:", payload);
-        onClose();
+        try {
+            await dispatch(registerUser(payload)).unwrap();
+            setServerError("");
+            onClose();
+        } catch (err: any) {
+            console.log(err);
+            
+            if (err && err.details && Array.isArray(err.details)) {
+                err.details.forEach((detail: { field: string; error: string }) => {
+                    if (detail.field === "username") {
+                        setUsernameError(detail.error);
+                    } else if (detail.field === "email") {
+                        setEmailError(detail.error);
+                    } else if (detail.field === "password") {
+                        setPasswordError(detail.error);
+                    }
+                });
+            } else {
+                setServerError(typeof err === "string" ? err : err.message || "Registration failed");
+            }
+        }
     };
 
     return (
@@ -134,6 +137,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             <Modal.Header>Register</Modal.Header>
             <Modal.Body>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    {serverError && <p className="text-red-600 text-sm">{serverError}</p>}
                     <div>
                         <Label htmlFor="username" value="Username" />
                         <TextInput
@@ -146,7 +150,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                             helperText={usernameError && <span className="text-red-600">{usernameError}</span>}
                         />
                     </div>
-
                     <div>
                         <Label htmlFor="email" value="Email" />
                         <TextInput
@@ -160,7 +163,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                             helperText={emailError && <span className="text-red-600">{emailError}</span>}
                         />
                     </div>
-
                     <div>
                         <Label htmlFor="password" value="Password" />
                         <TextInput
@@ -174,7 +176,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                             helperText={passwordError && <span className="text-red-600">{passwordError}</span>}
                         />
                     </div>
-
                     <div>
                         <Label htmlFor="repeatPassword" value="Confirm Password" />
                         <TextInput

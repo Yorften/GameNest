@@ -32,6 +32,19 @@ export const login = createAsyncThunk(
   },
 );
 
+// Async thunk for registering a new user
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (credentials: { username: string; email: string; password: string; repeatPassword: string }, thunkAPI) => {
+    try {
+      const response = await axiosClient.post("/auth/register", credentials);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Failed to register");
+    }
+  },
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -47,6 +60,7 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Login cases
       .addCase(login.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -56,11 +70,28 @@ export const authSlice = createSlice({
         state.token = action.payload.accessToken;
         state.user = action.payload.user;
         state.error = null;
-
         localStorage.setItem("token", action.payload.accessToken);
         localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(login.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      })
+      // Register cases
+      .addCase(registerUser.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Optionally auto-login on successful registration:
+        state.token = action.payload.accessToken;
+        state.user = action.payload.user;
+        state.error = null;
+        localStorage.setItem("token", action.payload.accessToken);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+      })
+      .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });
