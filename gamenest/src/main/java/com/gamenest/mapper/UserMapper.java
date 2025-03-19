@@ -52,6 +52,7 @@ public class UserMapper {
         return UserRequest.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .installationId(user.getInstallationId())
                 .role(RoleDTO.builder().id(role.getId()).name(role.getName()).build())
                 .build();
     }
