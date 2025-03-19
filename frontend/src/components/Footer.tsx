@@ -101,7 +101,7 @@ export default function Footer({}: Props) {
             <h4 className="text-lg text-white font-medium mb-7">Stay Updated</h4>
             <p className="text-sm text-white/80 leading-6 mb-7">Subscribe to get the latest updates from GameNest.</p>
             <a
-              href="javascript:;"
+              href="#"
               className="flex items-center justify-center gap-2 border border-indigo-600 rounded-full py-3 px-6 w-fit lg:mx-0 text-sm text-indigo-600 font-semibold transition-all duration-500 hover:bg-indigo-50"
             >
               Subscribe

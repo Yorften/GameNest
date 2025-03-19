@@ -20,7 +20,6 @@ const initialState: AuthState = {
 }
 
 // Async thunk for logging in
-// The credentials argument is typically { username, password } or { email, password }.
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { username: string; password: string }, thunkAPI) => {
