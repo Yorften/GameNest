@@ -1,6 +1,5 @@
 package com.gamenest.service.implementation;
 
-
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,21 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     @Override
     public UserRequest getUserById(Long id) throws ResourceNotFoundException {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return userMapper.convertToDTO(user);
     }
 
     @Override
     public UserRequest getByUserName(String userName) {
         User user = userRepository.findByUsername(userName)
-                .orElseThrow(() -> new ResourceNotFoundException("user not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return userMapper.convertToDTO(user);
     }
 
@@ -62,4 +61,11 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    @Override
+    public void updateUserInstallation(Long installationId, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setInstallationId(installationId);
+        userRepository.save(user);
+    }
 }

@@ -20,4 +20,6 @@ public interface UserService {
 
     void deleteUserById(Long UserId);
 
+    void updateUserInstallation(Long installationId, String username);
+
 }
