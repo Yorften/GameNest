@@ -2,7 +2,6 @@ package com.gamenest.mapper;
 
 import org.springframework.stereotype.Component;
 import com.gamenest.dto.tag.TagRequest;
-import com.gamenest.dto.tag.UpdateTagRequest;
 import com.gamenest.model.Tag;
 
 @Component
@@ -15,15 +14,6 @@ public class TagMapper {
         return Tag.builder()
                 .name(tagRequest.getName())
                 .build();
-    }
-
-    public void updateEntity(Tag tag, UpdateTagRequest updateTagRequest) {
-        if (updateTagRequest == null) {
-            return;
-        }
-        if (updateTagRequest.getName() != null && !updateTagRequest.getName().isEmpty()) {
-            tag.setName(updateTagRequest.getName());
-        }
     }
 
     public TagRequest convertToDTO(Tag tag) {

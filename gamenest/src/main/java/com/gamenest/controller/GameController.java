@@ -13,7 +13,6 @@ import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.game.UpdateGameRequest;
 import com.gamenest.service.interfaces.GameService;
 
-
 @RestController
 @RequestMapping("/api/v1/games")
 @Tag(name = "Game API", description = "Operations pertaining to games in the application")
@@ -48,10 +47,13 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    @Operation(summary = "Get all games", description = "Retrieves a list of all games.")
+    @Operation(summary = "Get all games", description = "Retrieves a list of all games. Optionally filter by category or tags.")
     @GetMapping
-    public ResponseEntity<List<GameRequest>> getAllGames() {
-        List<GameRequest> games = gameService.getAllGames();
+    public ResponseEntity<List<GameRequest>> getAllGames(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) List<Long> tagIds) {
+
+        List<GameRequest> games = gameService.getAllGamesFiltered(categoryId, tagIds);
         return ResponseEntity.ok(games);
     }
 

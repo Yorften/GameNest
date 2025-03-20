@@ -87,6 +87,19 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public List<GameRequest> getAllGamesFiltered(Long categoryId, List<Long> tagIds) {
+        if (categoryId == null && (tagIds == null || tagIds.isEmpty())) {
+            return getAllGames();
+        }
+
+        List<Game> filteredGames = gameRepository.findFiltered(categoryId, tagIds);
+
+        return filteredGames.stream()
+                .map(gameMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game not found"));

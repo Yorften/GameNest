@@ -1,6 +1,7 @@
 package com.gamenest.service.implementation;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +44,14 @@ public class TagServiceImpl implements TagService {
     public TagRequest updateTag(Long tagId, UpdateTagRequest updateTagRequest) {
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tag not found"));
-        tagMapper.updateEntity(tag, updateTagRequest);
+
+        if (updateTagRequest.getName() != null && !updateTagRequest.getName().isEmpty()) {
+            Optional<Tag> existingTagOpt = tagRepository.findByName(updateTagRequest.getName());
+            if (existingTagOpt.isPresent() && !existingTagOpt.get().getId().equals(tagId)) {
+                throw new DuplicateResourceException("Tag with name " + updateTagRequest.getName() + " already exists");
+            }
+            tag.setName(updateTagRequest.getName());
+        }
         tag = tagRepository.save(tag);
         return tagMapper.convertToDTO(tag);
     }

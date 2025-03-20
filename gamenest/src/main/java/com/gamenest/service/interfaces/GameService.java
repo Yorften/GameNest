@@ -19,6 +19,8 @@ public interface GameService {
 
     List<GameRequest> getAllGames();
 
+    List<GameRequest> getAllGamesFiltered(Long categoryId, List<Long> tagIds);
+
     void deleteGame(Long gameId);
 
 }
