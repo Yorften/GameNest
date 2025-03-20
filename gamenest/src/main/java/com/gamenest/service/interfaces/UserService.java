@@ -2,6 +2,7 @@ package com.gamenest.service.interfaces;
 
 import java.util.List;
 
+import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.user.UserRequest;
 
 /**
@@ -21,5 +22,7 @@ public interface UserService {
     void deleteUserById(Long UserId);
 
     void updateUserInstallation(Long installationId, String username);
+
+    List<GameRequest> getUserGames(String username);
 
 }

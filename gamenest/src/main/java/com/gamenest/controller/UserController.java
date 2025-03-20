@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.user.UserRequest;
 import com.gamenest.service.interfaces.UserService;
 
@@ -52,6 +53,16 @@ public class UserController {
 
         userService.updateUserInstallation(installationId, username);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get current user's games", description = "Retrieves all games belonging to the authenticated user.")
+    @GetMapping("/games")
+    public ResponseEntity<List<GameRequest>> getUserGames() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        List<GameRequest> userGames = userService.getUserGames(username);
+        return ResponseEntity.ok(userGames);
     }
 
 }
