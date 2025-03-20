@@ -46,9 +46,9 @@ public class Game {
 
     private String version;
 
-    private String path;
+    private String url;
 
-    private String repositoryName;
+    private String nameSpace;
 
     private boolean privateRepository;
 

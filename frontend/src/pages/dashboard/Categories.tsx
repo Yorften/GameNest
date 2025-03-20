@@ -126,7 +126,7 @@ export default function Categories() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <div className="flex items-center justify-between mb-4 px-4">
+      <div className="flex items-center justify-between mb-4 px-4 pt-4">
         <h2 className="text-3xl font-semibold">Categories</h2>
         <Button
           onClick={() => {

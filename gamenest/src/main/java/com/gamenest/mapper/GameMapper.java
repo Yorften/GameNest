@@ -25,8 +25,8 @@ public class GameMapper {
                 .title(gameDTO.getTitle())
                 .description(gameDTO.getDescription())
                 .version(gameDTO.getVersion())
-                .path(gameDTO.getPath())
-                .repositoryName(gameDTO.getRepositoryName())
+                .url(gameDTO.getUrl())
+                .nameSpace(gameDTO.getNameSpace())
                 .privateRepository(gameDTO.isPrivateRepository())
                 .build();
     }
@@ -40,8 +40,8 @@ public class GameMapper {
                 .title(game.getTitle())
                 .description(game.getDescription())
                 .version(game.getVersion())
-                .path(game.getPath())
-                .repositoryName(game.getRepositoryName())
+                .url(game.getUrl())
+                .nameSpace(game.getNameSpace())
                 .privateRepository(game.isPrivateRepository())
                 .createdAt(game.getCreatedAt())
                 .updatedAt(game.getUpdatedAt())

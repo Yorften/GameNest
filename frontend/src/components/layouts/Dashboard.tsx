@@ -1,37 +1,36 @@
-import { useSelector } from 'react-redux';
-import { Link, Outlet, useNavigate } from 'react-router'
-import { logout, selectCurrentUser } from '../../features/auth/authSlice';
-import Breadcrumbs from '../BreadCrumbs';
-import { Avatar, Dropdown } from 'flowbite-react';
-import { useAppDispatch } from '../../app/hooks';
-import CssBaseline from '@mui/material/CssBaseline';
+import { useSelector } from "react-redux";
+import { Link, Outlet, useNavigate } from "react-router";
+import { logout, selectCurrentUser } from "../../features/auth/authSlice";
+import Breadcrumbs from "../BreadCrumbs";
+import { Avatar, Dropdown } from "flowbite-react";
+import { useAppDispatch } from "../../app/hooks";
+import CssBaseline from "@mui/material/CssBaseline";
 
-type Props = {}
+type Props = {};
 
 export default function Dashboard({ }: Props) {
   const user = useSelector(selectCurrentUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const isAdmin = user?.role.name.startsWith("ROLE_ADMIN")
+  const isAdmin = user?.role.name.startsWith("ROLE_ADMIN");
 
   const toggleNavBar = () => {
-    const mobileNavbar = document.getElementById('mobile-navbar');
-    mobileNavbar?.classList.toggle('hidden');
-
-  }
+    const mobileNavbar = document.getElementById("mobile-navbar");
+    mobileNavbar?.classList.toggle("hidden");
+  };
   return (
     <>
       <div className="relative h-screen bg-dashboard-secondary">
         {/* <!--header--> */}
-        <nav
-          className="border-b h-[8%] lg:border-primary bg-dashboard-primary shadow-xl py-3.5 px-6 w-full fixed"
-        >
+        <nav className="border-b h-[8%] lg:border-primary bg-dashboard-primary shadow-xl py-3.5 px-6 w-full fixed">
           <div className="flex items-center justify-between gap-1 sm:gap-6 lg:flex-row flex-col">
             <div className="flex justify-between items-center lg:w-auto w-full">
               <Link to="/" className="flex items-center">
                 <img src="/assets/GameNest_logo.png" className="mr-3 h-6 md:h-12" alt="GameNest Logo" />
-                <span className="self-center whitespace-nowrap text-base md:text-xl font-semibold text-white">GameNest</span>
+                <span className="self-center whitespace-nowrap text-base md:text-xl font-semibold text-white">
+                  GameNest
+                </span>
               </Link>
               <button
                 id="navbar-toggle"
@@ -61,33 +60,45 @@ export default function Dashboard({ }: Props) {
               id="mobile-navbar"
               className="hidden lg:flex flex-row w-full flex-1 shadow-sm lg:shadow-none bg-dashboard-primary/85 rounded-xl py-4 lg:py-0"
             >
-              <ul className="text-center flex lg:flex-row flex-col lg:gap-2 xl:gap-4 gap-2 items-center lg:ml-auto md:pr-20">
+              <ul className="text-center flex lg:flex-row flex-col lg:gap-2 xl:gap-4 gap-2 items-center lg:ml-auto md:pr-40">
                 <li>
-                  <Link to={"/dashboard"} className="py-1.5 px-3 transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md">
+                  <Link
+                    to={"/dashboard"}
+                    className="py-1.5 px-3 transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                  >
                     Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link to={"games"} className="py-1.5 px-3 transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md">
+                  <Link
+                    to={"games"}
+                    className="py-1.5 px-3 transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                  >
                     My Games
                   </Link>
                 </li>
                 {isAdmin && (
                   <>
                     <li>
-                      <Link to={"categories"} className="py-1.5 px-3 bg-transparent transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md">
+                      <Link
+                        to={"categories"}
+                        className="py-1.5 px-3 bg-transparent transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                      >
                         Categories
                       </Link>
                     </li>
                     <li>
-                      <Link to={"tags"} className="py-1.5 px-3 bg-transparent transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md">
+                      <Link
+                        to={"tags"}
+                        className="py-1.5 px-3 bg-transparent transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                      >
                         Tags
                       </Link>
                     </li>
                   </>
                 )}
               </ul>
-              <div className='text-center hidden lg:flex  items-center gap-1  sm:gap-4 lg:ml-auto'>
+              <div className="text-center hidden lg:flex  items-center gap-1  sm:gap-4 lg:ml-auto">
                 <Dropdown
                   arrowIcon={false}
                   inline
@@ -122,5 +133,5 @@ export default function Dashboard({ }: Props) {
         </div>
       </div>
     </>
-  )
+  );
 }

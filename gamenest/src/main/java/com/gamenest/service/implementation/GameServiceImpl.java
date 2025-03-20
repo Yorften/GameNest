@@ -58,11 +58,11 @@ public class GameServiceImpl implements GameService {
         if (updateGameRequest.getVersion() != null && !updateGameRequest.getVersion().isEmpty()) {
             gameDB.setVersion(updateGameRequest.getVersion());
         }
-        if (updateGameRequest.getPath() != null && !updateGameRequest.getPath().isEmpty()) {
-            gameDB.setPath(updateGameRequest.getPath());
+        if (updateGameRequest.getUrl() != null && !updateGameRequest.getUrl().isEmpty()) {
+            gameDB.setUrl(updateGameRequest.getUrl());
         }
-        if (updateGameRequest.getRepositoryName() != null && !updateGameRequest.getRepositoryName().isEmpty()) {
-            gameDB.setRepositoryName(updateGameRequest.getRepositoryName());
+        if (updateGameRequest.getNameSpace() != null && !updateGameRequest.getNameSpace().isEmpty()) {
+            gameDB.setNameSpace(updateGameRequest.getNameSpace());
         }
         if (updateGameRequest.getPrivateRepository() != null) {
             gameDB.setPrivateRepository(updateGameRequest.getPrivateRepository());

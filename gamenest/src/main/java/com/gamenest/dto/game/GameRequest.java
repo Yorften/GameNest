@@ -28,10 +28,10 @@ public class GameRequest {
     private String version;
 
     // Git url
-    private String path;
+    private String url;
 
     @NotBlank(message = "Repository name is required")
-    private String repositoryName;
+    private String nameSpace;
 
     private boolean privateRepository;
 

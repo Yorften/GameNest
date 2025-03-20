@@ -1,5 +1,5 @@
 import Button from '../../components/miscs/Button'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { RxExternalLink } from "react-icons/rx";
 import { SlOptions } from "react-icons/sl";
 
@@ -20,7 +20,6 @@ const testGameData = {
 
 export default function UserGames({ }: Props) {
   const navigate = useNavigate()
-  const location = useLocation()
   return (
     <>
       <div className='flex flex-col gap-8'>

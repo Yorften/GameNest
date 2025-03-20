@@ -3,7 +3,6 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
-import CssBaseline from "@mui/material/CssBaseline";
 
 const App = () => {
   const location = useLocation();
@@ -19,7 +18,7 @@ const App = () => {
       {!isDashboard && <Footer />}
       <ToastContainer />
       
-    </>
+    </> 
   );
 };
 

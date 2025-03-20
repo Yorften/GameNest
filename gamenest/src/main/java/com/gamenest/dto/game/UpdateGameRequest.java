@@ -21,9 +21,9 @@ public class UpdateGameRequest {
 
     private String version;
 
-    private String path;
+    private String url;
 
-    private String repositoryName;
+    private String nameSpace;
 
     private Boolean privateRepository;
 

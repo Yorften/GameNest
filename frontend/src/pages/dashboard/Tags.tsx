@@ -138,7 +138,7 @@ export default function Tags() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <div className="flex items-center justify-between mb-4 px-4">
+      <div className="flex items-center justify-between mb-4 px-4 pt-4">
         <h2 className="text-3xl font-semibold">Tags</h2>
         <Button onClick={() => setIsModalOpen(true)} className='!text-sm font-medium !bg-gray-50/10 border border-primary' title="New Tag"></Button>
       </div>

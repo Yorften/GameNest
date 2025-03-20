@@ -66,8 +66,8 @@ public class GameServiceImplTest {
                 .title("Test Game")
                 .description("A test game")
                 .version("1.0")
-                .path("/games/test")
-                .repositoryName("testuser/TestGame")
+                .url("https://github.com/testuser/TestGame.git")
+                .nameSpace("testuser/TestGame")
                 .privateRepository(false)
                 .owner(testUser)
                 .build();
@@ -77,8 +77,8 @@ public class GameServiceImplTest {
                 .title("Test Game")
                 .description("A test game")
                 .version("1.0")
-                .path("/games/test")
-                .repositoryName("testuser/TestGame")
+                .url("https://github.com/testuser/TestGame.git")
+                .nameSpace("testuser/TestGame")
                 .privateRepository(false)
                 .build();
 
@@ -86,8 +86,8 @@ public class GameServiceImplTest {
                 .title("Updated Test Game")
                 .description("An updated test game")
                 .version("1.1")
-                .path("/games/updated-test")
-                .repositoryName("testuser/UpdatedTestGame")
+                .url("tps://github.com/testuser/UpdatedTestGame.git")
+                .nameSpace("testuser/UpdatedTestGame")
                 .privateRepository(true)
                 .build();
 
