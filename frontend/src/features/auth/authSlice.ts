@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import axiosClient from "../../axios-client";
+import { User } from "../../types";
 
 interface AuthState {
-  user: any | null;
+  user: User | null;
   token: string | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;

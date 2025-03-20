@@ -1,8 +1,11 @@
-import React from "react"
 import { Link, useLocation } from "react-router-dom"
 import { FaHome } from "react-icons/fa"
 
-const Breadcrumbs: React.FC = () => {
+type Props = {
+  className?: string
+}
+
+export default function Breadcrumbs({ className }: Props) {
   const { pathname } = useLocation()
 
   const segments = pathname
@@ -30,11 +33,11 @@ const Breadcrumbs: React.FC = () => {
   })
 
   return (
-    <div className="py-4 pt-6 pl-6 bg-gray-100">
-      <ul className="flex items-center font-medium text-primary-2">
+    <div className={`py-2 ${className}`}>
+      <ul className="flex text-sm items-center font-medium text-primary-2">
         <li className="inline-flex items-center">
           <Link to="/" className="hover:text-secondary-2">
-            <FaHome className="h-6 w-6" />
+            <FaHome className="h-4 w-4" />
           </Link>
           <span className="mx-4 h-auto text-gray-400 font-medium">/</span>
         </li>
@@ -43,5 +46,3 @@ const Breadcrumbs: React.FC = () => {
     </div>
   )
 }
-
-export default Breadcrumbs

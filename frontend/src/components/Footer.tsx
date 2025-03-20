@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 type Props = {};
 
-export default function Footer({}: Props) {
+export default function Footer({ }: Props) {
   const scrollToAboutUs = () => {
     const joinUsElement = document.getElementById("about_us");
     if (joinUsElement) {
