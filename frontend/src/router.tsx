@@ -3,12 +3,15 @@ import App from "./App";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/guards/ProtectedRoute";
 import Dashboard from "./components/layouts/Dashboard";
 import HomeDashboard from "./pages/dashboard/HomeDashboard";
 import GameDetails from "./pages/dashboard/GameDetails";
 import Games from "./pages/Games";
 import GamePage from "./pages/GamePage";
+import AdminRoute from "./components/guards/AdminRoute";
+import Categories from "./pages/dashboard/Categories";
+import Tags from "./pages/dashboard/Tags";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +49,20 @@ export const router = createBrowserRouter([
           {
             path: "/games/:id",
             element: <GameDetails />,
+          },
+          {
+            path: "/categories",
+            element:
+              <AdminRoute>
+                <Categories />
+              </AdminRoute>,
+          },
+          {
+            path: "/tags",
+            element:
+              <AdminRoute>
+                <Tags />
+              </AdminRoute>,
           },
         ]
 
