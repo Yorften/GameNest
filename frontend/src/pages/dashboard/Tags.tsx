@@ -130,8 +130,6 @@ export default function Tags() {
       <TagModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       {error && <p style={{ color: '#f44' }}>{error}</p>}
-      {!loading && !error && tags.length === 0 && <p>No tags found.</p>}
-
       <div className='border border-primary rounded-md'>
         <MaterialReactTable table={table} />
       </div>
