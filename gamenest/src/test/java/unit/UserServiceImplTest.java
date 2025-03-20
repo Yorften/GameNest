@@ -49,7 +49,7 @@ public class UserServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userRepository, passwordEncoder, userMapper);
+        userService = new UserServiceImpl(passwordEncoder, userRepository, null, userMapper, null);
 
         testUser = new User();
         testUser.setId(1L);

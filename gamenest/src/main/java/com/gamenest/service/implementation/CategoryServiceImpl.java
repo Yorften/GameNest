@@ -1,6 +1,7 @@
 package com.gamenest.service.implementation;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,23 +28,31 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryRequest createCategory(CategoryRequest categoryRequest) {
         categoryRepository.findByName(categoryRequest.getName())
-            .ifPresent(existingCategory -> {
-                throw new DuplicateResourceException("Category with name " + categoryRequest.getName() + " already exists");
-            });
-        
+                .ifPresent(existingCategory -> {
+                    throw new DuplicateResourceException(
+                            "Category with name " + categoryRequest.getName() + " already exists");
+                });
+
         Category category = categoryMapper.convertToEntity(categoryRequest);
         category = categoryRepository.save(category);
         return categoryMapper.convertToDTO(category);
     }
+
     @Override
-    public CategoryRequest updateCategory(Long categoryId, UpdateCategoryRequest categoryRequest) {
+    public CategoryRequest updateCategory(Long categoryId, UpdateCategoryRequest updateCategoryRequest) {
         Category existingCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-        if (categoryRequest.getName() != null && !categoryRequest.getName().isEmpty()) {
-            existingCategory.setName(categoryRequest.getName());
+
+        if (updateCategoryRequest.getName() != null && !updateCategoryRequest.getName().isEmpty()) {
+            Optional<Category> existingOpt = categoryRepository.findByName(updateCategoryRequest.getName());
+            if (existingOpt.isPresent() && !existingOpt.get().getId().equals(categoryId)) {
+                throw new DuplicateResourceException(
+                        "Category with name " + updateCategoryRequest.getName() + " already exists");
+            }
+            existingCategory.setName(updateCategoryRequest.getName());
         }
-        if (categoryRequest.getDescription() != null && !categoryRequest.getDescription().isEmpty()) {
-            existingCategory.setDescription(categoryRequest.getDescription());
+        if (updateCategoryRequest.getDescription() != null && !updateCategoryRequest.getDescription().isEmpty()) {
+            existingCategory.setDescription(updateCategoryRequest.getDescription());
         }
         Category updatedCategory = categoryRepository.save(existingCategory);
         return categoryMapper.convertToDTO(updatedCategory);
