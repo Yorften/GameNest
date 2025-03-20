@@ -86,6 +86,9 @@ export default function NavBar() {
           <Navbar.Link as={Link} to="/" className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
             Home
           </Navbar.Link>
+          <Navbar.Link as={Link} to="/games" className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
+            Games
+          </Navbar.Link>
           <Navbar.Link
             onClick={scrollToAboutUs}
             className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">

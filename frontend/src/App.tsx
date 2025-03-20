@@ -11,7 +11,7 @@ const App = () => {
   return (
     <>
       {!isDashboard && <Navbar />}
-      <div className="min-h-[50vh] lg:min-h-screen h-full bg-gray-primary">
+      <div className="min-h-screen h-full bg-gray-primary">
         {/* <Breadcrumbs /> */}
         <Outlet />
       </div>

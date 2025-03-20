@@ -12,6 +12,7 @@ import GamePage from "./pages/GamePage";
 import AdminRoute from "./components/guards/AdminRoute";
 import Categories from "./pages/dashboard/Categories";
 import Tags from "./pages/dashboard/Tags";
+import UserGames from "./pages/dashboard/UserGames";
 
 export const router = createBrowserRouter([
   {
@@ -47,18 +48,22 @@ export const router = createBrowserRouter([
             element: <HomeDashboard />,
           },
           {
-            path: "/games/:id",
+            path: "games",
+            element: <UserGames />,
+          },
+          {
+            path: "games/:id",
             element: <GameDetails />,
           },
           {
-            path: "/categories",
+            path: "categories",
             element:
               <AdminRoute>
                 <Categories />
               </AdminRoute>,
           },
           {
-            path: "/tags",
+            path: "tags",
             element:
               <AdminRoute>
                 <Tags />
