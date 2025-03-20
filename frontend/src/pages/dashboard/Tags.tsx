@@ -117,12 +117,28 @@ export default function Tags() {
         overflowY: 'auto',
       },
     },
-    enableStickyHeader: true
+    enableStickyHeader: true,
+    // muiPaginationProps: {
+    //   rowsPerPageOptions: [
+    //     {
+    //       label: "5",
+    //       value: 5
+    //     },
+    //     {
+    //       label: "6",
+    //       value: 6,
+    //     },
+    //     {
+    //       label: "10",
+    //       value: 10
+    //     },
+    //   ],
+    // }
   });
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 px-4">
         <h2 className="text-3xl font-semibold">Tags</h2>
         <Button onClick={() => setIsModalOpen(true)} className='!text-sm font-medium !bg-gray-50/10 border border-primary' title="New Tag"></Button>
       </div>

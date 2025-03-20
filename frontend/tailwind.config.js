@@ -12,7 +12,7 @@ module.exports = {
         "gray-secondary": "#38343c",
         "button-primary": "#333639",
         "dashboard-primary": "#0a0b0b",
-        "dashboard-secondary": "#010001",
+        "dashboard-secondary": "#0e0f0f",
         "border-primary": "#2c2d2c",
         white: "#fffefe",
       },

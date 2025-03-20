@@ -27,6 +27,7 @@ public class GameRequest {
     @NotBlank(message = "Version is required")
     private String version;
 
+    // Git url
     private String path;
 
     @NotBlank(message = "Repository name is required")

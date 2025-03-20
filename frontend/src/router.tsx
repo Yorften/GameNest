@@ -13,6 +13,7 @@ import AdminRoute from "./components/guards/AdminRoute";
 import Categories from "./pages/dashboard/Categories";
 import Tags from "./pages/dashboard/Tags";
 import UserGames from "./pages/dashboard/UserGames";
+import NewGame from "./pages/dashboard/NewGame";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
           {
             path: "games",
             element: <UserGames />,
+          },
+          {
+            path: "games/new",
+            element: <NewGame />,
           },
           {
             path: "games/:id",

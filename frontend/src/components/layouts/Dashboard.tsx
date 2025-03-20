@@ -110,12 +110,12 @@ export default function Dashboard({ }: Props) {
           <div className=" flex flex-col py-4 lg:px-8 px-3 h-[12%] bg-dashboard-secondary">
             <h6 className="text-sm sm:text-lg font-semibold text-white whitespace-nowrap mb-1.5">
               Welcome back,
-              <span className="text-indigo-600 text-base sm:text-lg font-semibold"> {user?.username} </span>
+              <span className="text-primary text-base sm:text-lg font-semibold"> {user?.username} </span>
             </h6>
             <Breadcrumbs className="text-white" />
           </div>
           <div className="w-full h-full min-h-[88%] px-4 pb-4 rounded-3xl">
-            <div className="border-primary border h-[88%] rounded-xl text-white p-4">
+            <div className="border-primary bg-dashboard-primary border h-[88%] rounded-xl text-white p-4">
               <Outlet />
             </div>
           </div>
