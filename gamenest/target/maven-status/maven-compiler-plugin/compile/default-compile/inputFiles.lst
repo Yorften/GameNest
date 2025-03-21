@@ -1,5 +1,6 @@
 /Users/karizma/Desktop/GameNest/gamenest/src/main/java/com/gamenest/Main.java
 /Users/karizma/Desktop/GameNest/gamenest/src/main/java/com/gamenest/config/AppConfig.java
+/Users/karizma/Desktop/GameNest/gamenest/src/main/java/com/gamenest/config/github/JwtTokenUtil.java
 /Users/karizma/Desktop/GameNest/gamenest/src/main/java/com/gamenest/config/jwt/JWTAuthEntryPoint.java
 /Users/karizma/Desktop/GameNest/gamenest/src/main/java/com/gamenest/config/jwt/JWTAuthenticationFilter.java
 /Users/karizma/Desktop/GameNest/gamenest/src/main/java/com/gamenest/config/jwt/JWTGenerator.java

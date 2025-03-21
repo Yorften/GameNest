@@ -1,9 +1,13 @@
 package com.gamenest.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.kohsuke.github.GHAppInstallation;
 import org.kohsuke.github.GHAppInstallationToken;
+import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +39,8 @@ import com.gamenest.service.interfaces.UserService;
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "APIs for managing user accounts and roles")
 @Slf4j
+
+// ghs_WhYE06QkUZFGUNzl0y0ex9Th0ZvYmm3UJY3E
 public class UserController {
 
     private final UserService userService;
@@ -45,23 +51,38 @@ public class UserController {
 
     @Operation(summary = "Get user repositories", description = "Retrieves information about the user's github reposiories.")
     @GetMapping("/repositories")
-    public ResponseEntity<String> getUserRepositories() throws Exception {
+    public ResponseEntity<List<Map<String, Object>>> getUserRepositories() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         UserRequest user = userService.getByUserName(username);
 
-        String jwtToken = jwtTokenUtil.createJWT(applicationId, 60000);
+        String jwtToken = jwtTokenUtil.createJWT(applicationId, 600000);
 
         GitHub gitHubApp = new GitHubBuilder().withJwtToken(jwtToken).build();
 
         GHAppInstallation appInstallation = gitHubApp.getApp().getInstallationById(user.getInstallationId());
         GHAppInstallationToken appInstallationToken = appInstallation.createToken().create();
 
-        log.info("Github installation: {}", appInstallationToken);
+        GitHub installationClient = new GitHubBuilder().withAppInstallationToken(appInstallationToken.getToken())
+                .build();
 
-        // String payloadJson = new String(payload, StandardCharsets.UTF_8);
-        // log.info("Received webhook payload: {}", payloadJson);
-        return ResponseEntity.ok("Repositories received");
+        log.info("Github app token: {}", appInstallationToken.getToken());
+
+        List<GHRepository> repositories = installationClient.getInstallation().listRepositories().toList();
+
+        List<Map<String, Object>> simpleRepos = repositories.stream()
+                .map(repo -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", repo.getId());
+                    map.put("name", repo.getName());
+                    map.put("fullName", repo.getFullName());
+                    map.put("htmlUrl", repo.getHtmlUrl());
+                    map.put("language", repo.getLanguage());
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(simpleRepos);
     }
 
     @Operation(summary = "Get all users", description = "Retrieves a list of all users with their roles.")
