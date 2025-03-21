@@ -10,6 +10,7 @@ import { Category, fetchCategories, selectCategories } from '../../features/cate
 import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { toast } from 'react-toastify';
+import { fetchRepositories } from '../../features/games/gameSlice';
 
 type Props = {}
 
@@ -26,8 +27,6 @@ export default function NewGame({ }: Props) {
   const user = useAppSelector(selectCurrentUser);
   const categories = useAppSelector(selectCategories);
   const tags = useAppSelector(selectTags);
-
-
 
   // Form fields
   const [title, setTitle] = useState('');
@@ -70,6 +69,15 @@ export default function NewGame({ }: Props) {
       setVersionError("Please enter a valid version format (x.x.x)).");
     } else {
       setVersionError("");
+    }
+  };
+
+  const handleRepositoryChange = (e: React.SyntheticEvent, category: Category | null) => {
+    setSelectedCategory(category);
+    if (!selectedCategory) {
+      setCategoryError("Please select a category.");
+    } else {
+      setCategoryError("");
     }
   };
 
@@ -152,6 +160,9 @@ export default function NewGame({ }: Props) {
   useEffect(() => {
     dispatch(fetchCategories())
     dispatch(fetchTags())
+    if(user?.installationId){
+      dispatch(fetchRepositories())
+    }
   }, [dispatch])
 
   return (
@@ -219,6 +230,24 @@ export default function NewGame({ }: Props) {
               <div>
                 <ThemeProvider theme={darkTheme}>
                   <Stack spacing={3} sx={{ width: 500 }}>
+                    {/* <Autocomplete
+                      id="repositoreis"
+                      options={categories}
+                      getOptionLabel={(option) => option.name}
+                      value={selectedCategory}
+                      onChange={handleRepositoryChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Category"
+                          placeholder="Category"
+                          error={Boolean(categoryError)}
+                          helperText={categoryError || ''}
+
+                        />
+                      )}
+                    /> */}
                     <Autocomplete
                       id="categories"
                       options={categories}

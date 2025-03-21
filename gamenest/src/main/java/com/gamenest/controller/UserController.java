@@ -2,6 +2,11 @@ package com.gamenest.controller;
 
 import java.util.List;
 
+import org.kohsuke.github.GHAppInstallation;
+import org.kohsuke.github.GHAppInstallationToken;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,10 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import com.gamenest.config.github.JwtTokenUtil;
 import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.user.UserRequest;
 import com.gamenest.service.interfaces.UserService;
@@ -26,9 +34,35 @@ import com.gamenest.service.interfaces.UserService;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "APIs for managing user accounts and roles")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenUtil jwtTokenUtil;
+
+    @Value("${github.webhook.app-id}")
+    private String applicationId;
+
+    @Operation(summary = "Get user repositories", description = "Retrieves information about the user's github reposiories.")
+    @GetMapping("/repositories")
+    public ResponseEntity<String> getUserRepositories() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserRequest user = userService.getByUserName(username);
+
+        String jwtToken = jwtTokenUtil.createJWT(applicationId, 60000);
+
+        GitHub gitHubApp = new GitHubBuilder().withJwtToken(jwtToken).build();
+
+        GHAppInstallation appInstallation = gitHubApp.getApp().getInstallationById(user.getInstallationId());
+        GHAppInstallationToken appInstallationToken = appInstallation.createToken().create();
+
+        log.info("Github installation: {}", appInstallationToken);
+
+        // String payloadJson = new String(payload, StandardCharsets.UTF_8);
+        // log.info("Received webhook payload: {}", payloadJson);
+        return ResponseEntity.ok("Repositories received");
+    }
 
     @Operation(summary = "Get all users", description = "Retrieves a list of all users with their roles.")
     public ResponseEntity<List<UserRequest>> getAllUsers() {
@@ -51,7 +85,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        UserRequest user =userService.updateUserInstallation(installationId, username);
+        UserRequest user = userService.updateUserInstallation(installationId, username);
         return ResponseEntity.ok(user);
     }
 

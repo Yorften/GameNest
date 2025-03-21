@@ -59,6 +59,16 @@ export const fetchAllGames = createAsyncThunk("games/fetchAllGames", async (_, {
   }
 });
 
+export const fetchRepositories = createAsyncThunk("games/fetchRepositories", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get<Game[]>("/users/repositories");
+    console.log(response.data);
+    return response.data; // a list of games
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || "Failed to fetch games.");
+  }
+});
+
 export const createGame = createAsyncThunk("games/createGame", async (newGame: Game, { rejectWithValue }) => {
   try {
     const response = await axios.post<Game>("/games", newGame);
