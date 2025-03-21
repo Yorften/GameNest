@@ -40,7 +40,6 @@ import com.gamenest.service.interfaces.UserService;
 @Tag(name = "Users", description = "APIs for managing user accounts and roles")
 @Slf4j
 
-// ghs_WhYE06QkUZFGUNzl0y0ex9Th0ZvYmm3UJY3E
 public class UserController {
 
     private final UserService userService;
@@ -56,7 +55,7 @@ public class UserController {
         String username = authentication.getName();
         UserRequest user = userService.getByUserName(username);
 
-        String jwtToken = jwtTokenUtil.createJWT(applicationId, 600000);
+        String jwtToken = jwtTokenUtil.createJWT(applicationId, 60000);
 
         GitHub gitHubApp = new GitHubBuilder().withJwtToken(jwtToken).build();
 
