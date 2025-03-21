@@ -1,26 +1,47 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Button from '../../components/miscs/Button';
-import { selectCurrentUser, updateUserInstallationId } from '../../features/auth/authSlice';
+import { selectCurrentUser } from '../../features/auth/authSlice';
 import GithubButton from '../../components/miscs/GithubButton';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { Category, fetchCategories, selectCategories } from '../../features/categories/categorySlice';
+import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
+import { createTheme, ThemeProvider } from '@mui/material';
+import { toast } from 'react-toastify';
 
 type Props = {}
 
 const versionRegex = /^\d+\.\d+\.\d+$/;
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 export default function NewGame({ }: Props) {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
+  const categories = useAppSelector(selectCategories);
+  const tags = useAppSelector(selectTags);
+
+
 
   // Form fields
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [version, setVersion] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
   // Field-level errors
   const [titleError, setTitleError] = useState('');
   const [descriptionError, setDescriptionError] = useState('');
   const [versionError, setVersionError] = useState('');
+  const [categoryError, setCategoryError] = useState('');
+  const [tagsError, setTagsError] = useState('');
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -52,8 +73,23 @@ export default function NewGame({ }: Props) {
     }
   };
 
-  // Server/global error
-  const [serverError, setServerError] = useState('');
+  const handleCategoryChange = (e: React.SyntheticEvent, category: Category | null) => {
+    setSelectedCategory(category);
+    if (!selectedCategory) {
+      setCategoryError("Please select a category.");
+    } else {
+      setCategoryError("");
+    }
+  };
+
+  const handleTagChange = (e: React.SyntheticEvent, tags: Tag[]) => {
+    setSelectedTags(tags)
+    if (!tags.length) {
+      setTagsError("Please select at least one tag.");
+    } else {
+      setTagsError("");
+    }
+  };
 
   function handleSubmit(e: React.MouseEvent): void {
     e.preventDefault();
@@ -73,9 +109,50 @@ export default function NewGame({ }: Props) {
     } else if (!versionRegex.test(version)) {
       setVersionError("Please enter a valid version format (x.x.x)).");
     }
+    if (!selectedCategory) {
+      setCategoryError("Please select a category.");
+      isValid = false;
+    } else {
+      setCategoryError("");
+    }
+    if (!selectedTags.length) {
+      setTagsError("Please select at least one tag.");
+      isValid = false;
+    } else {
+      setTagsError("");
+    }
 
     if (!isValid) return;
+
+    try {
+      // Dispatch create game
+    } catch (err: any) {
+      console.error(err);
+      if (err && err.details && Array.isArray(err.details)) {
+        err.details.forEach((detail: { field: string; error: string }) => {
+          if (detail.field === 'title') {
+            setTitleError(detail.error);
+          }
+          if (detail.field === 'description') {
+            setDescriptionError(detail.error);
+          }
+          if (detail.field === 'description') {
+            setDescriptionError(detail.error);
+          }
+          if (detail.field === 'version') {
+            setVersionError(detail.error);
+          }
+        });
+      } else {
+        toast.error(typeof err === 'string' ? err : err.message || 'Request failed');
+      }
+    }
   }
+
+  useEffect(() => {
+    dispatch(fetchCategories())
+    dispatch(fetchTags())
+  }, [dispatch])
 
   return (
     <>
@@ -91,11 +168,6 @@ export default function NewGame({ }: Props) {
       </div>
       <div className='px-4'>
         <form id="gameForm" className='flex flex-col md:flex-row gap-10'>
-          {serverError && (
-            <p className="text-red-500 text-sm mb-2">
-              {serverError}
-            </p>
-          )}
           <div className='flex flex-col gap-4 w-full md:w-3/5'>
             <div>
               <label htmlFor="title" className="block mb-1 font-semibold">
@@ -144,14 +216,54 @@ export default function NewGame({ }: Props) {
           </div>
           <div className='w-full flex justify-center md:w-2/5 p-4'>
             {user?.installationId ? (
-              <p>Select input to pick repository</p>
+              <div>
+                <ThemeProvider theme={darkTheme}>
+                  <Stack spacing={3} sx={{ width: 500 }}>
+                    <Autocomplete
+                      id="categories"
+                      options={categories}
+                      getOptionLabel={(option) => option.name}
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Category"
+                          placeholder="Category"
+                          error={Boolean(categoryError)}
+                          helperText={categoryError || ''}
+
+                        />
+                      )}
+                    />
+                    <Autocomplete
+                      multiple
+                      id="tags"
+                      options={tags}
+                      getOptionLabel={(option) => option.name}
+                      value={selectedTags}
+                      onChange={handleTagChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Tags"
+                          placeholder="Tags"
+                          error={Boolean(tagsError)}
+                          helperText={tagsError || ''}
+                        />
+                      )}
+                    />
+                  </Stack>
+                </ThemeProvider>
+              </div>
             ) : (
-              <div className='pt-2'>  
+              <div className='pt-2'>
                 <GithubButton />
               </div>
             )}
           </div>
-
         </form>
       </div>
     </>

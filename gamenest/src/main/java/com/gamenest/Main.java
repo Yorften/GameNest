@@ -17,11 +17,11 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-        // @Bean
-        // CommandLineRunner init(DataSeeder dataSeeder) {
-        //     return args -> {
-        //         dataSeeder.seedDatabase(0);
-        //     };
-        // }
+    // @Bean
+    // CommandLineRunner init(DataSeeder dataSeeder) {
+    //     return args -> {
+    //         dataSeeder.seedDatabase(0);
+    //     };
+    // }
 
-}   
+}

@@ -3,6 +3,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "../../axios-client";
 import { RootState } from "../../app/store"; // adjust import path as needed
+import { Category } from "../categories/categorySlice";
+import { Tag } from "../tags/tagSlice";
 
 /**
  * Matches the structure used by GameRequest on the backend.
@@ -16,6 +18,8 @@ export interface Game {
   path: string;
   repositoryName: string;
   privateRepository: boolean;
+  category: Category;
+  tags: Tag[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -37,9 +41,18 @@ const initialState: GameState = {
 /**
  * Thunks (CRUD)
  */
-export const fetchGames = createAsyncThunk("games/fetchGames", async (_, { rejectWithValue }) => {
+export const fetchGames = createAsyncThunk("games/fetchUserGames", async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get<Game[]>("/user/games");
+    const response = await axios.get<Game[]>("/users/games");
+    return response.data; // a list of games
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data?.message || "Failed to fetch games.");
+  }
+});
+
+export const fetchAllGames = createAsyncThunk("games/fetchAllGames", async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get<Game[]>("/games");
     return response.data; // a list of games
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch games.");
@@ -93,7 +106,7 @@ export const gameSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // Fetch All
+    // Fetch User Games
     builder.addCase(fetchGames.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -106,6 +119,21 @@ export const gameSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
+
+    // Fetch All
+    builder.addCase(fetchAllGames.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchAllGames.fulfilled, (state, action: PayloadAction<Game[]>) => {
+      state.games = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(fetchAllGames.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
+
 
     // Create
     builder.addCase(createGame.pending, (state) => {

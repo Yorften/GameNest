@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, MRT_ColumnDef, useMaterialReactTable } from 'material-react-table';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {

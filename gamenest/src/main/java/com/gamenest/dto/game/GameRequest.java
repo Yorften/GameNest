@@ -1,6 +1,10 @@
 package com.gamenest.dto.game;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+
+import com.gamenest.dto.category.CategoryRequest;
+import com.gamenest.dto.tag.TagRequest;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -32,6 +36,10 @@ public class GameRequest {
 
     @NotBlank(message = "Repository name is required")
     private String nameSpace;
+
+    private CategoryRequest category;
+
+    private Set<TagRequest> tags;
 
     private boolean privateRepository;
 
