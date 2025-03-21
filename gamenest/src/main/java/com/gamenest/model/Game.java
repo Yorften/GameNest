@@ -47,12 +47,6 @@ public class Game {
 
     private String version;
 
-    private String url;
-
-    private String nameSpace;
-
-    private boolean privateRepository;
-
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;

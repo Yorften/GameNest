@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.gamenest.dto.category.CategoryRequest;
+import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.dto.tag.TagRequest;
 
 import jakarta.validation.constraints.NotBlank;
@@ -31,17 +32,14 @@ public class GameRequest {
     @NotBlank(message = "Version is required")
     private String version;
 
-    // Git url
-    private String url;
+    @NotBlank(message = "Github repository is required")
+    private GhRepositoryRequest repository;
 
-    @NotBlank(message = "Repository name is required")
-    private String nameSpace;
-
+    @NotBlank(message = "Category is required")
     private CategoryRequest category;
 
+    @NotBlank(message = "Tags are required")
     private Set<TagRequest> tags;
-
-    private boolean privateRepository;
 
     private LocalDateTime createdAt;
 

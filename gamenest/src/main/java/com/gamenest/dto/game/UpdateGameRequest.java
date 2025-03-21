@@ -1,5 +1,11 @@
 package com.gamenest.dto.game;
 
+import java.util.Set;
+
+import com.gamenest.dto.category.CategoryRequest;
+import com.gamenest.dto.repo.GhRepositoryRequest;
+import com.gamenest.dto.tag.TagRequest;
+
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,10 +27,10 @@ public class UpdateGameRequest {
 
     private String version;
 
-    private String url;
+    private GhRepositoryRequest ghRepository;
 
-    private String nameSpace;
+    private CategoryRequest category;
 
-    private Boolean privateRepository;
+    private Set<TagRequest> tags;
 
 }

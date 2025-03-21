@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.exception.ResourceNotFoundException;
+import com.gamenest.mapper.GhRepositoryMapper;
 import com.gamenest.model.GhRepository;
 import com.gamenest.repository.GhRepositoryRepository;
 import com.gamenest.service.interfaces.GhRepositoryService;
@@ -17,16 +18,11 @@ import lombok.RequiredArgsConstructor;
 public class GhRepositoryServiceImpl implements GhRepositoryService {
 
     private final GhRepositoryRepository ghRepositoryRepository;
+    private final GhRepositoryMapper ghRepositoryMapper;
 
     @Override
     public GhRepository createRepository(GhRepositoryRequest repoRequest) {
-        GhRepository ghRepo = GhRepository.builder()
-                .ghId(repoRequest.getGhId())
-                .name(repoRequest.getName())
-                .fullName(repoRequest.getFullName())
-                .htmlUrl(repoRequest.getHtmlUrl())
-                .language(repoRequest.getLanguage())
-                .build();
+        GhRepository ghRepo = ghRepositoryMapper.convertToEntity(repoRequest);
 
         return ghRepositoryRepository.save(ghRepo);
     }

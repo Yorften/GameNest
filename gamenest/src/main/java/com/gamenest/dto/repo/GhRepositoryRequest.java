@@ -29,5 +29,7 @@ public class GhRepositoryRequest {
     @NotBlank(message = "Full name is required")
     private String htmlUrl;
 
+    private boolean privateRepository;
+
     private String language;
 }

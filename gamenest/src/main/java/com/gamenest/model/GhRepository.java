@@ -25,9 +25,14 @@ public class GhRepository {
     private Long ghId;
 
     private String name;
+
     private String fullName;
+
     private String htmlUrl;
+
     private String language;
+    
+    private boolean privateRepository;
 
     @OneToOne(mappedBy = "repository")
     private Game game;

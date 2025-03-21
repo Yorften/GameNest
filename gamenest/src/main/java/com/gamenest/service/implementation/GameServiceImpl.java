@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 
 import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.game.UpdateGameRequest;
+import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.exception.ResourceNotFoundException;
+import com.gamenest.mapper.CategoryMapper;
 import com.gamenest.mapper.GameMapper;
+import com.gamenest.mapper.TagMapper;
 import com.gamenest.model.Game;
+import com.gamenest.model.GhRepository;
 import com.gamenest.model.User;
 import com.gamenest.repository.GameRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.interfaces.GameService;
+import com.gamenest.service.interfaces.GhRepositoryService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +36,12 @@ public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
+
     private final GameMapper gameMapper;
+    private final CategoryMapper categoryMapper;
+    private final TagMapper tagMapper;
+
+    private final GhRepositoryService ghRepositoryService;
 
     @Override
     public GameRequest createGame(GameRequest gameRequest) {
@@ -39,6 +49,10 @@ public class GameServiceImpl implements GameService {
 
         Game game = gameMapper.convertToEntity(gameRequest);
         game.setOwner(owner);
+
+        GhRepositoryRequest repoReq = gameRequest.getRepository();
+        GhRepository ghRepo = ghRepositoryService.createRepository(repoReq);
+        game.setRepository(ghRepo);
 
         game = gameRepository.save(game);
         return gameMapper.convertToDTO(game);
@@ -58,14 +72,25 @@ public class GameServiceImpl implements GameService {
         if (updateGameRequest.getVersion() != null && !updateGameRequest.getVersion().isEmpty()) {
             gameDB.setVersion(updateGameRequest.getVersion());
         }
-        if (updateGameRequest.getUrl() != null && !updateGameRequest.getUrl().isEmpty()) {
-            gameDB.setUrl(updateGameRequest.getUrl());
+
+        if (updateGameRequest.getGhRepository() != null) {
+            if (gameDB.getRepository() != null) {
+                ghRepositoryService.deleteRepository(gameDB.getRepository().getId());
+                gameDB.setRepository(null);
+            }
+            GhRepositoryRequest newRepoReq = updateGameRequest.getGhRepository();
+            GhRepository newRepo = ghRepositoryService.createRepository(newRepoReq);
+            gameDB.setRepository(newRepo);
         }
-        if (updateGameRequest.getNameSpace() != null && !updateGameRequest.getNameSpace().isEmpty()) {
-            gameDB.setNameSpace(updateGameRequest.getNameSpace());
+
+        if (updateGameRequest.getCategory() != null) {
+            gameDB.setCategory(categoryMapper.convertToEntity(updateGameRequest.getCategory()));
         }
-        if (updateGameRequest.getPrivateRepository() != null) {
-            gameDB.setPrivateRepository(updateGameRequest.getPrivateRepository());
+
+        if (updateGameRequest.getTags() != null) {
+            gameDB.getTags().clear();
+            gameDB.setTags(updateGameRequest.getTags().stream().map(tag -> tagMapper.convertToEntity(tag))
+                    .collect(Collectors.toSet()));
         }
 
         Game updatedGame = gameRepository.save(gameDB);

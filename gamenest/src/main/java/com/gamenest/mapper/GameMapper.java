@@ -8,11 +8,15 @@ import org.springframework.stereotype.Component;
 
 import com.gamenest.dto.category.CategoryRequest;
 import com.gamenest.dto.game.GameRequest;
+import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.dto.tag.TagRequest;
+import com.gamenest.exception.ResourceNotFoundException;
 import com.gamenest.model.Category;
 import com.gamenest.model.Game;
+import com.gamenest.model.GhRepository;
 import com.gamenest.model.Tag;
 import com.gamenest.repository.CategoryRepository;
+import com.gamenest.repository.GhRepositoryRepository;
 import com.gamenest.repository.TagRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ public class GameMapper {
 
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final GhRepositoryRepository ghRepositoryRepository;
 
     public Game convertToEntity(GameRequest gameDTO) {
         if (gameDTO == null) {
@@ -34,14 +39,21 @@ public class GameMapper {
         Category category = null;
         if (gameDTO.getCategory() != null && gameDTO.getCategory().getName() != null) {
             category = categoryRepository.findByName(gameDTO.getCategory().getName())
-                    .orElseThrow(() -> new RuntimeException("Category not found: " + gameDTO.getCategory().getName()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Category not found: " + gameDTO.getCategory().getName()));
+        }
+
+        GhRepository ghRepository = null;
+        if (gameDTO.getRepository() != null && gameDTO.getRepository().getGhId() != null) {
+            ghRepository = ghRepositoryRepository.findByGhId(gameDTO.getRepository().getGhId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Repository not found "));
         }
 
         Set<Tag> tags = null;
         if (gameDTO.getTags() != null && !gameDTO.getTags().isEmpty()) {
             tags = gameDTO.getTags().stream()
                     .map(tagRequest -> tagRepository.findByName(tagRequest.getName())
-                            .orElseThrow(() -> new RuntimeException("Tag not found: " + tagRequest.getName())))
+                            .orElseThrow(() -> new ResourceNotFoundException("Tag not found: " + tagRequest.getName())))
                     .collect(Collectors.toSet());
         }
 
@@ -50,9 +62,7 @@ public class GameMapper {
                 .title(gameDTO.getTitle())
                 .description(gameDTO.getDescription())
                 .version(gameDTO.getVersion())
-                .url(gameDTO.getUrl())
-                .nameSpace(gameDTO.getNameSpace())
-                .privateRepository(gameDTO.isPrivateRepository())
+                .repository(ghRepository)
                 .category(category)
                 .tags(tags)
                 .build();
@@ -70,6 +80,19 @@ public class GameMapper {
                     .build();
         }
 
+        GhRepositoryRequest ghRepositoryRequest = null;
+        if (game.getRepository() != null) {
+            ghRepositoryRequest = GhRepositoryRequest.builder()
+                    .id(game.getRepository().getId())
+                    .ghId(game.getRepository().getGhId())
+                    .name(game.getRepository().getName())
+                    .fullName(game.getRepository().getFullName())
+                    .htmlUrl(game.getRepository().getHtmlUrl())
+                    .language(game.getRepository().getLanguage())
+                    .privateRepository(game.getRepository().isPrivateRepository())
+                    .build();
+        }
+
         Set<TagRequest> tagRequests = null;
         if (game.getTags() != null && !game.getTags().isEmpty()) {
             tagRequests = game.getTags().stream()
@@ -82,9 +105,7 @@ public class GameMapper {
                 .title(game.getTitle())
                 .description(game.getDescription())
                 .version(game.getVersion())
-                .url(game.getUrl())
-                .nameSpace(game.getNameSpace())
-                .privateRepository(game.isPrivateRepository())
+                .repository(ghRepositoryRequest)
                 .category(categoryRequest)
                 .tags(tagRequests)
                 .createdAt(game.getCreatedAt())
