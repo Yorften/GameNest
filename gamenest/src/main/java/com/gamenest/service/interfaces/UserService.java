@@ -21,7 +21,7 @@ public interface UserService {
 
     void deleteUserById(Long UserId);
 
-    void updateUserInstallation(Long installationId, String username);
+    UserRequest updateUserInstallation(Long installationId, String username);
 
     List<GameRequest> getUserGames(String username);
 

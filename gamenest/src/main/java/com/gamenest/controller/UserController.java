@@ -45,14 +45,14 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @Operation(summary = "Get current user info", description = "Retrieves information about the currently authenticated user.")
+    @Operation(summary = "Update user installation id", description = "Retrieves information about the currently authenticated user.")
     @PostMapping("/installation/{installationId}")
-    public ResponseEntity<Void> updateUserInstallation(@PathVariable Long installationId) {
+    public ResponseEntity<UserRequest> updateUserInstallation(@PathVariable Long installationId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        userService.updateUserInstallation(installationId, username);
-        return ResponseEntity.noContent().build();
+        UserRequest user =userService.updateUserInstallation(installationId, username);
+        return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "Get current user's games", description = "Retrieves all games belonging to the authenticated user.")

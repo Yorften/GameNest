@@ -46,6 +46,18 @@ export const registerUser = createAsyncThunk(
   },
 );
 
+export const updateUserInstallationId = createAsyncThunk(
+  "auth/updateUserInstallationId",
+  async (installationId: number, thunkAPI) => {
+    try {
+      const response = await axiosClient.post(`/users/installation/${installationId}`);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to update installation");
+    }
+  },
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -85,7 +97,6 @@ export const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Optionally auto-login on successful registration:
         state.token = action.payload.accessToken;
         state.user = action.payload.user;
         state.error = null;
@@ -93,6 +104,22 @@ export const authSlice = createSlice({
         localStorage.setItem("user", JSON.stringify(action.payload.user));
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      })
+
+
+      // Update installation id
+      .addCase(updateUserInstallationId.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateUserInstallationId.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      })
+      .addCase(updateUserInstallationId.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });

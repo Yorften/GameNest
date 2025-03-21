@@ -68,11 +68,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInstallation(Long installationId, String username) {
+    public UserRequest updateUserInstallation(Long installationId, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setInstallationId(installationId);
-        userRepository.save(user);
+        return userMapper.convertToDTO(userRepository.save(user));
     }
 
     @Override
