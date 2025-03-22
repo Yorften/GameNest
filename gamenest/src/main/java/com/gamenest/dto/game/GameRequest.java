@@ -1,11 +1,14 @@
 package com.gamenest.dto.game;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
+import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.dto.category.CategoryRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.dto.tag.TagRequest;
+import com.gamenest.dto.user.UserRequest;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -40,6 +43,12 @@ public class GameRequest {
 
     @NotBlank(message = "Tags are required")
     private Set<TagRequest> tags;
+
+    private BuildRequest lastBuild;
+
+    private List<BuildRequest> builds;
+
+    private UserRequest owner;
 
     private LocalDateTime createdAt;
 

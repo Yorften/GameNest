@@ -7,16 +7,22 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.dto.category.CategoryRequest;
 import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.dto.tag.TagRequest;
+import com.gamenest.dto.user.UserRequest;
 import com.gamenest.exception.InvalidDataException;
 import com.gamenest.exception.ResourceNotFoundException;
+import com.gamenest.model.Build;
 import com.gamenest.model.Category;
 import com.gamenest.model.Game;
 import com.gamenest.model.GhRepository;
 import com.gamenest.model.Tag;
+import com.gamenest.model.User;
+import com.gamenest.model.enums.BuildStatus;
+import com.gamenest.repository.BuildRepository;
 import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GhRepositoryRepository;
 import com.gamenest.repository.TagRepository;
@@ -34,6 +40,8 @@ public class GameMapper {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final GhRepositoryRepository ghRepositoryRepository;
+    private final BuildRepository buildRepository;
+    private final BuildMapper buildMapper;
 
     public void verifyIncludes(String... with)
             throws InvalidDataException {
@@ -111,6 +119,9 @@ public class GameMapper {
         CategoryRequest categoryRequest = null;
         GhRepositoryRequest ghRepositoryRequest = null;
         Set<TagRequest> tagRequests = null;
+        UserRequest owner = null;
+        List<BuildRequest> builds = null;
+        BuildRequest lastBuild = null;
 
         if (game == null) {
             return null;
@@ -118,22 +129,24 @@ public class GameMapper {
 
         if (includesList.contains("category")) {
             if (game.getCategory() != null) {
+                Category category = game.getCategory();
                 categoryRequest = CategoryRequest.builder()
-                        .name(game.getCategory().getName())
+                        .name(category.getName())
                         .build();
             }
         }
 
         if (includesList.contains("repository")) {
             if (game.getRepository() != null) {
+                GhRepository repository = game.getRepository();
                 ghRepositoryRequest = GhRepositoryRequest.builder()
-                        .id(game.getRepository().getId())
-                        .ghId(game.getRepository().getGhId())
-                        .name(game.getRepository().getName())
-                        .fullName(game.getRepository().getFullName())
-                        .htmlUrl(game.getRepository().getHtmlUrl())
-                        .language(game.getRepository().getLanguage())
-                        .privateRepository(game.getRepository().isPrivateRepository())
+                        .id(repository.getId())
+                        .ghId(repository.getGhId())
+                        .name(repository.getName())
+                        .fullName(repository.getFullName())
+                        .htmlUrl(repository.getHtmlUrl())
+                        .language(repository.getLanguage())
+                        .privateRepository(repository.isPrivateRepository())
                         .build();
             }
         }
@@ -147,15 +160,29 @@ public class GameMapper {
         }
 
         if (includesList.contains("builds")) {
-
+            if (game.getBuilds() != null && !game.getBuilds().isEmpty()) {
+                builds = game.getBuilds().stream()
+                        .map(this.buildMapper::convertToDTO)
+                        .collect(Collectors.toList());
+            }
         }
 
         if (includesList.contains("last-build")) {
+            List<Build> successfulBuilds = buildRepository.findByGame_IdAndBuildStatusOrderByCreatedAtDesc(game.getId(),
+                    BuildStatus.SUCCESS);
 
+            if (!successfulBuilds.isEmpty()) {
+                lastBuild = buildMapper.convertToDTO(successfulBuilds.get(0));
+            }
         }
 
         if (includesList.contains("owner")) {
-
+            if (game.getCategory() != null) {
+                User user = game.getOwner();
+                owner = UserRequest.builder()
+                        .username(user.getUsername())
+                        .build();
+            }
         }
 
         return GameRequest.builder()
@@ -166,6 +193,9 @@ public class GameMapper {
                 .repository(ghRepositoryRequest)
                 .category(categoryRequest)
                 .tags(tagRequests)
+                .builds(builds)
+                .lastBuild(lastBuild)
+                .owner(owner)
                 .createdAt(game.getCreatedAt())
                 .updatedAt(game.getUpdatedAt())
                 .build();
