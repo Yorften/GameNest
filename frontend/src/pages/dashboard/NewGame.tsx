@@ -78,7 +78,7 @@ export default function NewGame({ }: Props) {
   };
   const handleRepositoryChange = (e: React.SyntheticEvent, repository: Repository | null) => {
     setSelectedRepository(repository);
-    if (!selectedRepository) {
+    if (!repository) {
       setRepositoryError("Please select a repository.");
     } else {
       setRepositoryError("");
@@ -86,7 +86,7 @@ export default function NewGame({ }: Props) {
   };
   const handleCategoryChange = (e: React.SyntheticEvent, category: Category | null) => {
     setSelectedCategory(category);
-    if (!selectedCategory) {
+    if (!category) {
       setCategoryError("Please select a category.");
     } else {
       setCategoryError("");
