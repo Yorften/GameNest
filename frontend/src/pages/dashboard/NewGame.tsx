@@ -10,7 +10,7 @@ import { Category, fetchCategories, selectCategories } from '../../features/cate
 import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { toast } from 'react-toastify';
-import { fetchRepositories, selectAllRepositoriess } from '../../features/repositories/repositorySlice';
+import { fetchRepositories, Repository, selectAllRepositoriess, selectRepositoryLoading } from '../../features/repositories/repositorySlice';
 
 type Props = {}
 
@@ -27,7 +27,8 @@ export default function NewGame({ }: Props) {
   const user = useAppSelector(selectCurrentUser);
   const categories = useAppSelector(selectCategories);
   const tags = useAppSelector(selectTags);
-  const repositoreis = useAppSelector(selectAllRepositoriess)
+  const repositories = useAppSelector(selectAllRepositoriess);
+  const loadingRepositories = useAppSelector(selectRepositoryLoading)
 
   // Form fields
   const [title, setTitle] = useState('');
@@ -35,6 +36,8 @@ export default function NewGame({ }: Props) {
   const [version, setVersion] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedRepository, setSelectedRepository] = useState<Repository | null>(null);
+
 
   // Field-level errors
   const [titleError, setTitleError] = useState('');
@@ -42,6 +45,7 @@ export default function NewGame({ }: Props) {
   const [versionError, setVersionError] = useState('');
   const [categoryError, setCategoryError] = useState('');
   const [tagsError, setTagsError] = useState('');
+  const [repositoryError, setRepositoryError] = useState('');
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -72,16 +76,14 @@ export default function NewGame({ }: Props) {
       setVersionError("");
     }
   };
-
-  const handleRepositoryChange = (e: React.SyntheticEvent, category: Category | null) => {
-    setSelectedCategory(category);
-    if (!selectedCategory) {
-      setCategoryError("Please select a category.");
+  const handleRepositoryChange = (e: React.SyntheticEvent, repository: Repository | null) => {
+    setSelectedRepository(repository);
+    if (!selectedRepository) {
+      setRepositoryError("Please select a repository.");
     } else {
-      setCategoryError("");
+      setRepositoryError("");
     }
   };
-
   const handleCategoryChange = (e: React.SyntheticEvent, category: Category | null) => {
     setSelectedCategory(category);
     if (!selectedCategory) {
@@ -130,11 +132,21 @@ export default function NewGame({ }: Props) {
     } else {
       setTagsError("");
     }
+    if (!selectedRepository) {
+      setRepositoryError("Please select a repository.");
+      isValid = false;
+    } else {
+      setRepositoryError("")
+    }
 
     if (!isValid) return;
 
     try {
-      // Dispatch create game
+      // TODO: Dispatch createGame 
+      // ...
+      toast.success("Game created successfully!");
+      // TODO: Navigate to the created game details 
+      // ...
     } catch (err: any) {
       console.error(err);
       if (err && err.details && Array.isArray(err.details)) {
@@ -161,7 +173,9 @@ export default function NewGame({ }: Props) {
   useEffect(() => {
     dispatch(fetchCategories())
     dispatch(fetchTags())
-    if(user?.installationId){
+    if (user?.installationId) {
+      console.log(user.installationId);
+
       dispatch(fetchRepositories())
     }
   }, [dispatch])
@@ -231,24 +245,24 @@ export default function NewGame({ }: Props) {
               <div>
                 <ThemeProvider theme={darkTheme}>
                   <Stack spacing={3} sx={{ width: 500 }}>
-                    {/* <Autocomplete
-                      id="repositoreis"
-                      options={categories}
+                    <Autocomplete
+                      id="repositories"
+                      options={repositories}
                       getOptionLabel={(option) => option.name}
-                      value={selectedCategory}
+                      value={selectedRepository}
                       onChange={handleRepositoryChange}
+                      loading={loadingRepositories}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           variant="standard"
-                          label="Category"
-                          placeholder="Category"
-                          error={Boolean(categoryError)}
-                          helperText={categoryError || ''}
-
+                          label="Repository"
+                          placeholder="Select a repository"
+                          error={Boolean(repositoryError)}
+                          helperText={repositoryError}
                         />
                       )}
-                    /> */}
+                    />
                     <Autocomplete
                       id="categories"
                       options={categories}
