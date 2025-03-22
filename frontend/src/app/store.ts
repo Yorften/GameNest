@@ -6,6 +6,7 @@ import { tagSlice } from "../features/tags/tagSlice";
 import { categorySlice } from "../features/categories/categorySlice";
 import { gameSlice } from "../features/games/gameSlice";
 import { repositorySlice } from "../features/repositories/repositorySlice";
+import { buildSlice } from "../features/builds/buildSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   categories: categorySlice.reducer,
   games: gameSlice.reducer,
   repositories: repositorySlice.reducer,
+  builds: buildSlice.reducer,
 });
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>;

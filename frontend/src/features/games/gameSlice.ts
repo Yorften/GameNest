@@ -4,6 +4,7 @@ import { RootState } from "../../app/store"; // adjust import path as needed
 import { Category } from "../categories/categorySlice";
 import { Tag } from "../tags/tagSlice";
 import { Repository } from "../repositories/repositorySlice";
+import { Build } from "../builds/buildSlice";
 
 /**
  * Matches the structure used by GameRequest on the backend.
@@ -18,6 +19,9 @@ export interface Game {
   repository: Repository;
   category: Category;
   tags: Tag[];
+  builds: Build[];
+  lastBuild: Build;
+  owner: { username: string };
   createdAt?: string;
   updatedAt?: string;
 }

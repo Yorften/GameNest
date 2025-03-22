@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "../../axios-client";
 import { RootState } from "../../app/store"; // adjust import path as needed
-import { Category } from "../categories/categorySlice";
-import { Tag } from "../tags/tagSlice";
 
 /**
  * Matches the structure used by RepositoryRequest on the backend.
