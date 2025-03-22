@@ -51,7 +51,7 @@ export default function NavBar() {
             GameNest
           </span>
         </Navbar.Brand>
-        <div className="flex md:order-2">
+        <div className="flex md:order-2 !z-50">
           {user ? (
             <Dropdown
               arrowIcon={false}
