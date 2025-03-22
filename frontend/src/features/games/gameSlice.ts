@@ -28,6 +28,7 @@ export interface Game {
 // Define the slice state
 interface GameState {
   games: Game[];
+  selectedGame: Game | null;
   loading: boolean;
   error: string | null;
 }
@@ -35,6 +36,7 @@ interface GameState {
 // Initial state
 const initialState: GameState = {
   games: [],
+  selectedGame: null,
   loading: false,
   error: null,
 };
@@ -105,7 +107,11 @@ export const fetchGameById = createAsyncThunk("games/fetchGameById", async (game
 export const gameSlice = createSlice({
   name: "games",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedGame: (state, action: PayloadAction<Game | null>) => {
+      state.selectedGame = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     // Fetch User Games
     builder.addCase(fetchGames.pending, (state) => {
@@ -204,7 +210,10 @@ export const gameSlice = createSlice({
   },
 });
 
+export const { setSelectedGame } = gameSlice.actions
+
 export const selectAllGames = (state: RootState) => state.games.games;
+export const selectSelectedGame = (state: RootState) => state.games.selectedGame;
 export const selectGamesLoading = (state: RootState) => state.games.loading;
 export const selectGamesError = (state: RootState) => state.games.error;
 

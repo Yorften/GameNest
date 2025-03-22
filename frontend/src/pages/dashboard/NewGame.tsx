@@ -11,9 +11,11 @@ import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { toast } from 'react-toastify';
 import { fetchRepositories, Repository, selectAllRepositoriess, selectRepositoryLoading } from '../../features/repositories/repositorySlice';
-import { createGame, Game } from '../../features/games/gameSlice';
+import { createGame, Game, updateGame } from '../../features/games/gameSlice';
 
-type Props = {}
+type Props = {
+  selectedGame: Game | null
+}
 
 const versionRegex = /^\d+\.\d+\.\d+$/;
 
@@ -23,7 +25,7 @@ const darkTheme = createTheme({
   },
 });
 
-export default function NewGame({ }: Props) {
+export default function NewGame({ selectedGame }: Props) {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
   const categories = useAppSelector(selectCategories);
@@ -143,6 +145,7 @@ export default function NewGame({ }: Props) {
     if (!isValid) return;
 
     const payload: Game = {
+      id: selectedGame?.id,
       title: title,
       description: description,
       version: version,
@@ -152,8 +155,15 @@ export default function NewGame({ }: Props) {
     }
 
     try {
-      dispatch(createGame(payload))
-      toast.success("Game created successfully!");
+      if (selectedGame) {
+        // If there's a selected game, we are updating
+        dispatch(updateGame(payload));
+        toast.success('Game updated successfully!');
+      } else {
+        // Otherwise, create a new game
+        dispatch(createGame(payload));
+        toast.success('Game created successfully!');
+      }
       // TODO: Navigate to the created game details 
       // ...
     } catch (err: any) {
@@ -178,6 +188,24 @@ export default function NewGame({ }: Props) {
       }
     }
   }
+
+  useEffect(() => {
+    if (selectedGame) {
+      setTitle(selectedGame.title || '');
+      setDescription(selectedGame.description || '');
+      setVersion(selectedGame.version || '');
+      setSelectedCategory(selectedGame.category || null);
+      setSelectedTags(selectedGame.tags || []);
+      setSelectedRepository(selectedGame.repository || null);
+    } else {
+      setTitle('');
+      setDescription('');
+      setVersion('');
+      setSelectedCategory(null);
+      setSelectedTags([]);
+      setSelectedRepository(null);
+    }
+  }, [selectedGame]);
 
   useEffect(() => {
     dispatch(fetchCategories())

@@ -11,13 +11,13 @@ import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.game.UpdateGameRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.exception.ResourceNotFoundException;
-import com.gamenest.mapper.CategoryMapper;
 import com.gamenest.mapper.GameMapper;
-import com.gamenest.mapper.TagMapper;
 import com.gamenest.model.Game;
 import com.gamenest.model.GhRepository;
 import com.gamenest.model.User;
+import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GameRepository;
+import com.gamenest.repository.TagRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.interfaces.GameService;
 import com.gamenest.service.interfaces.GhRepositoryService;
@@ -36,10 +36,10 @@ public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
 
     private final GameMapper gameMapper;
-    private final CategoryMapper categoryMapper;
-    private final TagMapper tagMapper;
 
     private final GhRepositoryService ghRepositoryService;
 
@@ -84,12 +84,16 @@ public class GameServiceImpl implements GameService {
         }
 
         if (updateGameRequest.getCategory() != null) {
-            gameDB.setCategory(categoryMapper.convertToEntity(updateGameRequest.getCategory()));
+            gameDB.setCategory(categoryRepository.findByName(updateGameRequest.getCategory().getName())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Category not found: " + updateGameRequest.getCategory().getName())));
         }
 
         if (updateGameRequest.getTags() != null) {
             gameDB.getTags().clear();
-            gameDB.setTags(updateGameRequest.getTags().stream().map(tag -> tagMapper.convertToEntity(tag))
+            gameDB.setTags(updateGameRequest.getTags().stream()
+                    .map(tag -> tagRepository.findByName(tag.getName())
+                            .orElseThrow(() -> new ResourceNotFoundException("Tag not found: " + tag.getName())))
                     .collect(Collectors.toSet()));
         }
 

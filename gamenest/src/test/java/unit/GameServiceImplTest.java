@@ -15,7 +15,9 @@ import com.gamenest.exception.ResourceNotFoundException;
 import com.gamenest.mapper.GameMapper;
 import com.gamenest.model.Game;
 import com.gamenest.model.User;
+import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GameRepository;
+import com.gamenest.repository.TagRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.implementation.GameServiceImpl;
 import com.gamenest.service.interfaces.GhRepositoryService;
@@ -40,6 +42,12 @@ public class GameServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private TagRepository tagRepository;
+
+    @Mock
     private GameMapper gameMapper;
 
     @Mock
@@ -60,7 +68,7 @@ public class GameServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        gameService = new GameServiceImpl(gameRepository, userRepository, gameMapper, null, null, ghRepositoryService);
+        gameService = new GameServiceImpl(gameRepository, userRepository, categoryRepository, tagRepository, gameMapper, ghRepositoryService);
 
         testUser = new User();
         testUser.setId(1L);
