@@ -10,4 +10,6 @@ public interface GhRepositoryService {
     void deleteRepository(Long repoId);
 
     GhRepository getRepositoryById(Long repoId);
+
+    GhRepository getRepositoryByGhId(Long repoId);
 }

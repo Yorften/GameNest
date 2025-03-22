@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gamenest.exception.ResourceNotFoundException;
+import com.gamenest.service.interfaces.GhRepositoryService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Mac;
@@ -21,9 +24,11 @@ import java.security.MessageDigest;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class WebhookController {
 
+    private final GhRepositoryService ghRepositoryService;
     @Value("${github.webhook.secret}")
     private String secret;
 
@@ -54,26 +59,34 @@ public class WebhookController {
                     return ResponseEntity.badRequest().body("Invalid JSON");
                 }
 
-                JsonNode refNode = rootNode.get("ref");
                 JsonNode repositoryNode = rootNode.get("repository");
-                JsonNode headCommitNode = rootNode.get("head_commit");
-                JsonNode pusherNode = rootNode.get("pusher");
-
-                String ref = (refNode != null) ? refNode.asText() : "<no ref>";
-                String headCommitMessage = "<unknown commit>";
-                String pusherName = "<unknown pusher>";
                 String masterBranch = "<unknown branch>";
+
                 Long repositoryId = null;
 
                 if (repositoryNode != null) {
                     masterBranch = repositoryNode.get("master_branch").asText();
                     repositoryId = repositoryNode.get("id").asLong();
                 }
+
+                try {
+                    ghRepositoryService.getRepositoryByGhId(repositoryId);
+                } catch (Exception e) {
+                    new ResourceNotFoundException("Repository not found");
+                    log.info("The repository is not associated with any game, skipping build...");
+                    return ResponseEntity.badRequest().body("Skipping build");
+                }
+
+                JsonNode refNode = rootNode.get("ref");
+                JsonNode headCommitNode = rootNode.get("head_commit");
+
+                String ref = (refNode != null) ? refNode.asText() : "<no ref>";
+                String headCommitMessage = "<unknown commit>";
+                String headCommitId = "<unknown commit>";
+
                 if (headCommitNode != null) {
                     headCommitMessage = headCommitNode.get("message").asText();
-                }
-                if (pusherNode != null) {
-                    pusherName = pusherNode.get("name").asText();
+                    headCommitId = headCommitNode.get("id").asText();
                 }
 
                 if (headCommitMessage.contains("{skip-build}")) {
@@ -81,18 +94,14 @@ public class WebhookController {
                     return ResponseEntity.badRequest().body("Skipping build");
                 }
 
-                if (ref.endsWith("main")) {
-                    log.info("Push event on master branch");
+                if (ref.endsWith(masterBranch)) {
+                    log.info("Received Push event on master branch ref: {}", ref);
                 } else {
-                    log.info("Push event is not on master branch, skipping build...");
+                    log.info("Push event is not on master branch {}, skipping build...", masterBranch);
                     return ResponseEntity.badRequest().body("Skipping build");
                 }
 
-                log.info("Repository id: {}", repositoryId);
-                log.info("Repository master branch: {}", masterBranch);
-                log.info("Ref: {}", ref);
-                log.info("Head commit: {}", headCommitMessage);
-                log.info("Pusher: {}", pusherName);
+                log.info("Starting build for commit {}", headCommitId);
                 break;
             default:
                 log.info("Ignoring event: {}", eventType);
