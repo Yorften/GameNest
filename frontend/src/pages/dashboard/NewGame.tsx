@@ -183,8 +183,6 @@ export default function NewGame({ }: Props) {
     dispatch(fetchCategories())
     dispatch(fetchTags())
     if (user?.installationId) {
-      console.log(user.installationId);
-
       dispatch(fetchRepositories())
     }
   }, [dispatch])

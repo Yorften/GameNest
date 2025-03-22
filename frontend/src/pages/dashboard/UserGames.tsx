@@ -16,8 +16,6 @@ export default function UserGames({ }: Props) {
 
   useEffect(() => {
     dispatch(fetchGames())
-    console.log(games);
-
   }, [dispatch])
 
   return (
@@ -47,7 +45,7 @@ export default function UserGames({ }: Props) {
                   : game.description}</p>
               </div>
               <div className='flex items-center justify-between'>
-                <p className='text-sm'>Last build on 24/03/2024</p>
+                <p className='text-sm'>{game.lastBuild ? (`Last build on ${game.lastBuild.updatedAt}`) : ("No builds yet")}</p>
                 <div className='bg-gray-50/10 rounded-xl shadow-lg text-xs font-medium border border-primary px-3'>
                   <p>{game.category.name}</p>
                 </div>

@@ -51,7 +51,6 @@ public class GameServiceImpl implements GameService {
         game.setOwner(owner);
 
         GhRepositoryRequest repoReq = gameRequest.getRepository();
-        log.info("------------test-----------");
         GhRepository ghRepo = ghRepositoryService.createRepository(repoReq);
         game.setRepository(ghRepo);
 
