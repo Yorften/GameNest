@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Mac;
@@ -38,15 +41,58 @@ public class WebhookController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature");
         }
 
-        // String payloadJson = new String(payload, StandardCharsets.UTF_8);
-        // log.info("Received webhook payload: {}", payloadJson);
-        log.info(eventType);
         switch (eventType) {
             case "push":
                 log.info("Handling push event...");
-                break;
-            case "installation":
-                log.info("Handling installation event...");
+                String payloadJson = new String(payload, StandardCharsets.UTF_8);
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode;
+                try {
+                    rootNode = objectMapper.readTree(payloadJson);
+                } catch (Exception e) {
+                    log.error("Failed to parse push payload: {}", e.getMessage());
+                    return ResponseEntity.badRequest().body("Invalid JSON");
+                }
+
+                JsonNode refNode = rootNode.get("ref");
+                JsonNode repositoryNode = rootNode.get("repository");
+                JsonNode headCommitNode = rootNode.get("head_commit");
+                JsonNode pusherNode = rootNode.get("pusher");
+
+                String ref = (refNode != null) ? refNode.asText() : "<no ref>";
+                String headCommitMessage = "<unknown commit>";
+                String pusherName = "<unknown pusher>";
+                String masterBranch = "<unknown branch>";
+                Long repositoryId = null;
+
+                if (repositoryNode != null) {
+                    masterBranch = repositoryNode.get("master_branch").asText();
+                    repositoryId = repositoryNode.get("id").asLong();
+                }
+                if (headCommitNode != null) {
+                    headCommitMessage = headCommitNode.get("message").asText();
+                }
+                if (pusherNode != null) {
+                    pusherName = pusherNode.get("name").asText();
+                }
+
+                if (headCommitMessage.contains("{skip-build}")) {
+                    log.info("Found skip build argument in commit message, skipping build...");
+                    return ResponseEntity.badRequest().body("Skipping build");
+                }
+
+                if (ref.endsWith("main")) {
+                    log.info("Push event on master branch");
+                } else {
+                    log.info("Push event is not on master branch, skipping build...");
+                    return ResponseEntity.badRequest().body("Skipping build");
+                }
+
+                log.info("Repository id: {}", repositoryId);
+                log.info("Repository master branch: {}", masterBranch);
+                log.info("Ref: {}", ref);
+                log.info("Head commit: {}", headCommitMessage);
+                log.info("Pusher: {}", pusherName);
                 break;
             default:
                 log.info("Ignoring event: {}", eventType);
