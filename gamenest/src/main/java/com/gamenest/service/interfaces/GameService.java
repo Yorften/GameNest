@@ -17,9 +17,17 @@ public interface GameService {
 
     GameRequest getGameById(Long gameId);
 
+    GameRequest getGameById(Long gameId, String... with);
+
     List<GameRequest> getAllGames();
 
+    List<GameRequest> getAllGames(String... with);
+
     List<GameRequest> getAllGamesFiltered(Long categoryId, List<Long> tagIds);
+
+    List<GameRequest> getAllGamesFiltered(Long categoryId, List<Long> tagIds, String... with);
+
+    List<GameRequest> getUserGames(String username, String... with);
 
     void deleteGame(Long gameId);
 

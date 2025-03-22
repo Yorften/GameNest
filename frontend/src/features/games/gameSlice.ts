@@ -1,10 +1,9 @@
-// features/games/gameSlice.ts
-
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "../../axios-client";
 import { RootState } from "../../app/store"; // adjust import path as needed
 import { Category } from "../categories/categorySlice";
 import { Tag } from "../tags/tagSlice";
+import { Repository } from "../repositories/repositorySlice";
 
 /**
  * Matches the structure used by GameRequest on the backend.
@@ -16,8 +15,7 @@ export interface Game {
   description: string;
   version: string;
   path: string;
-  repositoryName: string;
-  privateRepository: boolean;
+  repository: Repository;
   category: Category;
   tags: Tag[];
   createdAt?: string;
@@ -53,16 +51,6 @@ export const fetchGames = createAsyncThunk("games/fetchUserGames", async (_, { r
 export const fetchAllGames = createAsyncThunk("games/fetchAllGames", async (_, { rejectWithValue }) => {
   try {
     const response = await axios.get<Game[]>("/games");
-    return response.data; // a list of games
-  } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Failed to fetch games.");
-  }
-});
-
-export const fetchRepositories = createAsyncThunk("games/fetchRepositories", async (_, { rejectWithValue }) => {
-  try {
-    const response = await axios.get<Game[]>("/users/repositories");
-    console.log(response.data);
     return response.data; // a list of games
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch games.");
@@ -143,7 +131,6 @@ export const gameSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
-
 
     // Create
     builder.addCase(createGame.pending, (state) => {

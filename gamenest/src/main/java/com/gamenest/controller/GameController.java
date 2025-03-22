@@ -43,7 +43,7 @@ public class GameController {
     @Operation(summary = "Get a game by ID", description = "Retrieves a single game by its ID.")
     @GetMapping("/{gameId}")
     public ResponseEntity<GameRequest> getGameById(@PathVariable Long gameId) {
-        GameRequest game = gameService.getGameById(gameId);
+        GameRequest game = gameService.getGameById(gameId, "owner", "repository", "category", "tags");
         return ResponseEntity.ok(game);
     }
 
@@ -53,7 +53,8 @@ public class GameController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) List<Long> tagIds) {
 
-        List<GameRequest> games = gameService.getAllGamesFiltered(categoryId, tagIds);
+        List<GameRequest> games = gameService.getAllGamesFiltered(categoryId, tagIds, "owner", "category", "tags",
+                "last-build");
         return ResponseEntity.ok(games);
     }
 

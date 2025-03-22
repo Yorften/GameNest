@@ -10,7 +10,7 @@ import { Category, fetchCategories, selectCategories } from '../../features/cate
 import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { toast } from 'react-toastify';
-import { fetchRepositories } from '../../features/games/gameSlice';
+import { fetchRepositories, selectAllRepositoriess } from '../../features/repositories/repositorySlice';
 
 type Props = {}
 
@@ -27,6 +27,7 @@ export default function NewGame({ }: Props) {
   const user = useAppSelector(selectCurrentUser);
   const categories = useAppSelector(selectCategories);
   const tags = useAppSelector(selectTags);
+  const repositoreis = useAppSelector(selectAllRepositoriess)
 
   // Form fields
   const [title, setTitle] = useState('');

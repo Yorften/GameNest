@@ -105,9 +105,23 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public GameRequest getGameById(Long gameId, String... with) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
+        return gameMapper.convertToDTO(game, with);
+    }
+
+    @Override
     public List<GameRequest> getAllGames() {
         return gameRepository.findAll().stream()
                 .map(gameMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GameRequest> getAllGames(String... with) {
+        return gameRepository.findAll().stream()
+                .map(game -> gameMapper.convertToDTO(game, with))
                 .collect(Collectors.toList());
     }
 
@@ -125,6 +139,30 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public List<GameRequest> getAllGamesFiltered(Long categoryId, List<Long> tagIds, String... with) {
+        if (categoryId == null && (tagIds == null || tagIds.isEmpty())) {
+            return getAllGames(with);
+        }
+
+        List<Game> filteredGames = gameRepository.findFiltered(categoryId, tagIds);
+
+        return filteredGames.stream()
+                .map(game -> gameMapper.convertToDTO(game, with))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GameRequest> getUserGames(String username, String... with) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return gameRepository.findByOwnerId(user.getId()).stream()
+                .map(game -> gameMapper.convertToDTO(game, with))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
     public void deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
@@ -137,4 +175,5 @@ public class GameServiceImpl implements GameService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
 }

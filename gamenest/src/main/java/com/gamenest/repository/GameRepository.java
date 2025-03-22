@@ -19,8 +19,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
   Optional<Game> findByTitle(String title);
 
-  Optional<Game> findByNameSpace(String nameSpace);
-
   List<Game> findByOwnerId(Long ownerId);
 
   @Query("""

@@ -1,5 +1,6 @@
 package com.gamenest.mapper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import com.gamenest.dto.category.CategoryRequest;
 import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.dto.tag.TagRequest;
+import com.gamenest.exception.InvalidDataException;
 import com.gamenest.exception.ResourceNotFoundException;
 import com.gamenest.model.Category;
 import com.gamenest.model.Game;
@@ -26,10 +28,23 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class GameMapper {
+    private final List<String> VALID_INCLUDES = Arrays.asList("owner", "category", "repository", "tags", "builds",
+            "last-build");
 
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
     private final GhRepositoryRepository ghRepositoryRepository;
+
+    public void verifyIncludes(String... with)
+            throws InvalidDataException {
+        List<String> includesList = Arrays.asList(with);
+
+        for (String include : includesList) {
+            if (!include.isEmpty() && !VALID_INCLUDES.contains(include)) {
+                throw new InvalidDataException("Invalid include: " + include);
+            }
+        }
+    }
 
     public Game convertToEntity(GameRequest gameDTO) {
         if (gameDTO == null) {
@@ -73,31 +88,74 @@ public class GameMapper {
             return null;
         }
 
+        return GameRequest.builder()
+                .id(game.getId())
+                .title(game.getTitle())
+                .description(game.getDescription())
+                .version(game.getVersion())
+                .createdAt(game.getCreatedAt())
+                .updatedAt(game.getUpdatedAt())
+                .build();
+    }
+
+    public List<GameRequest> convertToDTOList(List<Game> games) {
+        return games.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public GameRequest convertToDTO(Game game, String... with) {
+        verifyIncludes(with);
+        List<String> includesList = Arrays.asList(with);
+
         CategoryRequest categoryRequest = null;
-        if (game.getCategory() != null) {
-            categoryRequest = CategoryRequest.builder()
-                    .name(game.getCategory().getName())
-                    .build();
-        }
-
         GhRepositoryRequest ghRepositoryRequest = null;
-        if (game.getRepository() != null) {
-            ghRepositoryRequest = GhRepositoryRequest.builder()
-                    .id(game.getRepository().getId())
-                    .ghId(game.getRepository().getGhId())
-                    .name(game.getRepository().getName())
-                    .fullName(game.getRepository().getFullName())
-                    .htmlUrl(game.getRepository().getHtmlUrl())
-                    .language(game.getRepository().getLanguage())
-                    .privateRepository(game.getRepository().isPrivateRepository())
-                    .build();
+        Set<TagRequest> tagRequests = null;
+
+        if (game == null) {
+            return null;
         }
 
-        Set<TagRequest> tagRequests = null;
-        if (game.getTags() != null && !game.getTags().isEmpty()) {
-            tagRequests = game.getTags().stream()
-                    .map(tag -> TagRequest.builder().name(tag.getName()).build())
-                    .collect(Collectors.toSet());
+        if (includesList.contains("category")) {
+            if (game.getCategory() != null) {
+                categoryRequest = CategoryRequest.builder()
+                        .name(game.getCategory().getName())
+                        .build();
+            }
+        }
+
+        if (includesList.contains("repository")) {
+            if (game.getRepository() != null) {
+                ghRepositoryRequest = GhRepositoryRequest.builder()
+                        .id(game.getRepository().getId())
+                        .ghId(game.getRepository().getGhId())
+                        .name(game.getRepository().getName())
+                        .fullName(game.getRepository().getFullName())
+                        .htmlUrl(game.getRepository().getHtmlUrl())
+                        .language(game.getRepository().getLanguage())
+                        .privateRepository(game.getRepository().isPrivateRepository())
+                        .build();
+            }
+        }
+
+        if (includesList.contains("tags")) {
+            if (game.getTags() != null && !game.getTags().isEmpty()) {
+                tagRequests = game.getTags().stream()
+                        .map(tag -> TagRequest.builder().name(tag.getName()).build())
+                        .collect(Collectors.toSet());
+            }
+        }
+
+        if (includesList.contains("builds")) {
+
+        }
+
+        if (includesList.contains("last-build")) {
+
+        }
+
+        if (includesList.contains("owner")) {
+
         }
 
         return GameRequest.builder()
@@ -113,9 +171,9 @@ public class GameMapper {
                 .build();
     }
 
-    public List<GameRequest> convertToDTOList(List<Game> games) {
+    public List<GameRequest> convertToDTOList(List<Game> games, String... with) {
         return games.stream()
-                .map(this::convertToDTO)
+                .map(game -> convertToDTO(game, with))
                 .collect(Collectors.toList());
     }
 }
