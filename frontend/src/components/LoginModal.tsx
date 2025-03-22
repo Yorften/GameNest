@@ -77,6 +77,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <div>
             <Label htmlFor="username" value="Username" />
             <TextInput
+              autoFocus={true}
               id="username"
               placeholder="username"
               required

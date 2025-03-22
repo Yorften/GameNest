@@ -76,6 +76,7 @@ export function TagModal({ isOpen, onClose }: TagModalProps) {
                     <div>
                         <Label htmlFor="tagName" value="Tag Name" />
                         <TextInput
+                            autoFocus={true}
                             id="tagName"
                             placeholder="Example: Platformer"
                             required

@@ -200,6 +200,7 @@ export default function NewGame({ }: Props) {
                 Title:
               </label>
               <input
+                autoFocus={true}
                 id="title"
                 className="w-full rounded border border-primary bg-dashboard-secondary placeholder:text-white/50 px-3 py-2 text-white/90"
                 placeholder="Enter a title for your game..."
