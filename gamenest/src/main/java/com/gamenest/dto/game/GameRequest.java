@@ -1,8 +1,17 @@
 package com.gamenest.dto.game;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+
+import com.gamenest.dto.build.BuildRequest;
+import com.gamenest.dto.category.CategoryRequest;
+import com.gamenest.dto.repo.GhRepositoryRequest;
+import com.gamenest.dto.tag.TagRequest;
+import com.gamenest.dto.user.UserRequest;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,12 +36,20 @@ public class GameRequest {
     @NotBlank(message = "Version is required")
     private String version;
 
-    private String path;
+    @NotNull(message = "Github repository is required")
+    private GhRepositoryRequest repository;
 
-    @NotBlank(message = "Repository name is required")
-    private String repositoryName;
+    @NotNull(message = "Category is required")
+    private CategoryRequest category;
 
-    private boolean privateRepository;
+    @NotNull(message = "Tags are required")
+    private Set<TagRequest> tags;
+
+    private BuildRequest lastBuild;
+
+    private List<BuildRequest> builds;
+
+    private UserRequest owner;
 
     private LocalDateTime createdAt;
 

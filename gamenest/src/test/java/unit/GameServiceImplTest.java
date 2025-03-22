@@ -18,6 +18,8 @@ import com.gamenest.model.User;
 import com.gamenest.repository.GameRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.implementation.GameServiceImpl;
+import com.gamenest.service.interfaces.GhRepositoryService;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +48,9 @@ public class GameServiceImplTest {
     @Mock
     private SecurityContext securityContext;
 
+    @Mock
+    private GhRepositoryService ghRepositoryService;
+
     private GameServiceImpl gameService;
 
     private User testUser;
@@ -55,7 +60,7 @@ public class GameServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        gameService = new GameServiceImpl(gameRepository, userRepository, gameMapper);
+        gameService = new GameServiceImpl(gameRepository, userRepository, gameMapper, null, null, ghRepositoryService);
 
         testUser = new User();
         testUser.setId(1L);
@@ -66,9 +71,6 @@ public class GameServiceImplTest {
                 .title("Test Game")
                 .description("A test game")
                 .version("1.0")
-                .path("/games/test")
-                .repositoryName("testuser/TestGame")
-                .privateRepository(false)
                 .owner(testUser)
                 .build();
 
@@ -77,18 +79,12 @@ public class GameServiceImplTest {
                 .title("Test Game")
                 .description("A test game")
                 .version("1.0")
-                .path("/games/test")
-                .repositoryName("testuser/TestGame")
-                .privateRepository(false)
                 .build();
 
         testUpdateGameRequest = UpdateGameRequest.builder()
                 .title("Updated Test Game")
                 .description("An updated test game")
                 .version("1.1")
-                .path("/games/updated-test")
-                .repositoryName("testuser/UpdatedTestGame")
-                .privateRepository(true)
                 .build();
 
         // Set up SecurityContextHolder with a dummy authentication

@@ -1,7 +1,9 @@
 package com.gamenest.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +20,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,12 +50,6 @@ public class Game {
 
     private String version;
 
-    private String path;
-
-    private String repositoryName;
-
-    private boolean privateRepository;
-
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
@@ -70,6 +68,14 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToOne
+    @JoinColumn(name = "repository_id")
+    private GhRepository repository;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "game")
+    private List<Build> builds = new ArrayList<>();
 
     @Builder.Default
     @ManyToMany

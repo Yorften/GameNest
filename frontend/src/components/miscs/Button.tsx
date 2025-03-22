@@ -1,11 +1,12 @@
 import { ButtonProps } from "../../types";
 
-export default function Button({ id, type, className, onClick, title, disabled }: ButtonProps) {
+export default function Button({ id, type, form, className, onClick, title, disabled }: ButtonProps) {
   return (
     <button
       className={`flex py-2 px-8 text-lg rounded-md text-white bg-primary shadow-md hover:shadow-lg hover:bg-secondary transition-all duration-200 ${className}`}
       disabled={disabled}
       type={type}
+      form={form}
       onClick={onClick}
       id={id}
     >

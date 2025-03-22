@@ -115,6 +115,7 @@ export function CategoryModal({ isOpen, onClose }: CategoryModalProps) {
                     <div>
                         <Label htmlFor="categoryName" value="Category Name" />
                         <TextInput
+                            autoFocus={true}
                             id="categoryName"
                             placeholder="E.g. Platformers"
                             required

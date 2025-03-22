@@ -122,7 +122,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             onClose();
         } catch (err: any) {
             console.log(err);
-            
+
             if (err && err.details && Array.isArray(err.details)) {
                 err.details.forEach((detail: { field: string; error: string }) => {
                     if (detail.field === "username") {
@@ -148,6 +148,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                     <div>
                         <Label htmlFor="username" value="Username" />
                         <TextInput
+                            autoFocus={true}
                             id="username"
                             placeholder="Your username"
                             required

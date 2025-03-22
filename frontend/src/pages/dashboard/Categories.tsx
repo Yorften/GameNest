@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { MaterialReactTable, MRT_ColumnDef, useMaterialReactTable } from 'material-react-table';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -126,7 +126,7 @@ export default function Categories() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 px-4 pt-4">
         <h2 className="text-3xl font-semibold">Categories</h2>
         <Button
           onClick={() => {
