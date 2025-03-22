@@ -40,7 +40,6 @@ import com.gamenest.service.interfaces.UserService;
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "APIs for managing user accounts and roles")
 @Slf4j
-
 public class UserController {
 
 	private final UserService userService;
@@ -70,8 +69,6 @@ public class UserController {
 
 		GitHub installationClient = new GitHubBuilder().withAppInstallationToken(appInstallationToken.getToken())
 				.build();
-
-		log.info("Github app token: {}", appInstallationToken.getToken());
 
 		List<GHRepository> ghRepositories = installationClient.getInstallation().listRepositories().toList();
 

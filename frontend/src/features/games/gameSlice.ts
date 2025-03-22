@@ -15,13 +15,12 @@ export interface Game {
   title: string;
   description: string;
   version: string;
-  path: string;
   repository: Repository;
   category: Category;
   tags: Tag[];
-  builds: Build[];
-  lastBuild: Build;
-  owner: { username: string };
+  builds?: Build[];
+  lastBuild?: Build;
+  owner?: { username: string };
   createdAt?: string;
   updatedAt?: string;
 }

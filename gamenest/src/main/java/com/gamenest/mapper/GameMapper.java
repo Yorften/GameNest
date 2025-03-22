@@ -24,7 +24,6 @@ import com.gamenest.model.User;
 import com.gamenest.model.enums.BuildStatus;
 import com.gamenest.repository.BuildRepository;
 import com.gamenest.repository.CategoryRepository;
-import com.gamenest.repository.GhRepositoryRepository;
 import com.gamenest.repository.TagRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ public class GameMapper {
 
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
-    private final GhRepositoryRepository ghRepositoryRepository;
+    private final GhRepositoryMapper ghRepositoryMapper;
     private final BuildRepository buildRepository;
     private final BuildMapper buildMapper;
 
@@ -66,11 +65,7 @@ public class GameMapper {
                             "Category not found: " + gameDTO.getCategory().getName()));
         }
 
-        GhRepository ghRepository = null;
-        if (gameDTO.getRepository() != null && gameDTO.getRepository().getGhId() != null) {
-            ghRepository = ghRepositoryRepository.findByGhId(gameDTO.getRepository().getGhId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Repository not found "));
-        }
+        GhRepository ghRepository = ghRepositoryMapper.convertToEntity(gameDTO.getRepository());
 
         Set<Tag> tags = null;
         if (gameDTO.getTags() != null && !gameDTO.getTags().isEmpty()) {

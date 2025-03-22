@@ -11,6 +11,7 @@ import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { toast } from 'react-toastify';
 import { fetchRepositories, Repository, selectAllRepositoriess, selectRepositoryLoading } from '../../features/repositories/repositorySlice';
+import { createGame, Game } from '../../features/games/gameSlice';
 
 type Props = {}
 
@@ -141,9 +142,17 @@ export default function NewGame({ }: Props) {
 
     if (!isValid) return;
 
+    const payload: Game = {
+      title: title,
+      description: description,
+      version: version,
+      repository: selectedRepository!,
+      category: selectedCategory!,
+      tags: selectedTags!,
+    }
+
     try {
-      // TODO: Dispatch createGame 
-      // ...
+      dispatch(createGame(payload))
       toast.success("Game created successfully!");
       // TODO: Navigate to the created game details 
       // ...

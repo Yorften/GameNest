@@ -11,6 +11,7 @@ import com.gamenest.dto.tag.TagRequest;
 import com.gamenest.dto.user.UserRequest;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,13 +36,13 @@ public class GameRequest {
     @NotBlank(message = "Version is required")
     private String version;
 
-    @NotBlank(message = "Github repository is required")
+    @NotNull(message = "Github repository is required")
     private GhRepositoryRequest repository;
 
-    @NotBlank(message = "Category is required")
+    @NotNull(message = "Category is required")
     private CategoryRequest category;
 
-    @NotBlank(message = "Tags are required")
+    @NotNull(message = "Tags are required")
     private Set<TagRequest> tags;
 
     private BuildRequest lastBuild;
