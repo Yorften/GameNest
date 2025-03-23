@@ -42,16 +42,16 @@ export default function GameBuilds({ id }: Props) {
                 let label = status;
 
                 if (status === "SUCCESS") {
-                    chipColor = "success"; // green
+                    chipColor = "success";
                     label = "Success";
                 } else if (status === "FAIL") {
-                    chipColor = "error"; // red
+                    chipColor = "error";
                     label = "Fail";
                 } else if (status === "RUNNING") {
-                    chipColor = "warning"; // yellow/orange
+                    chipColor = "warning";
                     label = "Running";
                 } else if (status === "PENDING") {
-                    chipColor = "info"; // blue
+                    chipColor = "info";
                     label = "Pending";
                 }
 
