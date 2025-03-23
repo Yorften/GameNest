@@ -12,10 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.dto.build.UpdateBuildRequest;
-import com.gamenest.dto.game.GameRequest;
-import com.gamenest.mapper.GameMapper;
 import com.gamenest.model.Build;
 import com.gamenest.model.enums.BuildStatus;
 import com.gamenest.service.interfaces.BuildService;
@@ -29,17 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 public class GameBuildListener {
 
     private final BuildService buildService;
-    private final GameMapper gameMapper;
 
     @Async
     @EventListener
     public void handleGameBuildEvent(GameBuildEvent event) {
-        GameRequest gameRequest = gameMapper.convertToDTO(event.getGame());
 
         // 1) Create the build instance
-        Build build = buildService.createBuild(BuildRequest.builder()
+        Build build = buildService.createBuild(Build.builder()
                 .buildStatus(BuildStatus.RUNNING)
-                .game(gameRequest)
+                .game(event.getGame())
                 .build());
 
         StringBuilder logs = new StringBuilder();
@@ -144,6 +139,7 @@ public class GameBuildListener {
                     buildService.updateBuild(build.getId(), UpdateBuildRequest.builder()
                             .buildStatus(BuildStatus.SUCCESS)
                             .logs(logs.toString())
+                            .path(buildOutputFolder.getAbsolutePath())
                             .build());
                 } else {
                     log.error("Build failed with error code: {}", exitCode);

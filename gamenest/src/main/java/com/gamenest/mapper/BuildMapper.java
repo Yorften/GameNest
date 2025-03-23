@@ -2,9 +2,13 @@ package com.gamenest.mapper;
 
 import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.model.Build;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class BuildMapper {
 
     public Build convertToEntity(BuildRequest dto) {

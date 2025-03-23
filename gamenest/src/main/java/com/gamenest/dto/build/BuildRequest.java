@@ -16,10 +16,14 @@ public class BuildRequest {
 
     @Builder.Default
     private BuildStatus buildStatus = BuildStatus.PENDING;
-    
+
     private String logs;
+
     private String path;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+    
     private GameRequest game;
 }

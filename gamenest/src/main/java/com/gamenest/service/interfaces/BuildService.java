@@ -12,7 +12,7 @@ public interface BuildService {
 
     List<BuildRequest> getBuildsByGameId(Long gameId);
 
-    Build createBuild(BuildRequest buildRequest);
+    Build createBuild(Build build);
 
     BuildRequest updateBuild(Long buildId, UpdateBuildRequest updateBuildRequest);
     

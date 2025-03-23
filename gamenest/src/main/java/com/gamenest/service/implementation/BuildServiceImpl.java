@@ -42,8 +42,7 @@ public class BuildServiceImpl implements BuildService {
     }
 
     @Override
-    public Build createBuild(BuildRequest buildRequest) {
-        Build build = buildMapper.convertToEntity(buildRequest);
+    public Build createBuild(Build build) {
         return buildRepository.save(build);
     }
 
