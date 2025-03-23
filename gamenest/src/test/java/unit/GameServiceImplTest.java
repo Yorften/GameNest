@@ -13,8 +13,10 @@ import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.game.UpdateGameRequest;
 import com.gamenest.exception.ResourceNotFoundException;
 import com.gamenest.mapper.GameMapper;
+import com.gamenest.model.Build;
 import com.gamenest.model.Game;
 import com.gamenest.model.User;
+import com.gamenest.model.enums.BuildStatus;
 import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GameRepository;
 import com.gamenest.repository.TagRepository;
@@ -67,6 +69,7 @@ public class GameServiceImplTest {
 
     private User testUser;
     private Game testGame;
+    private Build testBuild;
     private GameRequest testGameRequest;
     private UpdateGameRequest testUpdateGameRequest;
 
@@ -79,11 +82,15 @@ public class GameServiceImplTest {
         testUser.setId(1L);
         testUser.setUsername("testuser");
 
+        testBuild = new Build();
+        testBuild.setBuildStatus(BuildStatus.SUCCESS);
+
         testGame = Game.builder()
                 .id(1L)
                 .title("Test Game")
                 .description("A test game")
                 .version("1.0")
+                .builds(List.of(testBuild))
                 .owner(testUser)
                 .build();
 
@@ -182,15 +189,15 @@ public class GameServiceImplTest {
     @Test
     void getAllGames_ShouldReturnListOfDTOs() {
         List<Game> gameList = List.of(testGame);
-        when(gameRepository.findAll()).thenReturn(gameList);
+        when(gameRepository.findFiltered()).thenReturn(gameList);
         when(gameMapper.convertToDTO(testGame)).thenReturn(testGameRequest);
 
         List<GameRequest> result = gameService.getAllGames();
 
         assertNotNull(result);
         // It will be filtered out because there is no successful build associated with it 
-        assertEquals(0, result.size());
-        verify(gameRepository).findAll();
+        assertEquals(1, result.size());
+        verify(gameRepository).findFiltered();
     }
 
     @Test
