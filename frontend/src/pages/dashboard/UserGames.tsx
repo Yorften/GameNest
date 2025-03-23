@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router'
 import { RxExternalLink } from "react-icons/rx";
 import { SlOptions } from "react-icons/sl";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchGames, Game, selectAllGames, setSelectedGame } from '../../features/games/gameSlice';
-import { useEffect } from 'react';
+import { deleteGame, fetchGames, Game, selectAllGames, setSelectedGame } from '../../features/games/gameSlice';
+import { useEffect, useState } from 'react';
 
 type Props = {}
 
@@ -13,6 +13,20 @@ export default function UserGames({ }: Props) {
   const navigate = useNavigate()
 
   const games = useAppSelector(selectAllGames);
+
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+
+  const handleOptionsClick = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    setOpenDropdownId((prev) => (prev === id ? null : id));
+  };
+
+  const handleDelete = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    dispatch(deleteGame(id));
+    setOpenDropdownId(null);
+  };
+
 
   useEffect(() => {
     dispatch(fetchGames())
@@ -42,7 +56,22 @@ export default function UserGames({ }: Props) {
                     </Link>
                   </div>
                 </div>
-                <SlOptions />
+                <div className="relative">
+                  <SlOptions
+                    onClick={(e) => handleOptionsClick(e, game.id!)}
+                    className="cursor-pointer"
+                  />
+                  {openDropdownId === game.id && (
+                    <div className="absolute right-0 mt-2 w-32 bg-red-600 shadow-lg rounded-md py-2 z-10">
+                      <button
+                        onClick={(e) => handleDelete(e, game.id!)}
+                        className="block w-full text-left px-4 py-2 text-sm font-medium text-white hover:bg-red-100"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <p className='text-sm'>{game.description.length > 36
