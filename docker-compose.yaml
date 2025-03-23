@@ -1,0 +1,49 @@
+services:
+  gamenest-app:
+    build:
+      context: ./gamenest
+      dockerfile: Dockerfile
+    container_name: gamenest-app
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gamenest
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: prod
+    volumes:
+      - ./logs:/gamenest/logs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: gamenest-postgres
+    environment:
+      POSTGRES_DB: gamenest
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gamenest-frontend
+    ports:
+      - "5173:80"
+    restart: unless-stopped
+
+volumes:
+  db-data:
