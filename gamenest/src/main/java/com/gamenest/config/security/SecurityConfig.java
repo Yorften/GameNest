@@ -2,6 +2,7 @@ package com.gamenest.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,9 +56,13 @@ public class SecurityConfig {
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "v1/swagger-ui/**")
 						.permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/games").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/tags").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
 						.requestMatchers("/api/v1/users").hasAnyRole("ADMIN")
 						.requestMatchers("/api/v1/categories").hasAnyRole("ADMIN")
 						.requestMatchers("/api/v1/tags").hasAnyRole("ADMIN")
+						.requestMatchers("/api/v1/games").hasAnyRole("ADMIN")
 						.anyRequest().authenticated())
 				.exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
 				.sessionManagement(session -> session

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,6 +58,9 @@ public class GameServiceImplTest {
     private SecurityContext securityContext;
 
     @Mock
+    private ApplicationEventPublisher eventPublisher;
+
+    @Mock
     private GhRepositoryService ghRepositoryService;
 
     private GameServiceImpl gameService;
@@ -68,7 +72,8 @@ public class GameServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        gameService = new GameServiceImpl(gameRepository, userRepository, categoryRepository, tagRepository, gameMapper, ghRepositoryService);
+        gameService = new GameServiceImpl(gameRepository, userRepository, categoryRepository, tagRepository, gameMapper,
+                ghRepositoryService, eventPublisher);
 
         testUser = new User();
         testUser.setId(1L);

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.game.UpdateGameRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
+import com.gamenest.events.GameBuildEvent;
 import com.gamenest.exception.ResourceNotFoundException;
 import com.gamenest.mapper.GameMapper;
 import com.gamenest.model.Category;
@@ -41,10 +43,9 @@ public class GameServiceImpl implements GameService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
-
     private final GameMapper gameMapper;
-
     private final GhRepositoryService ghRepositoryService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public GameRequest createGame(GameRequest gameRequest) {
@@ -58,6 +59,7 @@ public class GameServiceImpl implements GameService {
         game.setRepository(ghRepo);
 
         game = gameRepository.save(game);
+        eventPublisher.publishEvent(new GameBuildEvent(this, game));
         return gameMapper.convertToDTO(game);
     }
 
@@ -97,7 +99,7 @@ public class GameServiceImpl implements GameService {
                     .collect(Collectors.toSet());
             gameDB.setTags(newTags);
         }
-
+        
         return gameMapper.convertToDTO(gameRepository.save(gameDB));
     }
 

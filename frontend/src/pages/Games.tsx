@@ -24,11 +24,6 @@ export default function Games({ }: Props) {
     dispatch(fetchCategories());
     dispatch(fetchTags());
     dispatch(fetchAllGames());
-
-    console.log(games);
-    console.log(tags);
-
-
   }, [dispatch]);
 
   const handleTagToggle = (tagName: string) => {
