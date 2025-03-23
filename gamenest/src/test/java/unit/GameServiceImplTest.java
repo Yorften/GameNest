@@ -188,7 +188,8 @@ public class GameServiceImplTest {
         List<GameRequest> result = gameService.getAllGames();
 
         assertNotNull(result);
-        assertEquals(1, result.size());
+        // It will be filtered out because there is no successful build associated with it 
+        assertEquals(0, result.size());
         verify(gameRepository).findAll();
     }
 
