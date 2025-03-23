@@ -24,11 +24,27 @@ public interface GameRepository extends JpaRepository<Game, Long> {
   @Query("""
         SELECT DISTINCT g
         FROM games g
+        WHERE EXISTS (
+              SELECT b
+              FROM com.gamenest.model.Build b
+              WHERE b.game.id = g.id AND b.buildStatus = 'SUCCESS'
+          )
+      """)
+  List<Game> findFiltered();
+
+  @Query("""
+        SELECT DISTINCT g
+        FROM games g
              LEFT JOIN g.tags t
         WHERE
           (:categoryId IS NULL OR g.category.id = :categoryId)
           AND
           ((:tagIds) IS NULL OR t.id IN :tagIds)
+          AND EXISTS (
+              SELECT b
+              FROM com.gamenest.model.Build b
+              WHERE b.game.id = g.id AND b.buildStatus = 'SUCCESS'
+          )
       """)
   List<Game> findFiltered(@Param("categoryId") Long categoryId,
       @Param("tagIds") List<Long> tagIds);
