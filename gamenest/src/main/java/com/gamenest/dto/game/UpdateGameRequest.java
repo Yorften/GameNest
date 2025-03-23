@@ -27,7 +27,7 @@ public class UpdateGameRequest {
 
     private String version;
 
-    private GhRepositoryRequest ghRepository;
+    private GhRepositoryRequest repository;
 
     private CategoryRequest category;
 

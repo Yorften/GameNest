@@ -62,10 +62,10 @@ export default function UserGames({ }: Props) {
                     className="cursor-pointer"
                   />
                   {openDropdownId === game.id && (
-                    <div className="absolute right-0 mt-2 w-32 bg-red-600 shadow-lg rounded-md py-2 z-10">
+                    <div className="absolute right-0 mt-2 w-32 bg-red-600 shadow-lg rounded-md z-10">
                       <button
                         onClick={(e) => handleDelete(e, game.id!)}
-                        className="block w-full text-left px-4 py-2 text-sm font-medium text-white hover:bg-red-100"
+                        className="block w-full text-left px-4 py-2 text-sm font-medium text-white rounded-md hover:bg-red-500"
                       >
                         Delete
                       </button>

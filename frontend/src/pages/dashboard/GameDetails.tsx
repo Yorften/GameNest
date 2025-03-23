@@ -53,8 +53,6 @@ export default function GameDetails({ }: Props) {
   useEffect(() => {
     if (id) {
       const numericId = Number(id);
-      console.log(numericId);
-
       dispatch(fetchGameById(numericId));
     }
   }, [dispatch])

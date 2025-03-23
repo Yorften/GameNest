@@ -155,7 +155,7 @@ export default function NewGame({ selectedGame }: Props) {
     }
 
     try {
-      if (selectedGame) {
+      if (selectedGame) {        
         // If there's a selected game, we are updating
         dispatch(updateGame(payload));
         toast.success('Game updated successfully!');

@@ -161,11 +161,7 @@ export const gameSlice = createSlice({
       state.error = null;
     });
     builder.addCase(updateGame.fulfilled, (state, action: PayloadAction<Game>) => {
-      const updatedGame = action.payload;
-      const index = state.games.findIndex((g) => g.id === updatedGame.id);
-      if (index !== -1) {
-        state.games[index] = updatedGame;
-      }
+      state.selectedGame = action.payload;
       state.loading = false;
     });
     builder.addCase(updateGame.rejected, (state, action) => {

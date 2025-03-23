@@ -1,5 +1,6 @@
 package com.gamenest.service.implementation;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,6 +66,9 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameRequest updateGame(Long gameId, UpdateGameRequest updateGameRequest) {
+        // log.info("Game id: {}", gameId);
+        // log.info("Game update request: {}", updateGameRequest);
+        boolean shouldBuild = false;
         Game gameDB = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
 
@@ -72,15 +76,24 @@ public class GameServiceImpl implements GameService {
         gameDB.setDescription(optionalOverwrite(updateGameRequest.getDescription(), gameDB.getDescription()));
         gameDB.setVersion(optionalOverwrite(updateGameRequest.getVersion(), gameDB.getVersion()));
 
-        if (updateGameRequest.getGhRepository() != null) {
-            Long oldRepoId = gameDB.getRepository() == null ? null : gameDB.getRepository().getId();
-            if (oldRepoId == null || !oldRepoId.equals(updateGameRequest.getGhRepository().getId())) {
-                if (oldRepoId != null) {
-                    ghRepositoryService.deleteRepository(oldRepoId);
-                    gameDB.setRepository(null);
-                }
-                GhRepository newRepo = ghRepositoryService.createRepository(updateGameRequest.getGhRepository());
+        if (updateGameRequest.getRepository() != null) {
+            GhRepositoryRequest repositoryRequest = updateGameRequest.getRepository();
+
+            GhRepository currentRepo = gameDB.getRepository();
+
+            if (currentRepo == null) {
+                // No repository exists yet, so create the new one
+                GhRepository newRepo = ghRepositoryService.createRepository(repositoryRequest);
                 gameDB.setRepository(newRepo);
+                shouldBuild = true;
+            } else if (!currentRepo.getGhId().equals(repositoryRequest.getGhId())) {
+                // The repositories are different:
+                // Delete the old repository, then create and set the new one.
+                gameDB.setRepository(null);
+                ghRepositoryService.deleteRepository(currentRepo.getId());
+                GhRepository newRepo = ghRepositoryService.createRepository(repositoryRequest);
+                gameDB.setRepository(newRepo);
+                shouldBuild = true;
             }
         }
 
@@ -99,8 +112,10 @@ public class GameServiceImpl implements GameService {
                     .collect(Collectors.toSet());
             gameDB.setTags(newTags);
         }
-
-        return gameMapper.convertToDTO(gameRepository.save(gameDB));
+        Game game = gameRepository.save(gameDB);
+        if (shouldBuild)
+            eventPublisher.publishEvent(new GameBuildEvent(this, game));
+        return gameMapper.convertToDTO(game, "repository", "category", "tags");
     }
 
     @Override
@@ -172,8 +187,8 @@ public class GameServiceImpl implements GameService {
     public void deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
-
-        gameRepository.delete(game);
+        game.setDeletedAt(LocalDateTime.now());
+        gameRepository.save(game);
     }
 
     public User getCurrentUser() {
