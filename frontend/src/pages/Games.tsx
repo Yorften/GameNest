@@ -10,13 +10,11 @@ type Props = {}
 export default function Games({ }: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  // Global state
+  
   const tags = useAppSelector(selectTags);
   const categories = useAppSelector(selectCategories);
   const games = useAppSelector(selectAllGames);
 
-  // Local filter states
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -24,11 +22,6 @@ export default function Games({ }: Props) {
     dispatch(fetchCategories());
     dispatch(fetchTags());
     dispatch(fetchAllGames());
-
-    console.log(games);
-    console.log(tags);
-
-
   }, [dispatch]);
 
   const handleTagToggle = (tagName: string) => {

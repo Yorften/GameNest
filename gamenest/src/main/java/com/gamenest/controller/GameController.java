@@ -43,7 +43,7 @@ public class GameController {
     @Operation(summary = "Get a game by ID", description = "Retrieves a single game by its ID.")
     @GetMapping("/{gameId}")
     public ResponseEntity<GameRequest> getGameById(@PathVariable Long gameId) {
-        GameRequest game = gameService.getGameById(gameId, "owner", "repository", "category", "tags");
+        GameRequest game = gameService.getGameById(gameId, "owner", "repository", "category", "tags", "last-build");
         return ResponseEntity.ok(game);
     }
 
