@@ -18,7 +18,9 @@ jobs:
           distribution: "temurin"
           cache: maven
       - name: Run Tests
-        run: mvn -B test
+        working-directory: ./citronix
+        run: mvn -B test --file pom.xml
+
 #   build:
 #     runs-on: ubuntu-latest
 #     needs: test
