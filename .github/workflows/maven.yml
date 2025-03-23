@@ -18,7 +18,7 @@ jobs:
           distribution: "temurin"
           cache: maven
       - name: Run Tests
-        working-directory: ./citronix
+        working-directory: ./gamenest
         run: mvn -B test --file pom.xml
 
 #   build:
