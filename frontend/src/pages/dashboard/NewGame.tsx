@@ -14,7 +14,7 @@ import { fetchRepositories, Repository, selectAllRepositoriess, selectRepository
 import { createGame, Game, updateGame } from '../../features/games/gameSlice';
 
 type Props = {
-  selectedGame: Game | null
+  selectedGame?: Game | null
 }
 
 const versionRegex = /^\d+\.\d+\.\d+$/;
