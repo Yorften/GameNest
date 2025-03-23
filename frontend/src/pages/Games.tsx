@@ -10,7 +10,7 @@ type Props = {}
 export default function Games({ }: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const tags = useAppSelector(selectTags);
   const categories = useAppSelector(selectCategories);
   const games = useAppSelector(selectAllGames);
@@ -97,7 +97,7 @@ export default function Games({ }: Props) {
           No games found for the selected filters.
         </p>
       )}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 px-12">
         {filteredGames.map((game: any) => (
           <div
             key={game.id}
