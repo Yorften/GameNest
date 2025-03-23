@@ -99,7 +99,7 @@ public class GameServiceImpl implements GameService {
                     .collect(Collectors.toSet());
             gameDB.setTags(newTags);
         }
-        
+
         return gameMapper.convertToDTO(gameRepository.save(gameDB));
     }
 
@@ -172,6 +172,7 @@ public class GameServiceImpl implements GameService {
     public void deleteGame(Long gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
+
         gameRepository.delete(game);
     }
 

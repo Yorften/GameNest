@@ -32,6 +32,11 @@ public class DataSeeder {
 
 		Instant start = Instant.now();
 
+		if (roleRepository.findByName("ROLE_ADMIN").isPresent()) {
+			log.info("Data already seeded! skipping seeder...");
+			return;
+		}
+
 		// Create roles
 		Role adminRole = roleRepository.save(Role.builder().name("ROLE_ADMIN").build());
 		Role userRole = roleRepository.save(Role.builder().name("ROLE_USER").build());

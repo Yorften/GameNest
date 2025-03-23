@@ -50,7 +50,7 @@ export default function UserGames({ }: Props) {
                   : game.description}</p>
               </div>
               <div className='flex items-center justify-between'>
-                <p className='text-sm'>{game.lastBuild
+                <p className='text-sm'>{game.lastBuild?.updatedAt
                   ? `Last build on ${new Date((game.lastBuild.updatedAt)!.toLocaleString()).toLocaleString()}`
                   : "No builds yet"
                 }</p>
@@ -60,7 +60,6 @@ export default function UserGames({ }: Props) {
               </div>
             </div>
           ))}
-
         </div>
       </div>
     </>
