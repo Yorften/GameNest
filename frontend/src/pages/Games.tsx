@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks"
 import { fetchAllGames, selectAllGames } from "../features/games/gameSlice";
 import { fetchTags, selectTags } from "../features/tags/tagSlice";
@@ -57,7 +57,7 @@ export default function Games({ }: Props) {
             <label className="block mb-1 font-medium text-sm">Select Category:</label>
             <select
               className="w-52 bg-gray-700 text-white py-2 px-3 rounded-md outline-none"
-              value={selectedCategory!}
+              value={selectedCategory == null ? undefined : selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
               <option value="">All Categories</option>
@@ -98,9 +98,9 @@ export default function Games({ }: Props) {
         </p>
       )}
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 px-12">
-        {filteredGames.map((game: any) => (
+        {filteredGames.map((game: any, index: Key | null | undefined) => (
           <div
-            key={game.id}
+            key={index}
             onClick={() => navigate(`/games/${game.id}`)}
             className="relative flex flex-col bg-gray-800 rounded-lg shadow-lg cursor-pointer
                        hover:shadow-2xl hover:bg-gray-700 transition-shadow overflow-hidden"
@@ -114,9 +114,9 @@ export default function Games({ }: Props) {
                 Category: {game.category?.name || "None"}
               </p>
               <div className="flex flex-wrap gap-1 mb-2">
-                {game.tags?.map((t: any) => (
+                {game.tags?.map((t: any, index: Key | null | undefined) => (
                   <span
-                    key={t.id}
+                    key={index}
                     className="text-xs bg-indigo-600/20 border border-indigo-400 text-indigo-200 
                                rounded-full px-2 py-1 whitespace-nowrap"
                   >

@@ -3,21 +3,20 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
-import { useAppDispatch } from "./app/hooks";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { useEffect } from "react";
-import { updateUserInstallationId } from "./features/auth/authSlice";
+import { selectCurrentUser, updateUserInstallationId } from "./features/auth/authSlice";
+import useJwtMonitor from "./hooks/useJwtMonitor";
 
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectCurrentUser)
   // Check if current path starts with "/dashboard"
   const isDashboard = location.pathname.startsWith("/dashboard");
 
-  useEffect(() => {
-    console.log("navigated");
-    
-  }, [dispatch, navigate])
+  useJwtMonitor();
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
@@ -49,3 +48,7 @@ const App = () => {
 };
 
 export default App;
+function useCookieMonitor() {
+  throw new Error("Function not implemented.");
+}
+

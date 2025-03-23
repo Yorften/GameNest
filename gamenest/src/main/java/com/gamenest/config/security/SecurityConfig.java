@@ -20,20 +20,16 @@ import com.gamenest.config.jwt.JWTAuthEntryPoint;
 import com.gamenest.config.jwt.JWTAuthenticationFilter;
 import com.gamenest.service.implementation.CustomUserDetailsServiceImpl;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-	private JWTAuthEntryPoint authEntryPoint;
-	private CustomUserDetailsServiceImpl customUserDetailsService;
-	private JWTAuthenticationFilter jwtAuthenticationFilter;
-
-	public SecurityConfig(CustomUserDetailsServiceImpl customUserDetailsService, JWTAuthEntryPoint authEntryPoint,
-			JWTAuthenticationFilter jwtAuthenticationFilter) {
-		this.customUserDetailsService = customUserDetailsService;
-		this.authEntryPoint = authEntryPoint;
-		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-	}
+	private final JWTAuthEntryPoint authEntryPoint;
+	private final CustomUserDetailsServiceImpl customUserDetailsService;
+	private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
