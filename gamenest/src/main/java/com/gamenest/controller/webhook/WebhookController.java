@@ -1,6 +1,7 @@
 package com.gamenest.controller.webhook;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gamenest.events.GameBuildEvent;
 import com.gamenest.exception.ResourceNotFoundException;
+import com.gamenest.model.GhRepository;
 import com.gamenest.service.interfaces.GhRepositoryService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ import java.security.MessageDigest;
 public class WebhookController {
 
     private final GhRepositoryService ghRepositoryService;
+    private final ApplicationEventPublisher eventPublisher;
     @Value("${github.webhook.secret}")
     private String secret;
 
@@ -61,6 +65,7 @@ public class WebhookController {
 
                 JsonNode repositoryNode = rootNode.get("repository");
                 String masterBranch = "<unknown branch>";
+                GhRepository repository = null;
 
                 Long repositoryId = null;
 
@@ -70,11 +75,13 @@ public class WebhookController {
                 }
 
                 try {
-                    ghRepositoryService.getRepositoryByGhId(repositoryId);
-                } catch (Exception e) {
-                    new ResourceNotFoundException("Repository not found");
+                    repository = ghRepositoryService.getRepositoryByGhId(repositoryId);
+                } catch (ResourceNotFoundException e) {
                     log.info("The repository is not associated with any game, skipping build...");
-                    return ResponseEntity.badRequest().body("Skipping build");
+                    return ResponseEntity.accepted().body("Skipping build");
+                } catch (Exception e) {
+                    log.error("Error while fetching repository: {}", e.getMessage());
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
                 }
 
                 JsonNode refNode = rootNode.get("ref");
@@ -91,23 +98,25 @@ public class WebhookController {
 
                 if (headCommitMessage.contains("{skip-build}")) {
                     log.info("Found skip build argument in commit message, skipping build...");
-                    return ResponseEntity.badRequest().body("Skipping build");
+                    return ResponseEntity.accepted().body("Skipping build");
                 }
 
                 if (ref.endsWith(masterBranch)) {
                     log.info("Received Push event on master branch ref: {}", ref);
                 } else {
                     log.info("Push event is not on master branch {}, skipping build...", masterBranch);
-                    return ResponseEntity.badRequest().body("Skipping build");
+                    return ResponseEntity.accepted().body("Skipping build");
                 }
 
-                log.info("Starting build for commit {}", headCommitId);
+                log.info("Starting build for commit {} on repositoryId={}", headCommitId, repositoryId);
+                eventPublisher.publishEvent(new GameBuildEvent(this, repository.getGame()));
                 break;
-            default:
+            default:    
                 log.info("Ignoring event: {}", eventType);
         }
 
         return ResponseEntity.ok("Webhook received");
+
     }
 
     private String computeHmac256(byte[] data, String key) {

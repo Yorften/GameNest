@@ -2,6 +2,8 @@ package com.gamenest.service.interfaces;
 
 import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.dto.build.UpdateBuildRequest;
+import com.gamenest.model.Build;
+
 import java.util.List;
 
 public interface BuildService {
@@ -10,7 +12,7 @@ public interface BuildService {
 
     List<BuildRequest> getBuildsByGameId(Long gameId);
 
-    BuildRequest createBuild(BuildRequest buildRequest);
+    Build createBuild(BuildRequest buildRequest);
 
     BuildRequest updateBuild(Long buildId, UpdateBuildRequest updateBuildRequest);
     

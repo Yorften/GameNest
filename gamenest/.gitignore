@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 logs/
 audit_logs/*.log
+storage/
 
 ### STS ###
 .apt_generated
