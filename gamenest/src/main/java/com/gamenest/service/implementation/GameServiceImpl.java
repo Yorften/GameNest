@@ -117,14 +117,14 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<GameRequest> getAllGames() {
-        return gameRepository.findAll().stream()
+        return gameRepository.findFiltered().stream()
                 .map(gameMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<GameRequest> getAllGames(String... with) {
-        return gameRepository.findAll().stream()
+        return gameRepository.findFiltered().stream()
                 .map(game -> gameMapper.convertToDTO(game, with))
                 .collect(Collectors.toList());
     }
