@@ -43,6 +43,8 @@ export const fetchCategories = createAsyncThunk("categories/fetchCategories", as
     const response = await axios.get("/categories");
     return response.data as Category[];
   } catch (error: any) {
+    console.log(error);
+
     return rejectWithValue(error.response?.data?.message || "Failed to fetch categories");
   }
 });

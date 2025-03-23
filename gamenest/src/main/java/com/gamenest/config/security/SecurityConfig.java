@@ -2,6 +2,7 @@ package com.gamenest.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,20 +20,16 @@ import com.gamenest.config.jwt.JWTAuthEntryPoint;
 import com.gamenest.config.jwt.JWTAuthenticationFilter;
 import com.gamenest.service.implementation.CustomUserDetailsServiceImpl;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-	private JWTAuthEntryPoint authEntryPoint;
-	private CustomUserDetailsServiceImpl customUserDetailsService;
-	private JWTAuthenticationFilter jwtAuthenticationFilter;
-
-	public SecurityConfig(CustomUserDetailsServiceImpl customUserDetailsService, JWTAuthEntryPoint authEntryPoint,
-			JWTAuthenticationFilter jwtAuthenticationFilter) {
-		this.customUserDetailsService = customUserDetailsService;
-		this.authEntryPoint = authEntryPoint;
-		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-	}
+	private final JWTAuthEntryPoint authEntryPoint;
+	private final CustomUserDetailsServiceImpl customUserDetailsService;
+	private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
 	@Bean
 	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -53,9 +50,14 @@ public class SecurityConfig {
 						.requestMatchers("/api/v1/auth/register").permitAll()
 						.requestMatchers("/api/v1/webhook").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
-						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "v1/swagger-ui/**")
+						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/v1/swagger-ui/**")
 						.permitAll()
-						.requestMatchers("/api/v1/users").hasAnyRole("ADMIN")
+						.requestMatchers(HttpMethod.GET, "/api/v1/games").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/games/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/tags").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+						.requestMatchers("/api/v1/users").hasAnyRole("ADMIN", "USER")
+						.requestMatchers("/api/v1/games").hasAnyRole("ADMIN", "USER")
 						.requestMatchers("/api/v1/categories").hasAnyRole("ADMIN")
 						.requestMatchers("/api/v1/tags").hasAnyRole("ADMIN")
 						.anyRequest().authenticated())

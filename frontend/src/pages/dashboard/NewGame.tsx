@@ -215,6 +215,12 @@ export default function NewGame({ selectedGame }: Props) {
     }
   }, [dispatch])
 
+  useEffect(() => {
+    if (user?.installationId) {
+      dispatch(fetchRepositories())
+    }
+  }, [dispatch, user])
+
   return (
     <>
       <div className="flex items-center justify-between mb-4 px-4 pt-4">

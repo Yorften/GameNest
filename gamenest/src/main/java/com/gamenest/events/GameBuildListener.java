@@ -130,9 +130,7 @@ public class GameBuildListener {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         logs.append(line).append("\n");
-
-                        // TODO remove this in production
-                        log.info(line);
+                        // log.info(line);
                     }
                 }
 
