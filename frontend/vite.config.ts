@@ -9,8 +9,10 @@ export default defineConfig({
       name: "set-cors-headers",
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
-          res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-          res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+          if (req.originalUrl && (req.originalUrl.startsWith("/games") || req.originalUrl.startsWith("/builds"))) {       
+            res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+            res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+          }
           next();
         });
       },
@@ -26,4 +28,3 @@ export default defineConfig({
     mockReset: true,
   },
 });
-  

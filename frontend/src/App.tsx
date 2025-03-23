@@ -16,7 +16,7 @@ const App = () => {
   // Check if current path starts with "/dashboard"
   const isDashboard = location.pathname.startsWith("/dashboard");
 
-  useJwtMonitor();
+  // useJwtMonitor();
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
@@ -24,6 +24,8 @@ const App = () => {
       if (event.data?.type === 'github-installation') {
 
         const { installationId } = event.data;
+        console.log(event.data);
+
         dispatch(updateUserInstallationId(installationId));
 
       }
