@@ -8,6 +8,7 @@ import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 public class GameBuildListener {
 
     private final BuildService buildService;
+
+    @Value("${github.build.export-path}")
+    private String buildExportPath;
 
     @Async
     @EventListener
@@ -62,8 +66,8 @@ public class GameBuildListener {
             logs.append("Starting Godot build export...\n");
 
             // 5) Copy export_rpesets.cfg to the cloned repository
-            File sourceExportPresets = new File(
-                    "C:\\Users\\Yorften\\Documents\\github\\2222\\GameNest\\gamenest\\export\\export_presets.cfg");
+            File sourceExportPresets = new File("./export/export_presets.cfg");
+
             File targetExportPresets = new File(cloneDir, "export_presets.cfg");
             try {
                 // Delete the target file if it exists
@@ -79,7 +83,7 @@ public class GameBuildListener {
 
             // 6) Create a folder named build-{unique id} export path in export_rpesets.cfg
             // is empty so we will do it manualy with command args
-            String buildFolderPath = System.getProperty("user.dir") + "\\storage\\builds\\build-" + build.getId();
+            String buildFolderPath = buildExportPath + "-" + build.getId();
             buildOutputFolder = new File(buildFolderPath);
             if (!buildOutputFolder.exists()) {
                 if (buildOutputFolder.mkdirs()) {

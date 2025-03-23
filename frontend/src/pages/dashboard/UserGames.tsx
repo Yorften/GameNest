@@ -19,7 +19,7 @@ export default function UserGames({ }: Props) {
   }, [dispatch])
 
   function handleClick(game: Game): void {
-    dispatch(setSelectedGame(game))
+    // dispatch(setSelectedGame(game))
     navigate(`/dashboard/games/${game.id}`)
   }
 
@@ -50,9 +50,12 @@ export default function UserGames({ }: Props) {
                   : game.description}</p>
               </div>
               <div className='flex items-center justify-between'>
-                <p className='text-sm'>{game.lastBuild ? (`Last build on ${game.lastBuild.updatedAt}`) : ("No builds yet")}</p>
+                <p className='text-sm'>{game.lastBuild
+                  ? `Last build on ${new Date((game.lastBuild.updatedAt)!.toLocaleString()).toLocaleString()}`
+                  : "No builds yet"
+                }</p>
                 <div className='bg-gray-50/10 rounded-xl shadow-lg text-xs font-medium border border-primary px-3'>
-                  <p>{game.category.name}</p>
+                  <p>{game.category?.name}</p>
                 </div>
               </div>
             </div>

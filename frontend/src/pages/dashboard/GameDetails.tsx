@@ -1,10 +1,12 @@
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { useState } from 'react';
-import { useAppSelector } from '../../app/hooks';
-import { selectGamesLoading, selectSelectedGame } from '../../features/games/gameSlice';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { fetchGameById, selectGamesLoading, selectSelectedGame } from '../../features/games/gameSlice';
 import NewGame from './NewGame';
+import { useParams } from 'react-router';
+import GameBuilds from '../../components/GameBuilds';
 
 type Props = {}
 
@@ -38,13 +40,24 @@ function a11yProps(index: number) {
 }
 
 export default function GameDetails({ }: Props) {
+  const { id } = useParams<{ id: string }>();
   const [value, setValue] = useState(0);
+  const dispatch = useAppDispatch()
   const loadingGame = useAppSelector(selectGamesLoading);
   const selectedGame = useAppSelector(selectSelectedGame);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (id) {
+      const numericId = Number(id);
+      console.log(numericId);
+
+      dispatch(fetchGameById(numericId));
+    }
+  }, [dispatch])
 
   return (
     <>
@@ -54,12 +67,19 @@ export default function GameDetails({ }: Props) {
           <Tab className='!text-white !bg-white/5' label="Builds" {...a11yProps(1)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <NewGame selectedGame={selectedGame} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        Item Two
-      </CustomTabPanel>
+      {loadingGame ? (
+        <p>loading</p>
+      ) : (
+        <>
+          <CustomTabPanel value={value} index={0}>
+            <NewGame selectedGame={selectedGame} />
+          </CustomTabPanel >
+          <CustomTabPanel value={value} index={1}>
+            <GameBuilds id={selectedGame?.id} />
+          </CustomTabPanel></>
+      )
+      }
+
     </>
   )
 }

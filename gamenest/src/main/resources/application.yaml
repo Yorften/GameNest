@@ -25,3 +25,5 @@ github:
     # Mac users
     # private-key-path: "/Users/karizma/desktop/github-app/new-key.der"
     private-key-path: C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.der
+  build:
+    export-path: C:\\Users\\Yorften\\Documents\\github\\2222\\GameNest\\frontend\\public\\builds\\build

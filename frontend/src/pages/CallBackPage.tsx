@@ -1,13 +1,12 @@
 import { useSearchParams } from "react-router";
 import { useAppDispatch } from "../app/hooks";
 import { useEffect } from "react";
-import { updateUserInstallationId } from "../features/auth/authSlice";
 
 type Props = {}
 
 export default function CallBackPage({ }: Props) {
   const dispatch = useAppDispatch();
-  const [searchParams,] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const installationId = searchParams.get('installation_id');
 

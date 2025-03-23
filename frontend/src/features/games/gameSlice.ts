@@ -193,14 +193,7 @@ export const gameSlice = createSlice({
       state.error = null;
     });
     builder.addCase(fetchGameById.fulfilled, (state, action: PayloadAction<Game>) => {
-      const fetched = action.payload;
-      // Insert or update in our list
-      const existingIndex = state.games.findIndex((g) => g.id === fetched.id);
-      if (existingIndex > -1) {
-        state.games[existingIndex] = fetched;
-      } else {
-        state.games.push(fetched);
-      }
+      state.selectedGame = action.payload;
       state.loading = false;
     });
     builder.addCase(fetchGameById.rejected, (state, action) => {
@@ -210,7 +203,7 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { setSelectedGame } = gameSlice.actions
+export const { setSelectedGame } = gameSlice.actions;
 
 export const selectAllGames = (state: RootState) => state.games.games;
 export const selectSelectedGame = (state: RootState) => state.games.selectedGame;
