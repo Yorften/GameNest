@@ -151,7 +151,7 @@ public class GameServiceImplTest {
     void updateGame_WhenGameExists_ShouldUpdateAndReturnDTO() {
         when(gameRepository.findById(1L)).thenReturn(Optional.of(testGame));
         when(gameRepository.save(testGame)).thenReturn(testGame);
-        when(gameMapper.convertToDTO(testGame)).thenReturn(testGameRequest);
+        when(gameMapper.convertToDTO(testGame, "repository", "category", "tags")).thenReturn(testGameRequest);
 
         GameRequest result = gameService.updateGame(1L, testUpdateGameRequest);
 
@@ -195,7 +195,8 @@ public class GameServiceImplTest {
         List<GameRequest> result = gameService.getAllGames();
 
         assertNotNull(result);
-        // It will be filtered out because there is no successful build associated with it 
+        // It will be filtered out because there is no successful build associated with
+        // it
         assertEquals(1, result.size());
         verify(gameRepository).findFiltered();
     }
@@ -207,7 +208,7 @@ public class GameServiceImplTest {
         gameService.deleteGame(1L);
 
         verify(gameRepository).findById(1L);
-        verify(gameRepository).delete(testGame);
+        verify(gameRepository).save(testGame);
     }
 
     @Test
