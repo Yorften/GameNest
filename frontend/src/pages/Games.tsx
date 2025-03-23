@@ -11,12 +11,10 @@ export default function Games({ }: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  // Global state
   const tags = useAppSelector(selectTags);
   const categories = useAppSelector(selectCategories);
   const games = useAppSelector(selectAllGames);
 
-  // Local filter states
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -24,11 +22,6 @@ export default function Games({ }: Props) {
     dispatch(fetchCategories());
     dispatch(fetchTags());
     dispatch(fetchAllGames());
-
-    console.log(games);
-    console.log(tags);
-
-
   }, [dispatch]);
 
   const handleTagToggle = (tagName: string) => {
@@ -104,7 +97,7 @@ export default function Games({ }: Props) {
           No games found for the selected filters.
         </p>
       )}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 px-12">
         {filteredGames.map((game: any) => (
           <div
             key={game.id}
