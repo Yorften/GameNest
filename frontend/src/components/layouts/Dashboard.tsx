@@ -23,7 +23,7 @@ export default function Dashboard({ }: Props) {
     <>
       <div className="relative h-screen bg-dashboard-secondary">
         {/* <!--header--> */}
-        <nav className="border-b h-[8%] lg:border-primary bg-dashboard-primary shadow-xl py-3.5 px-6 w-full fixed">
+        <nav className="border-b h-[8%] !z-50 lg:border-primary bg-dashboard-primary shadow-xl py-3.5 px-6 w-full fixed">
           <div className="flex items-center justify-between gap-1 sm:gap-6 lg:flex-row flex-col">
             <div className="flex justify-between items-center lg:w-auto w-full">
               <Link to="/" className="flex items-center">
@@ -98,7 +98,7 @@ export default function Dashboard({ }: Props) {
                   </>
                 )}
               </ul>
-              <div className="text-center hidden lg:flex  items-center gap-1  sm:gap-4 lg:ml-auto">
+              <div className="text-center hidden lg:flex items-center gap-1  sm:gap-4 lg:ml-auto">
                 <Dropdown
                   arrowIcon={false}
                   inline

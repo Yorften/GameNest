@@ -39,4 +39,10 @@ public class GhRepositoryServiceImpl implements GhRepositoryService {
         return ghRepositoryRepository.findById(repoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Repository not found"));
     }
+
+    @Override
+    public GhRepository getRepositoryByGhId(Long repoId) {
+        return ghRepositoryRepository.findByGhId(repoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Repository not found"));
+    }
 }

@@ -44,8 +44,9 @@ public class Build {
     @Column(columnDefinition = "TEXT")
     private String logs;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private BuildStatus buildStatus;
+    private BuildStatus buildStatus = BuildStatus.PENDING;
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)

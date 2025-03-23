@@ -1,6 +1,7 @@
 package com.gamenest.controller.webhook;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +10,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gamenest.events.GameBuildEvent;
+import com.gamenest.exception.ResourceNotFoundException;
+import com.gamenest.model.GhRepository;
+import com.gamenest.service.interfaces.GhRepositoryService;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Mac;
@@ -18,9 +27,12 @@ import java.security.MessageDigest;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class WebhookController {
 
+    private final GhRepositoryService ghRepositoryService;
+    private final ApplicationEventPublisher eventPublisher;
     @Value("${github.webhook.secret}")
     private String secret;
 
@@ -38,21 +50,73 @@ public class WebhookController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid signature");
         }
 
-        // String payloadJson = new String(payload, StandardCharsets.UTF_8);
-        // log.info("Received webhook payload: {}", payloadJson);
-        log.info(eventType);
         switch (eventType) {
             case "push":
                 log.info("Handling push event...");
+                String payloadJson = new String(payload, StandardCharsets.UTF_8);
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode;
+                try {
+                    rootNode = objectMapper.readTree(payloadJson);
+                } catch (Exception e) {
+                    log.error("Failed to parse push payload: {}", e.getMessage());
+                    return ResponseEntity.badRequest().body("Invalid JSON");
+                }
+
+                JsonNode repositoryNode = rootNode.get("repository");
+                String masterBranch = "<unknown branch>";
+                GhRepository repository = null;
+
+                Long repositoryId = null;
+
+                if (repositoryNode != null) {
+                    masterBranch = repositoryNode.get("master_branch").asText();
+                    repositoryId = repositoryNode.get("id").asLong();
+                }
+
+                try {
+                    repository = ghRepositoryService.getRepositoryByGhId(repositoryId);
+                } catch (ResourceNotFoundException e) {
+                    log.info("The repository is not associated with any game, skipping build...");
+                    return ResponseEntity.accepted().body("Skipping build");
+                } catch (Exception e) {
+                    log.error("Error while fetching repository: {}", e.getMessage());
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+                }
+
+                JsonNode refNode = rootNode.get("ref");
+                JsonNode headCommitNode = rootNode.get("head_commit");
+
+                String ref = (refNode != null) ? refNode.asText() : "<no ref>";
+                String headCommitMessage = "<unknown commit>";
+                String headCommitId = "<unknown commit>";
+
+                if (headCommitNode != null) {
+                    headCommitMessage = headCommitNode.get("message").asText();
+                    headCommitId = headCommitNode.get("id").asText();
+                }
+
+                if (headCommitMessage.contains("{skip-build}")) {
+                    log.info("Found skip build argument in commit message, skipping build...");
+                    return ResponseEntity.accepted().body("Skipping build");
+                }
+
+                if (ref.endsWith(masterBranch)) {
+                    log.info("Received Push event on master branch ref: {}", ref);
+                } else {
+                    log.info("Push event is not on master branch {}, skipping build...", masterBranch);
+                    return ResponseEntity.accepted().body("Skipping build");
+                }
+
+                log.info("Starting build for commit {} on repositoryId={}", headCommitId, repositoryId);
+                eventPublisher.publishEvent(new GameBuildEvent(this, repository.getGame()));
                 break;
-            case "installation":
-                log.info("Handling installation event...");
-                break;
-            default:
+            default:    
                 log.info("Ignoring event: {}", eventType);
         }
 
         return ResponseEntity.ok("Webhook received");
+
     }
 
     private String computeHmac256(byte[] data, String key) {

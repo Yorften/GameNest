@@ -1,6 +1,7 @@
 package com.gamenest.service.implementation;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -11,13 +12,15 @@ import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.game.UpdateGameRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.exception.ResourceNotFoundException;
-import com.gamenest.mapper.CategoryMapper;
 import com.gamenest.mapper.GameMapper;
-import com.gamenest.mapper.TagMapper;
+import com.gamenest.model.Category;
 import com.gamenest.model.Game;
 import com.gamenest.model.GhRepository;
+import com.gamenest.model.Tag;
 import com.gamenest.model.User;
+import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GameRepository;
+import com.gamenest.repository.TagRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.interfaces.GameService;
 import com.gamenest.service.interfaces.GhRepositoryService;
@@ -36,10 +39,10 @@ public class GameServiceImpl implements GameService {
 
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
 
     private final GameMapper gameMapper;
-    private final CategoryMapper categoryMapper;
-    private final TagMapper tagMapper;
 
     private final GhRepositoryService ghRepositoryService;
 
@@ -63,38 +66,39 @@ public class GameServiceImpl implements GameService {
         Game gameDB = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResourceNotFoundException("Game not found"));
 
-        if (updateGameRequest.getTitle() != null && !updateGameRequest.getTitle().isEmpty()) {
-            gameDB.setTitle(updateGameRequest.getTitle());
-        }
-        if (updateGameRequest.getDescription() != null && !updateGameRequest.getDescription().isEmpty()) {
-            gameDB.setDescription(updateGameRequest.getDescription());
-        }
-        if (updateGameRequest.getVersion() != null && !updateGameRequest.getVersion().isEmpty()) {
-            gameDB.setVersion(updateGameRequest.getVersion());
-        }
+        gameDB.setTitle(optionalOverwrite(updateGameRequest.getTitle(), gameDB.getTitle()));
+        gameDB.setDescription(optionalOverwrite(updateGameRequest.getDescription(), gameDB.getDescription()));
+        gameDB.setVersion(optionalOverwrite(updateGameRequest.getVersion(), gameDB.getVersion()));
 
         if (updateGameRequest.getGhRepository() != null) {
-            if (gameDB.getRepository() != null) {
-                ghRepositoryService.deleteRepository(gameDB.getRepository().getId());
-                gameDB.setRepository(null);
+            Long oldRepoId = gameDB.getRepository() == null ? null : gameDB.getRepository().getId();
+            if (oldRepoId == null || !oldRepoId.equals(updateGameRequest.getGhRepository().getId())) {
+                if (oldRepoId != null) {
+                    ghRepositoryService.deleteRepository(oldRepoId);
+                    gameDB.setRepository(null);
+                }
+                GhRepository newRepo = ghRepositoryService.createRepository(updateGameRequest.getGhRepository());
+                gameDB.setRepository(newRepo);
             }
-            GhRepositoryRequest newRepoReq = updateGameRequest.getGhRepository();
-            GhRepository newRepo = ghRepositoryService.createRepository(newRepoReq);
-            gameDB.setRepository(newRepo);
         }
 
-        if (updateGameRequest.getCategory() != null) {
-            gameDB.setCategory(categoryMapper.convertToEntity(updateGameRequest.getCategory()));
+        if (updateGameRequest.getCategory() != null && updateGameRequest.getCategory().getName() != null) {
+            Category newCat = categoryRepository.findByName(updateGameRequest.getCategory().getName())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Category not found: " + updateGameRequest.getCategory().getName()));
+            gameDB.setCategory(newCat);
         }
 
         if (updateGameRequest.getTags() != null) {
             gameDB.getTags().clear();
-            gameDB.setTags(updateGameRequest.getTags().stream().map(tag -> tagMapper.convertToEntity(tag))
-                    .collect(Collectors.toSet()));
+            Set<Tag> newTags = updateGameRequest.getTags().stream()
+                    .map(tagReq -> tagRepository.findByName(tagReq.getName())
+                            .orElseThrow(() -> new ResourceNotFoundException("Tag not found: " + tagReq.getName())))
+                    .collect(Collectors.toSet());
+            gameDB.setTags(newTags);
         }
 
-        Game updatedGame = gameRepository.save(gameDB);
-        return gameMapper.convertToDTO(updatedGame);
+        return gameMapper.convertToDTO(gameRepository.save(gameDB));
     }
 
     @Override
@@ -176,4 +180,7 @@ public class GameServiceImpl implements GameService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    private String optionalOverwrite(String newValue, String oldValue) {
+        return (newValue != null && !newValue.isEmpty()) ? newValue : oldValue;
+    }
 }

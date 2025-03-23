@@ -35,7 +35,7 @@ const initialState: RepositoryState = {
 export const fetchRepositories = createAsyncThunk("repositories/fetchRepositories", async (_, { rejectWithValue }) => {
   try {
     const response = await axios.get<Repository[]>("/users/repositories");
-    return response.data.filter((repository) => repository.language === "GDScript"); // Filtered repositories for Godot projects
+    return response.data //.filter((repository) => repository.language === "GDScript"); // Filtered repositories for Godot projects
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch repositories.");
   }

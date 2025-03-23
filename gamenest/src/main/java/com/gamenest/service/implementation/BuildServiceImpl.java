@@ -42,10 +42,8 @@ public class BuildServiceImpl implements BuildService {
     }
 
     @Override
-    public BuildRequest createBuild(BuildRequest buildRequest) {
-        Build build = buildMapper.convertToEntity(buildRequest);
-        build = buildRepository.save(build);
-        return buildMapper.convertToDTO(build);
+    public Build createBuild(Build build) {
+        return buildRepository.save(build);
     }
 
     @Override

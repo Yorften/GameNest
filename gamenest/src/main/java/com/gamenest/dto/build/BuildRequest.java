@@ -13,10 +13,17 @@ import lombok.*;
 @Builder
 public class BuildRequest {
     private Long id;
-    private BuildStatus buildStatus;
+
+    @Builder.Default
+    private BuildStatus buildStatus = BuildStatus.PENDING;
+
     private String logs;
+
     private String path;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+    
     private GameRequest game;
 }
