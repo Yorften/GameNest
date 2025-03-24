@@ -108,7 +108,6 @@ export const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-
       // Update installation id
       .addCase(updateUserInstallationId.pending, (state) => {
         state.status = "loading";
