@@ -12,6 +12,8 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { toast } from 'react-toastify';
 import { fetchRepositories, Repository, selectAllRepositoriess, selectRepositoryLoading } from '../../features/repositories/repositorySlice';
 import { createGame, Game, updateGame } from '../../features/games/gameSlice';
+import { RxExternalLink } from 'react-icons/rx';
+import { Link } from 'react-router-dom';
 
 type Props = {
   selectedGame?: Game | null
@@ -155,7 +157,7 @@ export default function NewGame({ selectedGame }: Props) {
     }
 
     try {
-      if (selectedGame) {        
+      if (selectedGame) {
         // If there's a selected game, we are updating
         dispatch(updateGame(payload));
         toast.success('Game updated successfully!');
@@ -224,7 +226,12 @@ export default function NewGame({ selectedGame }: Props) {
   return (
     <>
       <div className="flex items-center justify-between mb-4 px-4 pt-4">
-        <h2 className="text-3xl font-semibold">Build a new game</h2>
+        <div className='flex items-center gap-2'>
+          <h2 className="text-3xl font-semibold">{selectedGame ? "Game Details" : "Build a new game"}</h2>
+          {selectedGame && <Link to={`/games/${selectedGame.id}`} target='_blank'>
+            <RxExternalLink className='h-8 w-8' />
+          </Link>}
+        </div>
         <Button
           onClick={handleSubmit}
           className="!py-1 !px-10 hover:!brightness-200 !bg-gray-50/10 border border-primary"

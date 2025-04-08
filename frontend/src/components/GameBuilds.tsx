@@ -88,17 +88,31 @@ export default function GameBuilds({ id }: Props) {
         },
         muiTableContainerProps: {
             sx: {
-                maxHeight: 500,
+                maxHeight: 400,
+                minHeight: '50vh',
                 overflowY: 'auto',
             },
         },
         enableStickyHeader: true,
+        enableStickyFooter:true,
         // Define the detail panel to show logs.
         renderDetailPanel: ({ row }) => (
-            <div style={{ padding: '16px' }}>
+            <div>
                 <strong>Logs:</strong>
-                <pre>{row.original.logs || 'No logs available.'}</pre>
-            </div>
+                <pre style={{
+                    maxHeight: '310px',   // Set a max height specifically for the log area
+                    overflowY: 'auto',    // Make this specific area vertically scrollable
+                    whiteSpace: 'pre-wrap', // Wrap long lines instead of horizontal scrolling
+                    wordBreak: 'break-word', // Ensure long unbroken words also wrap
+                    marginTop: '8px',     // Add some space below the "Logs:" title
+                    padding: '8px',       // Add some padding inside the log box
+                    background: '#111',  // Give the log box a distinct background
+                    border: '1px solid #333',
+                    borderRadius: '4px'
+                }}>
+                    {row.original.logs || 'No logs available.'}
+                </pre>
+            </div >
         ),
         // Use muiExpandButtonProps to handle row expansion.
         muiExpandButtonProps: ({ row, table }) => ({
@@ -108,7 +122,7 @@ export default function GameBuilds({ id }: Props) {
 
     return (
         <ThemeProvider theme={darkTheme}>
-            <div className="px-4 pt-4">
+            <div className="px-4 py-4">
                 <h2 className="text-3xl font-semibold">Game Builds</h2>
             </div>
 

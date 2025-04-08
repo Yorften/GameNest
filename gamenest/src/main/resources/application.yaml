@@ -22,8 +22,13 @@ github:
   webhook:
     secret: "i am the storm that is approaching"
     app-id: 1180556
-    # Mac users
-    # private-key-path: "/Users/karizma/desktop/github-app/new-key.der"
-    private-key-path: C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.der
+    # Mac
+    private-key-path: "/Users/karizma/desktop/github-app/new-key.der"
+    # Windows
+    # private-key-path: C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.der
   build:
-    export-path: C:\\Users\\Yorften\\Documents\\github\\2222\\GameNest\\frontend\\public\\builds\\build
+    # Mac
+    export-path: "/Users/karizma/local_nginx_builds/build"
+    # export-path: "/Users/karizma/desktop/GameNest/frontend/public/builds/build"
+    # Windows
+    # export-path: C:\\Users\\Yorften\\Documents\\github\\2222\\GameNest\\frontend\\public\\builds\\build

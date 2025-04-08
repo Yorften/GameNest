@@ -100,27 +100,46 @@ public class GameBuildListener {
 
             // 7) Append \index.html"
             String exportOutputPath = new File(buildOutputFolder, "index.html").getAbsolutePath();
+            String projectFilePath = new File(cloneDir, "project.godot").getAbsolutePath();
             logs.append("Export output will be written to: ").append(exportOutputPath).append("\n");
             log.info("Export output will be written to: {}", exportOutputPath);
 
             // 8) Get godot executable from PATH env and execute it
-            String godotInstallDir = System.getenv("GODOT_PATH");
-            log.info("GODOT Env path: {}", godotInstallDir);
-            if (godotInstallDir == null || godotInstallDir.isEmpty()) {
-                logs.append("GODOT_PATH environment variable is not set.\n");
-                throw new IllegalStateException("GODOT_PATH is not set in the environment.");
-            } else {
-                String godotExecutable = godotInstallDir + "\\Godot_v4.2.2-stable_win64.exe";
-                logs.append("Using Godot executable at: ").append(godotExecutable).append("\n");
-                log.info("Using Godot executable at: {}", godotExecutable);
+            String godotExecutablePath = System.getenv("GODOT_PATH");
+            log.info("Attempting to use Godot executable from GODOT_PATH: {}", godotExecutablePath);
 
+            if (godotExecutablePath == null || godotExecutablePath.isEmpty()) {
+                logs.append("GODOT_PATH environment variable is not set or is empty.\n");
+                logs.append("Please set GODOT_PATH to the full path of the Godot executable.\n");
+                throw new IllegalStateException("GODOT_PATH environment variable not set or empty. It should point to the Godot executable.");
+            } else {
+                // Check if the specified executable file exists (optional but recommended)
+                File godotExecutableFile = new File(godotExecutablePath);
+                if (!godotExecutableFile.exists() || !godotExecutableFile.isFile()) {
+                    logs.append("Godot executable specified by GODOT_PATH not found or is not a file: ")
+                        .append(godotExecutablePath).append("\n");
+                    throw new IllegalStateException("Godot executable not found at path specified by GODOT_PATH: " + godotExecutablePath);
+                }
+                 if (!godotExecutableFile.canExecute()) {
+                     // Note: canExecute() might be unreliable on some systems (esp. Windows).
+                     // You might skip this check or just log a warning.
+                     logs.append("Warning: Godot executable specified by GODOT_PATH may not be executable: ")
+                         .append(godotExecutablePath).append("\n");
+                     log.warn("Godot executable specified by GODOT_PATH may not have execute permissions: {}", godotExecutablePath);
+                 }
+
+
+                logs.append("Using Godot executable: ").append(godotExecutablePath).append("\n");
+                log.info("Using Godot executable: {}", godotExecutablePath);
+
+                // Use the godotExecutablePath directly from the environment variable
                 ProcessBuilder pb = new ProcessBuilder(
-                        godotExecutable,
+                        godotExecutablePath,         
                         "--headless",
-                        cloneDir.getAbsolutePath() + "/project.godot",
-                        "--export-release",
-                        "Web",
-                        exportOutputPath);
+                        projectFilePath,             
+                        "--export-release",          
+                        "Web",                       
+                        exportOutputPath);           
 
                 pb.redirectErrorStream(true); // merge stderr into stdout
 
@@ -136,7 +155,7 @@ public class GameBuildListener {
 
                 int exitCode = process.waitFor();
                 if (exitCode == 0) {
-                    log.error("Build succeeded!");
+                    log.info("Godot export command completed successfully.");
                     logs.append("Godot export succeeded.\n");
                     buildService.updateBuild(build.getId(), UpdateBuildRequest.builder()
                             .buildStatus(BuildStatus.SUCCESS)
@@ -144,7 +163,7 @@ public class GameBuildListener {
                             .path(buildOutputFolder.getAbsolutePath())
                             .build());
                 } else {
-                    log.error("Build failed with error code: {}", exitCode);
+                    log.error("Godot export command failed with exit code: {}", exitCode);
                     logs.append("Godot export failed with exit code ").append(exitCode).append("\n");
                     buildService.updateBuild(build.getId(), UpdateBuildRequest.builder()
                             .buildStatus(BuildStatus.FAIL)
@@ -152,6 +171,7 @@ public class GameBuildListener {
                             .build());
                 }
             }
+
         } catch (Exception e) {
             logs.append("Build process failed: ").append(e.getMessage()).append("\n");
             buildService.updateBuild(build.getId(), UpdateBuildRequest.builder()
