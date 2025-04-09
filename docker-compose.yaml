@@ -11,8 +11,14 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_BUILD_EXPORT_PATH: /app/final_builds/build
+      SPRING_PRIVATE_KEY_PATH: /app/secrets/github-key.der
     volumes:
       - ./logs:/gamenest/logs
+      # --- Mount the named game builds ---
+      - game-builds:/app/final_builds
+      # Make sure the source path on your host is correct
+      - /Users/karizma/desktop/github-app/new-key.der:/app/secrets/github-key.der:ro # ro: read-only mounted volume
     depends_on:
       db:
         condition: service_healthy
@@ -45,5 +51,22 @@ services:
       - "5173:80"
     restart: unless-stopped
 
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: gamenest-nginx
+    ports:
+      # Map host port 80 to container port 80 for HTTP
+      # Add 443:443 if you configure SSL later
+      - "80:80"
+    volumes:
+      # Mount the game builds (read-only) ---
+      - game-builds:/usr/share/nginx/html/builds:ro
+    depends_on:
+      - gamenest-app
+    restart: unless-stopped
+
 volumes:
   db-data:
+  game-builds:
