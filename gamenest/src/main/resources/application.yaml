@@ -22,7 +22,7 @@ cors-origin: http://localhost:81
 
 github:
   webhook:
-    secret: ${SPRING_GITHUB_WEBHOOK_SECRET:"i am the storm that is approaching"}
+    secret: ${SPRING_GITHUB_WEBHOOK_SECRET:i am the storm that is approaching}
     app-id: ${SPRING_GITHUB_APP_ID:1180556}
     # Mac
     private-key-path: ${SPRING_PRIVATE_KEY_PATH:/Users/karizma/desktop/github-app/new-key.der}

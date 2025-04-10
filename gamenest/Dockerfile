@@ -19,14 +19,14 @@ RUN apt-get update && \
     echo "Downloading Templates from ${GODOT_TEMPLATES_URL}" && \
     curl -L ${GODOT_TEMPLATES_URL} -o /tmp/godot-templates.tpz && \
     # Create standard directories for Godot templates (system-wide path)
-    mkdir -p /usr/local/share/godot/templates/${GODOT_VERSION}.stable && \
+    mkdir -p /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable && \
     # Unzip and install Godot binary
     unzip /tmp/godot-binary.zip -d /opt && \
     mv /opt/${GODOT_EXPECTED_BINARY} /usr/local/bin/godot && \
     chmod +x /usr/local/bin/godot && \
     # Unzip and install templates
     unzip /tmp/godot-templates.tpz -d /tmp && \
-    mv /tmp/templates/* /usr/local/share/godot/templates/${GODOT_VERSION}.stable/ && \
+    mv /tmp/templates/* /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable/ && \
     echo "Verifying Godot installation..." && \
     godot --version && \
     # Clean up downloaded files and temporary dependencies
