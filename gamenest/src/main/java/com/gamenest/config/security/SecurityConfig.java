@@ -16,6 +16,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.gamenest.config.jwt.JWTAuthEntryPoint;
 import com.gamenest.config.jwt.JWTAuthenticationFilter;
 import com.gamenest.service.implementation.CustomUserDetailsServiceImpl;
@@ -26,6 +28,9 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+	@Value("${cors-origin}")
+    private String corsOrigin;
 
 	private final JWTAuthEntryPoint authEntryPoint;
 	private final CustomUserDetailsServiceImpl customUserDetailsService;
@@ -75,7 +80,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("http://localhost:5173");
+		configuration.addAllowedOrigin(corsOrigin);
 		configuration.addAllowedMethod("*");
 		configuration.addAllowedHeader("*");
 		configuration.setAllowCredentials(true);

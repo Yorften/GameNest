@@ -18,6 +18,8 @@ spring:
   jackson:
     default-property-inclusion: NON_NULL
 
+cors-origin: http://localhost:81
+
 github:
   webhook:
     secret: ${SPRING_GITHUB_WEBHOOK_SECRET:"i am the storm that is approaching"}

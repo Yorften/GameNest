@@ -42,26 +42,19 @@ services:
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: gamenest-frontend
-    ports:
-      - "5173:80"
-    restart: unless-stopped
-
   nginx:
     build:
-      context: ./nginx
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./nginx/Dockerfile
+      args:
+        API_URL: http://localhost:8085/api/v1
+        GITHUB_APP_URL: https://github.com/apps/gamenestapplication
+        GAME_BUILDS_URL: /builds
     container_name: gamenest-nginx
     ports:
-      # Map host port 80 to container port 80 for HTTP
-      # Add 443:443 if you configure SSL later
-      - "80:80"
+      - "81:80"
     volumes:
-      # Mount the game builds (read-only) ---
+      # --- Mount the game builds (read-only) ---
       - game-builds:/usr/share/nginx/html/builds:ro
     depends_on:
       - gamenest-app

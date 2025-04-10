@@ -9,7 +9,7 @@ export default defineConfig({
       name: "set-cors-headers",
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
-          if (req.originalUrl && (req.originalUrl.startsWith("/games") || req.originalUrl.startsWith("/builds"))) {       
+          if (req.originalUrl && req.originalUrl.startsWith("/games")) {
             res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
             res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
           }
