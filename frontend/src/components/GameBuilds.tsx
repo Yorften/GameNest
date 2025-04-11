@@ -2,10 +2,18 @@ import { useEffect, useMemo, useRef } from 'react';
 import { MaterialReactTable, MRT_ColumnDef, useMaterialReactTable } from 'material-react-table';
 import { Chip, createTheme, ThemeProvider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchBuilds, selectAllBuilds, selectBuildsLoading, selectBuildsError, Build } from '../features/builds/buildSlice';
+import { fetchBuilds, selectAllBuilds, selectBuildsLoading, selectBuildsError, Build, upsertBuild } from '../features/builds/buildSlice';
 
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { selectCurrentToken } from '../features/auth/authSlice';
+
+interface BuildStatusUpdateMessage {
+    build: Build;
+    buildId: number;
+    gameId: number;
+    status: string;
+}
 
 interface BuildLogMessage {
     buildId: number;
@@ -22,6 +30,7 @@ export default function GameBuilds({ id }: Props) {
     const builds = useAppSelector(selectAllBuilds);
     const loading = useAppSelector(selectBuildsLoading);
     const error = useAppSelector(selectBuildsError);
+    const jwtToken = useAppSelector(selectCurrentToken);
 
     const stompClientRef = useRef<Client | null>(null);
     const subscriptionsRef = useRef<Map<string, any>>(new Map());
@@ -39,69 +48,79 @@ export default function GameBuilds({ id }: Props) {
             return;
         }
 
+        // --- Configuration ---
         const backendWsUrl = 'http://localhost:8085/ws';
         const gameId = id;
         const statusTopic = `/topic/builds/${gameId}/status`;
+        // Note: Log topic is build-specific: `/topic/builds/{buildId}/logs`
+        // We'll subscribe to status first, and potentially logs if we get a buildId
 
-         const client = new Client({
-             webSocketFactory: () => new SockJS(backendWsUrl),
-             debug: function (str) {
-                 console.log('STOMP Debug:', str);
-             },
-             reconnectDelay: 5000, // Try to reconnect every 5 seconds if connection is lost
-             heartbeatIncoming: 4000,
-             heartbeatOutgoing: 4000,
-         });
+        console.log(`WebSocket: Attempting to connect for game ID: ${gameId}`);
 
-        // --- Connection Logic ---
+
+        const client = new Client({
+            webSocketFactory: () => new SockJS(backendWsUrl),
+            debug: function (str) {
+                console.log('STOMP Debug:', str);
+            },
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000,
+        });
+
+
         client.onConnect = (frame) => {
             console.log('STOMP: Connected successfully!', frame);
 
-            // *** Subscribe to Game Status Updates ***
             console.log(`STOMP: Subscribing to ${statusTopic}`);
             const statusSubscription = client.subscribe(statusTopic, (message: IMessage) => {
                 try {
-                    const statusUpdate: Build = JSON.parse(message.body);
-                    console.log(`%c[WebSocket Status Update - Game ${gameId}]:`, 'color: blue; font-weight: bold;', statusUpdate);
+                    const buildUpdate: BuildStatusUpdateMessage = JSON.parse(message.body);
+                    console.log(`%c[WebSocket Status Update - Game ${gameId}]:`, 'color: blue; font-weight: bold;', buildUpdate);
 
                     // *** Dynamic Log Subscription (Example) ***
                     // If we get a RUNNING status, we might want to subscribe to its logs
-                    if (statusUpdate.status === 'RUNNING' && statusUpdate.buildId) {
-                        const buildId = statusUpdate.buildId;
+                    if (buildUpdate.status === 'RUNNING' && buildUpdate.buildId) {
+                        const build = buildUpdate.build;
+                        const buildId = buildUpdate.buildId;
                         const logTopic = `/topic/builds/${buildId}/logs`;
+
+                        if (!builds.includes(build)) {
+                            dispatch(upsertBuild(build));
+                        }
 
                         // Avoid duplicate subscriptions
                         if (!subscriptionsRef.current.has(logTopic)) {
-                             console.log(`%cSTOMP: Dynamically subscribing to logs for build ${buildId} at ${logTopic}`, 'color: green;');
-                             const logSubscription = client.subscribe(logTopic, (logMessage: IMessage) => {
-                                 try {
-                                     const logData: BuildLogMessage = JSON.parse(logMessage.body);
-                                     // Only log if it matches the build we subscribed for (sanity check)
-                                     if (logData.buildId === buildId) {
-                                         console.log(`%c[WebSocket Log - Build ${buildId}]: ${logData.line}`, 'color: gray;');
-                                     }
-                                 } catch (e) {
-                                     console.error("STOMP: Failed to parse log message:", e, logMessage.body);
-                                 }
-                             });
-                             subscriptionsRef.current.set(logTopic, logSubscription); // Store subscription
+                            console.log(`%cSTOMP: Dynamically subscribing to logs for build ${buildId} at ${logTopic}`, 'color: green;');
+                            const logSubscription = client.subscribe(logTopic, (logMessage: IMessage) => {
+                                try {
+                                    const logData: BuildLogMessage = JSON.parse(logMessage.body);
+                                    // Only log if it matches the build we subscribed for (sanity check)
+                                    if (logData.buildId === buildId) {
+                                        console.log(`%c[WebSocket Log - Build ${buildId}]: ${logData.line}`, 'color: gray;');
+                                    }
+                                } catch (e) {
+                                    console.error("STOMP: Failed to parse log message:", e, logMessage.body);
+                                }
+                            });
+                            subscriptionsRef.current.set(logTopic, logSubscription);
                         }
                     }
-                     // Optional: Unsubscribe from logs when build finishes?
-                     if ((statusUpdate.status === 'SUCCESS' || statusUpdate.status === 'FAIL') && statusUpdate.buildId) {
-                         const logTopic = `/topic/builds/${statusUpdate.buildId}/logs`;
-                         if (subscriptionsRef.current.has(logTopic)) {
-                             console.log(`%cSTOMP: Unsubscribing from logs for finished build ${statusUpdate.buildId}`, 'color: orange;');
-                             subscriptionsRef.current.get(logTopic)?.unsubscribe();
-                             subscriptionsRef.current.delete(logTopic);
-                         }
-                     }
+                    // Optional: Unsubscribe from logs when build finishes?
+                    if ((buildUpdate.status === 'SUCCESS' || buildUpdate.status === 'FAIL') && buildUpdate.buildId) {
+                        const logTopic = `/topic/builds/${buildUpdate.buildId}/logs`;
+                        if (subscriptionsRef.current.has(logTopic)) {
+                            console.log(`%cSTOMP: Unsubscribing from logs for finished build ${buildUpdate.buildId}`, 'color: orange;');
+                            subscriptionsRef.current.get(logTopic)?.unsubscribe();
+                            subscriptionsRef.current.delete(logTopic);
+                        }
+                    }
 
                 } catch (e) {
                     console.error("STOMP: Failed to parse status message:", e, message.body);
                 }
             });
-             subscriptionsRef.current.set(statusTopic, statusSubscription); // Store subscription
+            subscriptionsRef.current.set(statusTopic, statusSubscription); // Store subscription
 
         };
 
@@ -111,15 +130,15 @@ export default function GameBuilds({ id }: Props) {
             console.error('STOMP: Additional details:', frame.body);
         };
 
-         client.onWebSocketError = (event) => {
-             console.error('WebSocket Error:', event);
-         };
+        client.onWebSocketError = (event) => {
+            console.error('WebSocket Error:', event);
+        };
 
-         client.onWebSocketClose = (event) => {
-             console.warn('WebSocket Closed:', event);
-             // Clean up subscriptions map on close
-             subscriptionsRef.current.clear();
-         };
+        client.onWebSocketClose = (event) => {
+            console.warn('WebSocket Closed:', event);
+            // Clean up subscriptions map on close
+            subscriptionsRef.current.clear();
+        };
 
 
         // --- Activation & Cleanup ---
@@ -134,11 +153,11 @@ export default function GameBuilds({ id }: Props) {
                 console.log("STOMP: Deactivating client...");
                 try {
                     // Unsubscribe from all stored subscriptions explicitly
-                     subscriptionsRef.current.forEach((sub, topic) => {
-                         console.log(`STOMP: Cleaning up subscription to ${topic}`);
-                         sub?.unsubscribe();
-                     });
-                     subscriptionsRef.current.clear();
+                    subscriptionsRef.current.forEach((sub, topic) => {
+                        console.log(`STOMP: Cleaning up subscription to ${topic}`);
+                        sub?.unsubscribe();
+                    });
+                    subscriptionsRef.current.clear();
 
                     stompClientRef.current.deactivate(); // Gracefully disconnect
                     console.log("STOMP: Client deactivated.");
@@ -148,10 +167,10 @@ export default function GameBuilds({ id }: Props) {
             } else {
                 console.log("STOMP: Client was not active, no deactivation needed.");
             }
-             stompClientRef.current = null; // Clear the ref
+            stompClientRef.current = null; // Clear the ref
         };
 
-    }, [id]); 
+    }, [id]);
 
     const darkTheme = createTheme({
         palette: {

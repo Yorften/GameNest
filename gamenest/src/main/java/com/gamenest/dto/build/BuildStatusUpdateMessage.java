@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BuildStatusUpdateMessage {
+    private BuildRequest build;
     private Long buildId;
     private Long gameId;
     private BuildStatus status;

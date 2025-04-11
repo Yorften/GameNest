@@ -61,6 +61,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/v1/games/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/v1/tags").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+						.requestMatchers(HttpMethod.GET, "/ws/**").permitAll()
 						.requestMatchers("/api/v1/users").hasAnyRole("ADMIN", "USER")
 						.requestMatchers("/api/v1/games").hasAnyRole("ADMIN", "USER")
 						.requestMatchers("/api/v1/categories").hasAnyRole("ADMIN")

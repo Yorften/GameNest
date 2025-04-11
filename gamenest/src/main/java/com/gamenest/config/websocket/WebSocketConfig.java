@@ -1,5 +1,6 @@
 package com.gamenest.config.websocket;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -9,7 +10,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    
+
+    @Value("${cors-origin}")
+    private String corsOrigin;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // Enable a simple in-memory message broker to carry messages back to the client
@@ -31,6 +35,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // may be used if WebSocket is not available. Good for browser compatibility.
         registry.addEndpoint("/ws").withSockJS();
 
-        // registry.addEndpoint("/ws").setAllowedOrigins(*).withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins(corsOrigin).withSockJS();
     }
 }

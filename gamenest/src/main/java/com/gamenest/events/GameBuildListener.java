@@ -18,6 +18,7 @@ import com.gamenest.dto.build.BuildLogMessage;
 import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.dto.build.BuildStatusUpdateMessage;
 import com.gamenest.dto.build.UpdateBuildRequest;
+import com.gamenest.mapper.BuildMapper;
 import com.gamenest.model.Build;
 import com.gamenest.model.Game;
 import com.gamenest.model.enums.BuildStatus;
@@ -33,6 +34,7 @@ public class GameBuildListener {
 
     private final BuildService buildService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final BuildMapper buildMapper;
 
     @Value("${github.build.export-path}")
     private String buildExportPath;
@@ -44,7 +46,8 @@ public class GameBuildListener {
             Long buildId = build.getId();
 
             String destination = String.format("/topic/builds/%d/status", gameId);
-            BuildStatusUpdateMessage message = new BuildStatusUpdateMessage(buildId, gameId, status);
+            BuildStatusUpdateMessage message = new BuildStatusUpdateMessage(buildMapper.convertToDTO(build), buildId,
+                    gameId, status);
             log.debug("Sending status update to {}: {}", destination, message);
 
             messagingTemplate.convertAndSend(destination, message);
@@ -59,7 +62,7 @@ public class GameBuildListener {
             Long buildId = build.getId();
 
             String destination = String.format("/topic/builds/%d/status", gameId);
-            BuildStatusUpdateMessage message = new BuildStatusUpdateMessage(buildId, gameId, status);
+            BuildStatusUpdateMessage message = new BuildStatusUpdateMessage(build, buildId, gameId, status);
             log.debug("Sending status update to {}: {}", destination, message);
 
             messagingTemplate.convertAndSend(destination, message);

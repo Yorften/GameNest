@@ -37,7 +37,6 @@ const initialState: BuildState = {
 export const fetchBuilds = createAsyncThunk("builds/fetchBuilds", async (gameId: number, { rejectWithValue }) => {
   try {
     const response = await axios.get<Build[]>(`/builds/game/${gameId}`);
-    console.log(response.data);
     return response.data; // a list of builds
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Failed to fetch builds.");
@@ -60,7 +59,36 @@ export const fetchLatestBuild = createAsyncThunk(
 export const buildSlice = createSlice({
   name: "fetchBuilds",
   initialState,
-  reducers: {},
+  reducers: {
+    /**
+     * Adds a new build or updates an existing one in the state.
+     * Expects a complete Build object as payload.
+     */
+    upsertBuild: (state, action: PayloadAction<Build>) => {
+      const newBuild = action.payload;
+      const index = state.builds.findIndex((build) => build.id === newBuild.id);
+
+      if (index !== -1) {
+        // Update existing build: Merge new data into the existing one
+        // This ensures we don't lose fields like 'logs' if the payload only has status/id
+        state.builds[index] = { ...state.builds[index], ...newBuild };
+      } else {
+        // Add new build: Add to the beginning of the array
+        state.builds.push(newBuild);
+      }
+    },
+
+    /**
+     * Optional: Reducer specifically for updating logs if logs are streamed separately
+     */
+    updateBuildLog: (state, action: PayloadAction<{ buildId: number; line: string }>) => {
+      const { buildId, line } = action.payload;
+      const build = state.builds.find((b) => b.id === buildId);
+      if (build) {
+        build.logs = (build.logs ? build.logs + "\n" : "") + line;
+      }
+    },
+  },
   extraReducers: (builder) => {
     // Fetch All
     builder.addCase(fetchBuilds.pending, (state) => {
@@ -90,6 +118,8 @@ export const buildSlice = createSlice({
     });
   },
 });
+
+export const { upsertBuild, updateBuildLog } = buildSlice.actions;
 
 export const selectAllBuilds = (state: RootState) => state.builds.builds;
 export const selectLastBuild = (state: RootState) => state.builds.lastBuild;
