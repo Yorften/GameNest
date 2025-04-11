@@ -54,6 +54,7 @@ services:
       context: .
       dockerfile: ./nginx/Dockerfile
       args:
+        API_BASE: http://localhost:8085
         API_URL: http://localhost:8085/api/v1
         GITHUB_APP_URL: https://github.com/apps/gamenestapplication
         GAME_BUILDS_URL: /builds

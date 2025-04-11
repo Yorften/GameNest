@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef } from 'react';
+
+import SockJS from 'sockjs-client';
 import { MaterialReactTable, MRT_ColumnDef, useMaterialReactTable } from 'material-react-table';
-import { Chip, createTheme, ThemeProvider } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { fetchBuilds, selectAllBuilds, selectBuildsLoading, selectBuildsError, Build, upsertBuild, updateBuildLog } from '../features/builds/buildSlice';
 
 import { Client, IMessage } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
+import { Chip, createTheme, ThemeProvider } from '@mui/material';
+
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectCurrentToken } from '../features/auth/authSlice';
+import { Build, fetchBuilds, selectAllBuilds, selectBuildsError, selectBuildsLoading, updateBuildLog, upsertBuild } from '../features/builds/buildSlice';
 
 interface BuildStatusUpdateMessage {
     build: Build;
@@ -44,25 +46,19 @@ export default function GameBuilds({ id }: Props) {
 
     useEffect(() => {
         if (id === undefined || id === null) {
-            console.log("WebSocket: No game ID provided, skipping connection.");
             return;
         }
 
         // --- Configuration ---
-        const backendWsUrl = 'http://localhost:8085/ws';
+        const backendWsUrl = `${import.meta.env.VITE_API_URL}/ws`;
         const gameId = id;
         const statusTopic = `/topic/builds/${gameId}/status`;
         // Note: Log topic is build-specific: `/topic/builds/{buildId}/logs`
         // We'll subscribe to status first, and potentially logs if we get a buildId
 
-        console.log(`WebSocket: Attempting to connect for game ID: ${gameId}`);
-
 
         const client = new Client({
             webSocketFactory: () => new SockJS(backendWsUrl),
-            debug: function (str) {
-                console.log('STOMP Debug:', str);
-            },
             connectHeaders: {
                 'Authorization': `Bearer ${jwtToken}`
             },
@@ -79,45 +75,43 @@ export default function GameBuilds({ id }: Props) {
             const statusSubscription = client.subscribe(statusTopic, (message: IMessage) => {
                 try {
                     const buildUpdate: BuildStatusUpdateMessage = JSON.parse(message.body);
-                    console.log(`%c[WebSocket Status Update - Game ${gameId}]:`, 'color: blue; font-weight: bold;', buildUpdate);
+                    const build = buildUpdate.build;
+                    const buildId = buildUpdate.buildId;
 
                     // *** Dynamic Log Subscription (Example) ***
                     // If we get a RUNNING status, we might want to subscribe to its logs
                     if (buildUpdate.status === 'RUNNING' && buildUpdate.buildId) {
-                        const build = buildUpdate.build;
-                        const buildId = buildUpdate.buildId;
                         const logTopic = `/topic/builds/${buildId}/logs`;
 
+                        // If the user is still in the builds page when the build starts we should add the new build to our store
                         if (!builds.includes(build)) {
                             dispatch(upsertBuild(build));
                         }
 
-                        if (buildUpdate.status === 'RUNNING' && buildUpdate.buildId) {
-                            const buildId = buildUpdate.buildId;
-                            const logTopic = `/topic/builds/${buildId}/logs`;
-                            // Avoid duplicate subscriptions
-                            if (!subscriptionsRef.current.has(logTopic)) {
-                                console.log(`%cSTOMP: Dynamically subscribing to logs for build ${buildId} at ${logTopic}`, 'color: green;');
-                                const logSubscription = client.subscribe(logTopic, (logMessage: IMessage) => {
-                                    try {
-                                        const logData: BuildLogMessage = JSON.parse(logMessage.body);
-                                        // Only log if it matches the build we subscribed for (sanity check)
-                                        if (logData.buildId === buildId) {
-                                            console.log(`%c[WebSocket Log - Build ${buildId}]: ${logData.line}`, 'color: gray;');
-                                            dispatch(updateBuildLog({ buildId: logData.buildId, line: logData.line }));
-                                        }
-                                    } catch (e) {
-                                        console.error("STOMP: Failed to parse log message:", e, logMessage.body);
+                        // Avoid duplicate subscriptions
+                        if (!subscriptionsRef.current.has(logTopic)) {
+                            const logSubscription = client.subscribe(logTopic, (logMessage: IMessage) => {
+                                try {
+                                    const logData: BuildLogMessage = JSON.parse(logMessage.body);
+                                    // Only log if it matches the build we subscribed for (sanity check)
+                                    if (logData.buildId === buildId) {
+                                        dispatch(updateBuildLog({ buildId: logData.buildId, line: logData.line }));
                                     }
-                                });
-                                subscriptionsRef.current.set(logTopic, logSubscription);
-                            }
+                                } catch (e) {
+                                    console.error("STOMP: Failed to parse log message:", e, logMessage.body);
+                                }
+                            });
+                            subscriptionsRef.current.set(logTopic, logSubscription);
                         }
                     }
+
 
                     // Optional: Unsubscribe from logs when build finishes
                     if ((buildUpdate.status === 'SUCCESS' || buildUpdate.status === 'FAIL') && buildUpdate.buildId) {
                         const logTopic = `/topic/builds/${buildUpdate.buildId}/logs`;
+                        // Update the build status
+
+                        dispatch(upsertBuild(build));
                         if (subscriptionsRef.current.has(logTopic)) {
                             console.log(`%cSTOMP: Unsubscribing from logs for finished build ${buildUpdate.buildId}`, 'color: orange;');
                             subscriptionsRef.current.get(logTopic)?.unsubscribe();
@@ -170,7 +164,6 @@ export default function GameBuilds({ id }: Props) {
                     console.error("STOMP: Error during deactivation", e);
                 }
             } else {
-                console.log("STOMP: Client was not active, no deactivation needed.");
             }
             stompClientRef.current = null;
         };
@@ -238,6 +231,15 @@ export default function GameBuilds({ id }: Props) {
         data: builds,
         state: {
             isLoading: loading,
+        },
+        initialState: {
+            pagination: {
+                pageIndex: 0,
+                pageSize: 6,
+            },
+        },
+        muiPaginationProps: {
+            rowsPerPageOptions: [5, 6, 10, 15, 20, 25, 30, 50, 100],
         },
         mrtTheme: {
             baseBackgroundColor: '#0a0b0b',

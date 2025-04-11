@@ -40,29 +40,13 @@ public class GameBuildListener {
     private String buildExportPath;
 
     // Helper method to send status updates via WebSocket
-    private void sendStatusUpdate(Build build, BuildStatus status) {
-        if (build != null && build.getId() != null && build.getGame() != null && build.getGame().getId() != null) {
-            Long gameId = build.getGame().getId();
+    private void sendStatusUpdate(Build build, Long gameId, BuildStatus status) {
+        if (build != null && build.getId() != null && gameId != null) {
             Long buildId = build.getId();
 
             String destination = String.format("/topic/builds/%d/status", gameId);
             BuildStatusUpdateMessage message = new BuildStatusUpdateMessage(buildMapper.convertToDTO(build), buildId,
                     gameId, status);
-            log.debug("Sending status update to {}: {}", destination, message);
-
-            messagingTemplate.convertAndSend(destination, message);
-        } else {
-            log.warn("Could not send status update, build or game info missing.");
-        }
-    }
-
-    private void sendStatusUpdate(BuildRequest build, BuildStatus status) {
-        if (build != null && build.getId() != null && build.getGame() != null && build.getGame().getId() != null) {
-            Long gameId = build.getGame().getId();
-            Long buildId = build.getId();
-
-            String destination = String.format("/topic/builds/%d/status", gameId);
-            BuildStatusUpdateMessage message = new BuildStatusUpdateMessage(build, buildId, gameId, status);
             log.debug("Sending status update to {}: {}", destination, message);
 
             messagingTemplate.convertAndSend(destination, message);
@@ -96,6 +80,7 @@ public class GameBuildListener {
         File buildOutputFolder = null;
         Git git = null;
         Game game = event.getGame();
+        Long gameId = game.getId();
 
         // 1) Create the build instance
         build = buildService.createBuild(Build.builder()
@@ -103,7 +88,7 @@ public class GameBuildListener {
                 .game(game)
                 .build());
 
-        sendStatusUpdate(build, BuildStatus.RUNNING);
+        sendStatusUpdate(build, gameId, BuildStatus.RUNNING);
 
         // log.info("path: {}", System.getProperty("user.dir"));
         try {
@@ -245,7 +230,7 @@ public class GameBuildListener {
                             .logs(logs.toString())
                             .build());
 
-                    sendStatusUpdate(updatedBuild, BuildStatus.SUCCESS);
+                    sendStatusUpdate(buildMapper.convertToEntity(updatedBuild), gameId, BuildStatus.SUCCESS);
                 } else {
                     log.error("Godot export command failed with exit code: {}", exitCode);
                     String failMsg = "Godot export failed with exit code " + exitCode;
@@ -256,7 +241,7 @@ public class GameBuildListener {
                             .logs(logs.toString())
                             .build());
 
-                    sendStatusUpdate(updatedBuild, BuildStatus.FAIL);
+                    sendStatusUpdate(buildMapper.convertToEntity(updatedBuild), gameId, BuildStatus.FAIL);
                 }
             }
 
@@ -270,7 +255,7 @@ public class GameBuildListener {
                         .buildStatus(BuildStatus.FAIL)
                         .logs(logs.toString())
                         .build());
-                sendStatusUpdate(updatedBuild, BuildStatus.FAIL);
+                sendStatusUpdate(buildMapper.convertToEntity(updatedBuild), gameId, BuildStatus.FAIL);
             } else {
                 log.error("Error during build process before build entity could be fully initialized or persisted: {}",
                         e.getMessage(), e);

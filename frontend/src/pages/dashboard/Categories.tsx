@@ -112,6 +112,12 @@ export default function Categories() {
       isLoading: loading,
       showProgressBars: loading,
     },
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 5,
+      },
+    },
     mrtTheme: {
       baseBackgroundColor: '#0a0b0b',
     },
