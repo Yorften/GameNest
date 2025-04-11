@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gamenest.config.jwt.JWTGenerator;
+import com.gamenest.config.jwt.JwtTokenUtil;
 import com.gamenest.dto.auth.AuthResponse;
 import com.gamenest.dto.auth.LoginRequest;
 import com.gamenest.dto.user.UserRequest;
@@ -46,7 +46,7 @@ public class AuthController {
     private final UserService userService;
     private final TokenBlacklistRepository tokenBlacklistRepository;
     private final AuthenticationManager authenticationManager;
-    private final JWTGenerator tokenGenerator;
+    private final JwtTokenUtil tokenGenerator;
     private final HttpServletRequest request;
 
     @Operation(summary = "Login user", description = "Authenticates a user and generates a JWT token.")

@@ -74,7 +74,7 @@ export const buildSlice = createSlice({
         state.builds[index] = { ...state.builds[index], ...newBuild };
       } else {
         // Add new build: Add to the beginning of the array
-        state.builds.push(newBuild);
+        state.builds.unshift(newBuild);
       }
     },
 

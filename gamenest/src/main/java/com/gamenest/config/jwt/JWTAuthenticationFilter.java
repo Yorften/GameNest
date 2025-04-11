@@ -25,10 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private TokenBlacklistRepository tokenBlacklistRepository;
-    private JWTGenerator tokenGenerator;
+    private JwtTokenUtil tokenGenerator;
     private CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
 
-    public JWTAuthenticationFilter(JWTGenerator tokenGenerator,
+    public JWTAuthenticationFilter(JwtTokenUtil tokenGenerator,
             CustomUserDetailsServiceImpl customUserDetailsServiceImpl,
             TokenBlacklistRepository tokenBlacklistRepository) {
         this.tokenGenerator = tokenGenerator;

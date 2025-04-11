@@ -16,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class JWTGenerator {
+public class JwtTokenUtil {
 
     private SecurityConstants securityConstants;
 
-    public JWTGenerator(SecurityConstants securityConstants) {
+    public JwtTokenUtil(SecurityConstants securityConstants) {
         this.securityConstants = securityConstants;
     }
 

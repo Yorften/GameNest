@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import com.gamenest.config.github.JwtTokenUtil;
+import com.gamenest.config.github.GithubJwtTokenUtil;
 import com.gamenest.dto.game.GameRequest;
 import com.gamenest.dto.repo.GhRepositoryRequest;
 import com.gamenest.dto.user.UserRequest;
@@ -44,7 +44,7 @@ public class UserController {
 
 	private final UserService userService;
 	private final GameService gameService;
-	private final JwtTokenUtil jwtTokenUtil;
+	private final GithubJwtTokenUtil githubJwtTokenUtil;
 
 	@Value("${github.webhook.app-id}")
 	private String applicationId;
@@ -60,7 +60,7 @@ public class UserController {
 			throw new InvalidDataException("User doesn't have a github installation Id");
 		}
 
-		String jwtToken = jwtTokenUtil.createJWT(applicationId, 60000);
+		String jwtToken = githubJwtTokenUtil.createJWT(applicationId, 60000);
 
 		GitHub gitHubApp = new GitHubBuilder().withJwtToken(jwtToken).build();
 

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class JwtTokenUtil {
+public class GithubJwtTokenUtil {
 
     @Value("${github.webhook.private-key-path}")
     private String privateKeyPath;
