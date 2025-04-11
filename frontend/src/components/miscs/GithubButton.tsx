@@ -7,10 +7,16 @@ export default function GithubButton({ className }: Props) {
   const githubApplicationUrl = import.meta.env.VITE_GITHUB_APP_URL;
 
   const handleInstallApp = () => {
+    const width = 600;
+    const height = 700;
+  
+    const left = (window.innerWidth - width) / 2 + window.screenX;
+    const top = (window.innerHeight - height) / 2 + window.screenY;
+  
     window.open(
       githubApplicationUrl,
       'Install GitHub App',
-      'popup,left=500,top=50,width=600,height=700'
+      `popup,left=${left},top=${top},width=${width},height=${height}`
     );
   };
 

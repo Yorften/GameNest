@@ -24,7 +24,6 @@ const App = () => {
       if (event.data?.type === 'github-installation') {
 
         const { installationId } = event.data;
-        console.log(event.data);
 
         dispatch(updateUserInstallationId(installationId));
 

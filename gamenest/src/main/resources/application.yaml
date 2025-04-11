@@ -18,7 +18,7 @@ spring:
   jackson:
     default-property-inclusion: NON_NULL
 
-cors-origin: http://localhost:81
+cors-origin: ${SPRING_CORS_ORIGIN_URL:http://localhost:5173}
 
 github:
   webhook:

@@ -160,7 +160,6 @@ public class GameBuildListener {
                     buildService.updateBuild(build.getId(), UpdateBuildRequest.builder()
                             .buildStatus(BuildStatus.SUCCESS)
                             .logs(logs.toString())
-                            .path(buildOutputFolder.getAbsolutePath())
                             .build());
                 } else {
                     log.error("Godot export command failed with exit code: {}", exitCode);

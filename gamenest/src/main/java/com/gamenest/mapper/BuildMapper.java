@@ -18,7 +18,6 @@ public class BuildMapper {
                 .id(dto.getId())
                 .buildStatus(dto.getBuildStatus())
                 .logs(dto.getLogs())
-                .path(dto.getPath())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();
@@ -31,7 +30,6 @@ public class BuildMapper {
                 .id(build.getId())
                 .buildStatus(build.getBuildStatus())
                 .logs(build.getLogs())
-                .path(build.getPath())
                 .createdAt(build.getCreatedAt())
                 .updatedAt(build.getUpdatedAt())
                 .build();

@@ -56,9 +56,6 @@ public class BuildServiceImpl implements BuildService {
         if (updateBuildRequest.getLogs() != null && !updateBuildRequest.getLogs().isEmpty()) {
             existing.setLogs(updateBuildRequest.getLogs());
         }
-        if (updateBuildRequest.getPath() != null && !updateBuildRequest.getPath().isEmpty()) {
-            existing.setPath(updateBuildRequest.getPath());
-        }
 
         existing = buildRepository.save(existing);
         return buildMapper.convertToDTO(existing);

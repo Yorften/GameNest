@@ -100,13 +100,13 @@ export default function GameBuilds({ id }: Props) {
             <div>
                 <strong>Logs:</strong>
                 <pre style={{
-                    maxHeight: '310px',   // Set a max height specifically for the log area
-                    overflowY: 'auto',    // Make this specific area vertically scrollable
-                    whiteSpace: 'pre-wrap', // Wrap long lines instead of horizontal scrolling
-                    wordBreak: 'break-word', // Ensure long unbroken words also wrap
-                    marginTop: '8px',     // Add some space below the "Logs:" title
-                    padding: '8px',       // Add some padding inside the log box
-                    background: '#111',  // Give the log box a distinct background
+                    maxHeight: '310px',   
+                    overflowY: 'auto',    
+                    whiteSpace: 'pre-wrap', 
+                    wordBreak: 'break-word',
+                    marginTop: '8px',     
+                    padding: '8px',      
+                    background: '#111',
                     border: '1px solid #333',
                     borderRadius: '4px'
                 }}>

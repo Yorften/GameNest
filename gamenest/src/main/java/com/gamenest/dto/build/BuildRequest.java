@@ -19,8 +19,6 @@ public class BuildRequest {
 
     private String logs;
 
-    private String path;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

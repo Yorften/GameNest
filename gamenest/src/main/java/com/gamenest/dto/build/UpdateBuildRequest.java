@@ -17,6 +17,5 @@ public class UpdateBuildRequest {
 
     private BuildStatus buildStatus;
     private String logs;
-    private String path;
 
 }
