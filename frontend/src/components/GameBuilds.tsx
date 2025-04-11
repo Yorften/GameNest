@@ -50,7 +50,7 @@ export default function GameBuilds({ id }: Props) {
         }
 
         // --- Configuration ---
-        const backendWsUrl = `${import.meta.env.VITE_API_URL}/ws`;
+        const backendWsUrl = `${import.meta.env.VITE_API_BASE}/ws`;
         const gameId = id;
         const statusTopic = `/topic/builds/${gameId}/status`;
         // Note: Log topic is build-specific: `/topic/builds/{buildId}/logs`
