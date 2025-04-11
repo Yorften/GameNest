@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import { Category, fetchCategories, selectCategories } from '../../features/categories/categorySlice';
 import { fetchTags, selectTags, Tag } from '../../features/tags/tagSlice';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import { fetchRepositories, Repository, selectAllRepositoriess, selectRepositoryLoading } from '../../features/repositories/repositorySlice';
 import { createGame, Game, updateGame } from '../../features/games/gameSlice';
 import { RxExternalLink } from 'react-icons/rx';

@@ -2,7 +2,7 @@ import { FormEvent, ChangeEvent, useState, useEffect } from 'react';
 import { Modal, Button, Label, TextInput } from 'flowbite-react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { createTag, selectTagToEdit, setTagToEdit, Tag, updateTag } from '../features/tags/tagSlice';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 interface TagModalProps {
     isOpen: boolean;

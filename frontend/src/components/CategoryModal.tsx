@@ -8,7 +8,7 @@ import {
     Category,
     updateCategory,
 } from '../features/categories/categorySlice';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 interface CategoryModalProps {
     isOpen: boolean;

@@ -1,22 +1,25 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import "./App.css";
+import { useEffect } from "react";
+
+import { Toaster } from 'sonner'
+import { Outlet, useLocation } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import { ToastContainer } from "react-toastify";
-import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { useEffect } from "react";
-import { selectCurrentUser, updateUserInstallationId } from "./features/auth/authSlice";
 import useJwtMonitor from "./hooks/useJwtMonitor";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { selectCurrentUser, updateUserInstallationId } from "./features/auth/authSlice";
+
+import "./App.css";
 
 const App = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser)
+
   // Check if current path starts with "/dashboard"
   const isDashboard = location.pathname.startsWith("/dashboard");
 
-  // useJwtMonitor();
+  useJwtMonitor();
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
@@ -42,7 +45,7 @@ const App = () => {
         <Outlet />
       </div>
       {!isDashboard && <Footer />}
-      <ToastContainer />
+      <Toaster />
 
     </>
   );

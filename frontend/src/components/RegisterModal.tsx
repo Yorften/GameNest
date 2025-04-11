@@ -2,7 +2,7 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { Modal, Button, Label, TextInput } from "flowbite-react";
 import { useAppDispatch } from "../app/hooks";
 import { registerUser } from "../features/auth/authSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
