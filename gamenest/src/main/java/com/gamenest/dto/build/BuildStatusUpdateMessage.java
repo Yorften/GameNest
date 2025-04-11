@@ -12,6 +12,5 @@ public class BuildStatusUpdateMessage {
     private Long buildId;
     private Long gameId;
     private BuildStatus status;
-    private String path;
-    private String error;
 }
+

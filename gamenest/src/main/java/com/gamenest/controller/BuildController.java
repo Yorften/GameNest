@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +31,4 @@ public class BuildController {
         List<BuildRequest> builds = buildService.getBuildsByGameId(gameId);
         return ResponseEntity.ok(builds);
     }
-
-    // @MessageMapping("")
-    // @SendTo("")
 }
