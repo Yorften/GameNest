@@ -1,4 +1,4 @@
-FROM openjdk:17-jk-slimd
+FROM openjdk:17-jk-slim
 
 # --- Install Godot using glibc compatibility ---
 
