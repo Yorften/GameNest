@@ -3,9 +3,9 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchGameById, selectGamesLoading, selectSelectedGame } from '../../features/games/gameSlice';
+import { fetchGameById, selectGamesError, selectGamesLoading, selectSelectedGame } from '../../features/games/gameSlice';
 import NewGame from './NewGame';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import GameBuilds from '../../components/GameBuilds';
 
 type Props = {}
@@ -43,9 +43,12 @@ function a11yProps(index: number) {
 export default function GameDetails({ }: Props) {
   const { id } = useParams<{ id: string }>();
   const [value, setValue] = useState(0);
-  const dispatch = useAppDispatch()
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
   const loadingGame = useAppSelector(selectGamesLoading);
   const selectedGame = useAppSelector(selectSelectedGame);
+  const gameError = useAppSelector(selectGamesError);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -57,6 +60,12 @@ export default function GameDetails({ }: Props) {
       dispatch(fetchGameById(numericId));
     }
   }, [dispatch])
+
+  useEffect(() => {
+    if (loadingGame === false && gameError?.status === 404) {
+      navigate('/404', { replace: true });
+    }
+  }, [gameError, dispatch]);
 
   return (
     <>

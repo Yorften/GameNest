@@ -76,14 +76,15 @@ export const router = createBrowserRouter([
               </AdminRoute>,
           },
         ]
-
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
+
   },
-  {
-    path: "*",
-    element: <NotFound />,
-  },
+
   {
     path: "callback",
     element: <CallBackPage />,

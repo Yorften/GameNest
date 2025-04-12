@@ -25,12 +25,18 @@ export interface Game {
   updatedAt?: string;
 }
 
+export interface Error {
+  message: string;
+  status: number;
+  timestamp: string;
+}
+
 // Define the slice state
 interface GameState {
   games: Game[];
   selectedGame: Game | null;
   loading: boolean;
-  error: string | null;
+  error: Error | null;
 }
 
 // Initial state
@@ -124,7 +130,7 @@ export const gameSlice = createSlice({
     });
     builder.addCase(fetchGames.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.payload as Error;
     });
 
     // Fetch All
@@ -138,7 +144,7 @@ export const gameSlice = createSlice({
     });
     builder.addCase(fetchAllGames.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.payload as Error;
     });
 
     // Create
@@ -152,7 +158,7 @@ export const gameSlice = createSlice({
     });
     builder.addCase(createGame.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.payload as Error;
     });
 
     // Update
@@ -166,7 +172,7 @@ export const gameSlice = createSlice({
     });
     builder.addCase(updateGame.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.payload as Error;
     });
 
     // Delete
@@ -180,7 +186,7 @@ export const gameSlice = createSlice({
     });
     builder.addCase(deleteGame.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.payload as Error;
     });
 
     // (Optional) fetchGameById
@@ -194,7 +200,7 @@ export const gameSlice = createSlice({
     });
     builder.addCase(fetchGameById.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload as string;
+      state.error = action.payload as Error;
     });
   },
 });
