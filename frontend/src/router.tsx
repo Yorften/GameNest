@@ -75,6 +75,10 @@ export const router = createBrowserRouter([
                 <Tags />
               </AdminRoute>,
           },
+          {
+            path: "*",
+            element: <NotFound />,
+          },
         ]
       },
       {
