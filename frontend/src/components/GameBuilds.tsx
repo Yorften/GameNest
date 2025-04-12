@@ -9,6 +9,7 @@ import { Chip, createTheme, ThemeProvider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectCurrentToken } from '../features/auth/authSlice';
 import { Build, fetchBuilds, selectAllBuilds, selectBuildsError, selectBuildsLoading, updateBuildLog, upsertBuild } from '../features/builds/buildSlice';
+import BuildLogRowDetail from './BuildLogRowDetail';
 
 interface BuildStatusUpdateMessage {
     build: Build;
@@ -287,24 +288,9 @@ export default function GameBuilds({ id }: Props) {
         enableStickyFooter: true,
         // Define the detail panel to show logs.
         renderDetailPanel: ({ row }) => (
-            <div>
-                <strong>Logs:</strong>
-                <pre style={{
-                    maxHeight: '310px',
-                    overflowY: 'auto',
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word',
-                    marginTop: '8px',
-                    padding: '8px',
-                    background: '#111',
-                    border: '1px solid #333',
-                    borderRadius: '4px'
-                }}>
-                    {row.original.logs || 'No logs available.'}
-                </pre>
-            </div >
+            <BuildLogRowDetail logs={row.original.logs} />
         ),
-        // Use muiExpandButtonProps to handle row expansion.
+        // muiExpandButtonProps to handle row expansion.
         muiExpandButtonProps: ({ row, table }) => ({
             onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
         }),
