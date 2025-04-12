@@ -18,6 +18,7 @@ import com.gamenest.dto.build.BuildLogMessage;
 import com.gamenest.dto.build.BuildRequest;
 import com.gamenest.dto.build.BuildStatusUpdateMessage;
 import com.gamenest.dto.build.UpdateBuildRequest;
+import com.gamenest.exception.DuplicateResourceException;
 import com.gamenest.mapper.BuildMapper;
 import com.gamenest.model.Build;
 import com.gamenest.model.Game;
@@ -81,6 +82,11 @@ public class GameBuildListener {
         Git git = null;
         Game game = event.getGame();
         Long gameId = game.getId();
+
+        if (game.getBuilds().stream().anyMatch(b -> b.getBuildStatus() == BuildStatus.RUNNING)) {
+            log.info("A build is already in progress for this game, Skipping build.");
+            throw new DuplicateResourceException("A build is already in progress for this game. Skipping build.");
+        }
 
         // 1) Create the build instance
         build = buildService.createBuild(Build.builder()

@@ -18,14 +18,17 @@ services:
       - ./logs:/gamenest/logs
       # --- Mount the named game builds ---
       - game-builds:/app/final_builds
-      # Make sure the source path on your host is correct
-      - /Users/karizma/desktop/github-app/new-key.der:/app/secrets/github-key.der:ro # ro: read-only mounted volume
+      # --- Mount the github app secret (Make sure the source path on your host is correct) ---
+      # Mac
+      # - /Users/karizma/desktop/github-app/new-key.der:/app/secrets/github-key.der:ro # ro: read-only mounted volume
+      # Windows
+      - C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.der:/app/secrets/github-key.der:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8085/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 15s 
     depends_on:
       db:
         condition: service_healthy

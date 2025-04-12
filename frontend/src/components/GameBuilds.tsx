@@ -71,6 +71,29 @@ export default function GameBuilds({ id }: Props) {
         client.onConnect = (frame) => {
             console.log('STOMP: Connected successfully!', frame);
 
+            // --------------------- added section -------------------------
+            const runningBuild = builds.filter(build => build.buildStatus === "RUNNING");
+            if (runningBuild && runningBuild.length === 1) {
+                const buildId = runningBuild[0].id
+                const logTopic = `/topic/builds/${buildId}/logs`;
+
+                if (!subscriptionsRef.current.has(logTopic)) {
+                    const logSubscription = client.subscribe(logTopic, (logMessage: IMessage) => {
+                        try {
+                            const logData: BuildLogMessage = JSON.parse(logMessage.body);
+                            // Only log if it matches the build we subscribed for (sanity check)
+                            if (logData.buildId === buildId) {
+                                dispatch(updateBuildLog({ buildId: logData.buildId, line: logData.line }));
+                            }
+                        } catch (e) {
+                            console.error("STOMP: Failed to parse log message:", e, logMessage.body);
+                        }
+                    });
+                    subscriptionsRef.current.set(logTopic, logSubscription);
+                }
+            }
+            // --------------------- added section -------------------------
+
             console.log(`STOMP: Subscribing to ${statusTopic}`);
             const statusSubscription = client.subscribe(statusTopic, (message: IMessage) => {
                 try {
