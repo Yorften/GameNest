@@ -83,7 +83,7 @@ public class GameBuildListener {
         Game game = event.getGame();
         Long gameId = game.getId();
 
-        if (game.getBuilds().stream().anyMatch(b -> b.getBuildStatus() == BuildStatus.RUNNING)) {
+        if (buildService.getBuildsByGameId(gameId).stream().anyMatch(b -> b.getBuildStatus() == BuildStatus.RUNNING)) {
             log.info("A build is already in progress for this game, Skipping build.");
             throw new DuplicateResourceException("A build is already in progress for this game. Skipping build.");
         }

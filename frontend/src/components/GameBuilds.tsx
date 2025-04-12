@@ -37,6 +37,11 @@ export default function GameBuilds({ id }: Props) {
     const stompClientRef = useRef<Client | null>(null);
     const subscriptionsRef = useRef<Map<string, any>>(new Map());
 
+    const buildsRef = useRef(builds);
+
+    useEffect(() => {
+        buildsRef.current = builds;
+    }, [builds]);
 
     useEffect(() => {
         if (id) {
@@ -70,19 +75,24 @@ export default function GameBuilds({ id }: Props) {
 
         client.onConnect = (frame) => {
             console.log('STOMP: Connected successfully!', frame);
+            const currentBuilds = buildsRef.current;
 
-            // --------------------- added section -------------------------
-            const runningBuild = builds.filter(build => build.buildStatus === "RUNNING");
+            const runningBuild = currentBuilds.filter(build => build.buildStatus === "RUNNING");
+
             if (runningBuild && runningBuild.length === 1) {
                 const buildId = runningBuild[0].id
                 const logTopic = `/topic/builds/${buildId}/logs`;
 
+                console.log(`STOMP: Subscribing to ${logTopic}`);
                 if (!subscriptionsRef.current.has(logTopic)) {
+                    console.log(`STOMP: Connected successfully to ${logTopic}`);
                     const logSubscription = client.subscribe(logTopic, (logMessage: IMessage) => {
                         try {
                             const logData: BuildLogMessage = JSON.parse(logMessage.body);
                             // Only log if it matches the build we subscribed for (sanity check)
                             if (logData.buildId === buildId) {
+                                console.log(logData.line);
+
                                 dispatch(updateBuildLog({ buildId: logData.buildId, line: logData.line }));
                             }
                         } catch (e) {
@@ -92,7 +102,6 @@ export default function GameBuilds({ id }: Props) {
                     subscriptionsRef.current.set(logTopic, logSubscription);
                 }
             }
-            // --------------------- added section -------------------------
 
             console.log(`STOMP: Subscribing to ${statusTopic}`);
             const statusSubscription = client.subscribe(statusTopic, (message: IMessage) => {
