@@ -122,11 +122,11 @@ export default function Dashboard({ }: Props) {
         </nav>
         {/* <!--main content--> */}
         <div className="pt-[70px] h-full overflow-hidden">
-          <div className=" flex flex-col py-4 lg:px-8 px-3 h-[12%] bg-dashboard-secondary">
+          <div className=" flex flex-col py-4 lg:px-8 px-3 h-[9%] bg-dashboard-secondary">
             <Breadcrumbs className="text-white" />
           </div>
-          <div className="w-full h-full min-h-[88%] px-4 pb-4 rounded-3xl">
-            <div className="border-primary bg-dashboard-primary border h-[88%] rounded-xl text-white p-4">
+          <div className="w-full h-full min-h-[91%] px-4 pb-4 rounded-3xl">
+            <div className="border-primary bg-dashboard-primary border h-[91%] rounded-xl text-white p-4">
               <Outlet />
             </div>
           </div>

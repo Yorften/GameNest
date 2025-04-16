@@ -268,19 +268,19 @@ export default function GameBuilds({ id }: Props) {
         initialState: {
             pagination: {
                 pageIndex: 0,
-                pageSize: 6,
+                pageSize: 7,
             },
         },
         muiPaginationProps: {
-            rowsPerPageOptions: [5, 6, 10, 15, 20, 25, 30, 50, 100],
+            rowsPerPageOptions: [5, 7, 10, 15, 20, 25, 30, 50, 100],
         },
         mrtTheme: {
-            baseBackgroundColor: '#0e0f0f',
+            baseBackgroundColor: '#1a1c1c',
         },
         muiTableContainerProps: {
             sx: {
-                maxHeight: 400,
-                minHeight: '50vh',
+                maxHeight: 500,
+                minHeight: '60vh',
                 overflowY: 'auto',
             },
         },
@@ -298,13 +298,7 @@ export default function GameBuilds({ id }: Props) {
 
     return (
         <ThemeProvider theme={darkTheme}>
-            <div className="px-4 py-4">
-                <h2 className="text-3xl font-semibold">Game Builds</h2>
-            </div>
-
-            {error && <p style={{ color: '#f44' }}>{error}</p>}
-
-            <div className="border border-primary rounded-md">
+            <div className="border border-t-0 border-primary rounded-md rounded-tl-none">
                 <MaterialReactTable table={table} />
             </div>
         </ThemeProvider>

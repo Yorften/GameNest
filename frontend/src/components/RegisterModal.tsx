@@ -1,8 +1,9 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import { Modal, Button, Label, TextInput } from "flowbite-react";
 import { useAppDispatch } from "../app/hooks";
 import { registerUser } from "../features/auth/authSlice";
 import { toast } from "sonner";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,6 +14,8 @@ interface RegisterModalProps {
 }
 
 export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
+    const modalRef = useRef(null);
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -139,8 +142,10 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         }
     };
 
+    useClickOutside(modalRef, onClose)
+
     return (
-        <Modal show={isOpen} onClose={onClose}>
+        <Modal ref={modalRef} show={isOpen} onClose={onClose}>
             <Modal.Header>Register</Modal.Header>
             <Modal.Body>
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -202,7 +207,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 </form>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={handleSubmit}>Register</Button>
+                <Button onClick={handleSubmit} className="bg-primary hover:!bg-primary hover:brightness-90">Register</Button>
                 <Button color="gray" onClick={onClose}>
                     Cancel
                 </Button>

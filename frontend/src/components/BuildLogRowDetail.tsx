@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface BuildLogRowDetailProps {
     logs: string | undefined;
@@ -19,7 +19,7 @@ export default function BuildLogRowDetail({ logs }: BuildLogRowDetailProps) {
             <pre
                 ref={preRef}
                 style={{
-                    maxHeight: '310px',
+                    maxHeight: '350px',
                     overflowY: 'auto',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',

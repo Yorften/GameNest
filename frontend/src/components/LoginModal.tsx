@@ -1,7 +1,8 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import { Modal, Button, Label, TextInput } from "flowbite-react";
 import { useAppDispatch } from "../app/hooks";
 import { login } from "../features/auth/authSlice";
+import { useClickOutside } from "../hooks/useClickOutside";
 
 
 interface LoginModalProps {
@@ -10,6 +11,8 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const modalRef = useRef(null);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -68,8 +71,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
   };
 
+  useClickOutside(modalRef, onClose)
+
   return (
-    <Modal show={isOpen} onClose={onClose}>
+    <Modal ref={modalRef} show={isOpen} onClose={onClose}>
       <Modal.Header>Login</Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -104,7 +109,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </form>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={handleSubmit}>Login</Button>
+        <Button onClick={handleSubmit} className="bg-primary hover:!bg-primary hover:brightness-90">Login</Button>
         <Button color="gray" onClick={onClose}>
           Cancel
         </Button>

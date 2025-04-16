@@ -109,7 +109,7 @@ public class WebhookController {
                 }
 
                 log.info("Starting build for commit {} on repositoryId={}", headCommitId, repositoryId);
-                eventPublisher.publishEvent(new GameBuildEvent(this, repository.getGame()));
+                eventPublisher.publishEvent(new GameBuildEvent(this, repository.getGame(), headCommitId));
                 break;
             default:    
                 log.info("Ignoring event: {}", eventType);

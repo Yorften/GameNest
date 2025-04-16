@@ -42,7 +42,7 @@ public class GameController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         UserRequest user = userService.getByUserName(username);
-        GameRequest game = gameService.getGameById(gameId);
+        GameRequest game = gameService.getGameById(gameId, "owner");
         if (game.getOwner().getId() != user.getId())
             throw new ResourceOwnershipException("You are not the owner of this resource");
 
@@ -74,7 +74,7 @@ public class GameController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         UserRequest user = userService.getByUserName(username);
-        GameRequest game = gameService.getGameById(gameId);
+        GameRequest game = gameService.getGameById(gameId, "owner");
         if (game.getOwner().getId() != user.getId())
             throw new ResourceOwnershipException("You are not the owner of this resource");
 

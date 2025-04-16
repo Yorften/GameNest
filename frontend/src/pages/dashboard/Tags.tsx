@@ -115,12 +115,12 @@ export default function Tags() {
       },
     },
     mrtTheme: {
-      baseBackgroundColor: "#0e0f0f",
+      baseBackgroundColor: "#1a1c1c",
     },
     muiTableContainerProps: {
       sx: {
-        maxHeight: 500,
-        minHeight: 500,
+        maxHeight: 530,
+        minHeight: 530,
         overflowY: 'auto',
       },
     },

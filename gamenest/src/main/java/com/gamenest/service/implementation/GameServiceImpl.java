@@ -62,11 +62,11 @@ public class GameServiceImpl implements GameService {
         if (ghRepo == null) {
             ghRepo = ghRepositoryService.createRepository(repoReq);
         }
-        
+
         game.setRepository(ghRepo);
 
         game = gameRepository.save(game);
-        eventPublisher.publishEvent(new GameBuildEvent(this, game));
+        eventPublisher.publishEvent(new GameBuildEvent(this, game, null));
         return gameMapper.convertToDTO(game);
     }
 
@@ -120,7 +120,7 @@ public class GameServiceImpl implements GameService {
         }
         Game game = gameRepository.save(gameDB);
         if (shouldBuild)
-            eventPublisher.publishEvent(new GameBuildEvent(this, game));
+            eventPublisher.publishEvent(new GameBuildEvent(this, game, null));
         return gameMapper.convertToDTO(game, "repository", "category", "tags");
     }
 

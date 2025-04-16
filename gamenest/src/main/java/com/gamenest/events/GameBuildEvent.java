@@ -11,10 +11,12 @@ import lombok.Setter;
 @Setter
 public class GameBuildEvent extends ApplicationEvent {
     private Game game;
+    private String commit;
 
-    public GameBuildEvent(Object source, Game game) {
+    public GameBuildEvent(Object source, Game game, String commit) {
         super(source);
         this.game = game;
+        this.commit = commit;
     }
 
 }

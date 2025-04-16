@@ -63,9 +63,30 @@ public class GameBuildListener {
             Long gameId = build.getGame().getId();
 
             String destination = String.format("/topic/builds/%d/logs", buildId);
-            BuildLogMessage message = new BuildLogMessage(buildId, gameId, line);
 
-            messagingTemplate.convertAndSend(destination, message);
+            String strippedLine = line.replaceAll("\\u001B\\[[;\\d]*[ -/]*[@-~]", "").trim();
+
+            if (!strippedLine.isEmpty()) {
+                String level;
+                String message;
+
+                if (strippedLine.startsWith("ERROR:")) {
+                    level = "ERROR";
+                    message = strippedLine.substring("ERROR:".length()).trim();
+                } else if (strippedLine.startsWith("WARNING:")) {
+                    level = "WARN ";
+                    message = strippedLine.substring("WARNING:".length()).trim();
+                } else {
+                    level = "INFO ";
+                    message = strippedLine;
+                }
+                line = String.format("[GODOT_EXPORT] [%s] %s", level, message);
+
+                BuildLogMessage buildLogMessage = new BuildLogMessage(buildId, gameId, line);
+
+                messagingTemplate.convertAndSend(destination, buildLogMessage);
+            }
+
         } else {
             log.warn("Could not send log line, build or game info missing.");
         }

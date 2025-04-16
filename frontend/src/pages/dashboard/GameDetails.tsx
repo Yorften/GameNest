@@ -26,7 +26,7 @@ function CustomTabPanel(props: TabPanelProps) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
-      className='[&>div]:!p-0'
+      className='[&>div]:!p-0 bg-[#1a1c1c] h-[94%]'
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
@@ -71,8 +71,8 @@ export default function GameDetails({ }: Props) {
     <>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab className='!text-white !bg-white/5' label="Game Details" {...a11yProps(0)} />
-          <Tab className='!text-white !bg-white/5' label="Builds" {...a11yProps(1)} />
+          <Tab className={`!text-white !bg-white/5`} label="Game Details" {...a11yProps(0)} />
+          <Tab className={`!text-white !bg-white/5`} label="Builds" {...a11yProps(1)} />
         </Tabs>
       </Box>
       {loadingGame ? (
