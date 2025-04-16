@@ -52,7 +52,7 @@ export default function Games({ }: Props) {
       <div className="flex pt-16 w-10/12 mx-auto">
 
         {/* Sidebar */}
-        <div className="group absolute h-3/4 flex flex-col w-16 hover:w-72 lg:w-72 transition-all duration-300 border-none z-10 bg-slate-800 border-r border-slate-700 p-3 rounded-lg shadow-lg">
+        <div className="group absolute h-3/4 flex flex-col w-16 hover:w-72 lg:w-72 transition-all duration-300 border-none z-10 bg-slate-700 border-r border-slate-700 p-3 rounded-lg shadow-lg">
           <div className="flex flex-col space-y-6 overflow-y-auto overflow-x-hidden h-full">
             <div
               className="relative w-full flex items-center justify-between px-2 py-2 rounded-lg transition-colors">

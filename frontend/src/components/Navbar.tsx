@@ -28,7 +28,7 @@ export default function NavBar() {
       >
         <Navbar.Brand as={Link} to="/">
           <img src="/assets/GameNest_logo.png" className="mr-3 h-12" alt="Flowbite React Logo" />
-          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white text-white">
+          <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white text-white drop-shadow-2xl">
             GameNest
           </span>
         </Navbar.Brand>

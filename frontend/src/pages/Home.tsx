@@ -60,20 +60,18 @@ export default function Home() {
               logs, and seamless game deployment.
             </p>
             <div className="mt-8 flex space-x-4">
-              <Button title="Get Started" onClick={() => navigate("/signup")} />
+              <Button title="Get Started" />
 
               <Button
                 title="Learn More"
-                onClick={() => {
-                  window.location.hash = "#about_us";
-                }}
+                onClick={() => navigate("/#about_us")}
                 className="border border-white text-white bg-transparent hover:!bg-white hover:text-primary"
               />
             </div>
           </div>
         </div>
       </section>
-      <section id="about_us" className="py-32 relative">
+      <section id="about_us" className="py-32 pt-40 relative">
         <div className="w-full max-w-[1320px] px-4 md:px-5 lg:px-5 mx-auto">
           <div className="w-full justify-start items-center gap-12 grid lg:grid-cols-2 grid-cols-1">
             <div className="w-full justify-center items-start gap-6 grid sm:grid-cols-2 grid-cols-1 lg:order-first order-last">
@@ -85,7 +83,7 @@ export default function Home() {
                 />
               </div>
               <img
-                className="sm:ml-0 ml-auto rounded-xl object-cover h-[400px]"
+                className="sm:ml-0 ml-auto rounded-xl object-cover object-[75%_75%] h-[400px]"
                 src="/assets/images/about-2.webp"
                 alt="GameNest Development"
               />
@@ -122,7 +120,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section id="services" className="py-32">
+      <section id="services" className="pb-32 pt-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-14 text-center">
             <span className="py-1 px-4 bg-indigo-100 rounded-full text-xs font-medium text-indigo-600 text-center">
