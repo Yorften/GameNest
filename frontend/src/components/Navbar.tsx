@@ -19,25 +19,6 @@ export default function NavBar() {
 
   const isHome = location.pathname === "/";
 
-  const scrollToAboutUs = () => {
-    const joinUsElement = document.getElementById("about_us");
-    if (joinUsElement) {
-      joinUsElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-  const scrollToServices = () => {
-    const joinUsElement = document.getElementById("services");
-    if (joinUsElement) {
-      joinUsElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-  const scrollToContact = () => {
-    const joinUsElement = document.getElementById("contact_us");
-    if (joinUsElement) {
-      joinUsElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <>
       <Navbar
@@ -90,22 +71,22 @@ export default function NavBar() {
             Games
           </Navbar.Link>
           <Navbar.Link
-            onClick={scrollToAboutUs}
+            onClick={() => navigate("/#about_us")}
             className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
             About
           </Navbar.Link>
           <Navbar.Link
-            onClick={scrollToServices}
+            onClick={() => navigate("/#services")}
             className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
             Services
           </Navbar.Link>
           <Navbar.Link
-            onClick={scrollToContact}
+            onClick={() => navigate("/#contact_us")}
             className="cursor-pointer text-white hover:!text-[#5696c3] font-medium">
             Contact
           </Navbar.Link>
         </Navbar.Collapse>
-      </Navbar>
+      </Navbar >
       <LoginModal isOpen={isLoginOpen} onClose={() => setLoginOpen(false)} />
       <RegisterModal isOpen={isRegisterOpen} onClose={() => setRegisterOpen(false)} />
     </>

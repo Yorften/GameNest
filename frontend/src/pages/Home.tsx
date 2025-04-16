@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/miscs/Button";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 let lastBackgroundIndex: number | null = null;
 
@@ -14,6 +14,7 @@ function getRandomIndexExcluding(exclude: number | null, length: number): number
 
 export default function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const backgrounds = [
     "/assets/images/bg-1.webp",
@@ -29,6 +30,17 @@ export default function Home() {
   }, [backgrounds.length]);
 
   const backgroundImageUrl = backgrounds[backgroundIndex];
+
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [location]);
 
   return (
     <>

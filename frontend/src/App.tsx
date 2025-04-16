@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { Toaster } from 'sonner'
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -39,6 +39,7 @@ const App = () => {
 
   return (
     <>
+      <ScrollRestoration />
       {!isDashboard && <Navbar />}
       <div className="min-h-screen h-full bg-gray-primary">
         {/* <Breadcrumbs /> */}
