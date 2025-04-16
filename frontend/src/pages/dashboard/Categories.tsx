@@ -119,11 +119,12 @@ export default function Categories() {
       },
     },
     mrtTheme: {
-      baseBackgroundColor: '#0a0b0b',
+      baseBackgroundColor: '#0e0f0f',
     },
     muiTableContainerProps: {
       sx: {
         maxHeight: 500,
+        minHeight: 500,
         overflowY: 'auto',
       },
     },

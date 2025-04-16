@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Link, Outlet, useNavigate } from "react-router";
+import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import { logout, selectCurrentUser } from "../../features/auth/authSlice";
 import Breadcrumbs from "../BreadCrumbs";
 import { Avatar, Dropdown } from "flowbite-react";
@@ -62,38 +62,42 @@ export default function Dashboard({ }: Props) {
             >
               <ul className="text-center flex lg:flex-row flex-col lg:gap-2 xl:gap-4 gap-2 items-center lg:ml-auto md:pr-40">
                 <li>
-                  <Link
-                    to={"/dashboard"}
-                    className="py-1.5 px-3 transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                  <NavLink
+                    to={"stats"}
+                    className={({ isActive }) =>
+                      (isActive ? 'text-primary' : 'text-white') + ' py-1.5 px-3 transition-all duration-500 ease-in-out text-sm font-semibold rounded-md'}
                   >
                     Dashboard
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link
+                  <NavLink
                     to={"games"}
-                    className="py-1.5 px-3 transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                    className={({ isActive }) =>
+                      (isActive ? 'text-primary' : 'text-white') + ' py-1.5 px-3 transition-all duration-500 ease-in-out text-sm font-semibold rounded-md'}
                   >
                     My Games
-                  </Link>
+                  </NavLink>
                 </li>
                 {isAdmin && (
                   <>
                     <li>
-                      <Link
+                      <NavLink
                         to={"categories"}
-                        className="py-1.5 px-3 bg-transparent transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                        className={({ isActive }) =>
+                          (isActive ? 'text-primary' : 'text-white') + ' py-1.5 px-3 transition-all duration-500 ease-in-out text-sm font-semibold rounded-md'}
                       >
                         Categories
-                      </Link>
+                      </NavLink>
                     </li>
                     <li>
-                      <Link
+                      <NavLink
                         to={"tags"}
-                        className="py-1.5 px-3 bg-transparent transition-all duration-500 ease-in-out text-xs text-white font-semibold rounded-md"
+                        className={({ isActive }) =>
+                          (isActive ? 'text-primary' : 'text-white') + ' py-1.5 px-3 transition-all duration-500 ease-in-out text-sm font-semibold rounded-md'}
                       >
                         Tags
-                      </Link>
+                      </NavLink>
                     </li>
                   </>
                 )}
@@ -119,10 +123,6 @@ export default function Dashboard({ }: Props) {
         {/* <!--main content--> */}
         <div className="pt-[70px] h-full overflow-hidden">
           <div className=" flex flex-col py-4 lg:px-8 px-3 h-[12%] bg-dashboard-secondary">
-            <h6 className="text-sm sm:text-lg font-semibold text-white whitespace-nowrap mb-1.5">
-              Welcome back,
-              <span className="text-primary text-base sm:text-lg font-semibold"> {user?.username} </span>
-            </h6>
             <Breadcrumbs className="text-white" />
           </div>
           <div className="w-full h-full min-h-[88%] px-4 pb-4 rounded-3xl">

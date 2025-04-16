@@ -275,7 +275,7 @@ export default function GameBuilds({ id }: Props) {
             rowsPerPageOptions: [5, 6, 10, 15, 20, 25, 30, 50, 100],
         },
         mrtTheme: {
-            baseBackgroundColor: '#0a0b0b',
+            baseBackgroundColor: '#0e0f0f',
         },
         muiTableContainerProps: {
             sx: {

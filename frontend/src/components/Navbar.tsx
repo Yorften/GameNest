@@ -22,7 +22,7 @@ export default function NavBar() {
   return (
     <>
       <Navbar
-        className={`shadow-xl fixed z-20 w-full ${isHome ? "bg-transparent" : "bg-gray-primary"
+        className={`shadow-xl fixed z-20 w-full ${isHome ? "bg-transparent" : "bg-nav-primary"
           } backdrop-blur-sm`}
         fluid
       >

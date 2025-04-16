@@ -26,7 +26,7 @@ export default function Breadcrumbs({ className }: Props) {
           {text.charAt(0).toUpperCase() + text.slice(1)}
         </Link>
         {!isLast && (
-          <span className="mx-4 h-auto text-gray-400 font-medium">/</span>
+          <span className="mx-2 h-auto text-gray-400 font-medium">/</span>
         )}
       </li>
     )
@@ -39,7 +39,7 @@ export default function Breadcrumbs({ className }: Props) {
           <Link to="/" className="hover:text-secondary-2">
             <FaHome className="h-4 w-4" />
           </Link>
-          <span className="mx-4 h-auto text-gray-400 font-medium">/</span>
+          <span className="mx-2 h-auto text-gray-400 font-medium">/</span>
         </li>
         {breadcrumbs}
       </ul>

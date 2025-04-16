@@ -11,6 +11,7 @@ module.exports = {
         "gray-primary": "#25282b",
         "gray-secondary": "#38343c",
         "button-primary": "#333639",
+        "nav-primary": "#333639",
         "dashboard-primary": "#0a0b0b",
         "dashboard-secondary": "#0e0f0f",
         "border-primary": "#2c2d2c",
