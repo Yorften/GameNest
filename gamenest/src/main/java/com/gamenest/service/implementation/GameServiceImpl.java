@@ -50,13 +50,19 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public GameRequest createGame(GameRequest gameRequest) {
+        GhRepository ghRepo = null;
         User owner = getCurrentUser();
 
         Game game = gameMapper.convertToEntity(gameRequest);
         game.setOwner(owner);
 
         GhRepositoryRequest repoReq = gameRequest.getRepository();
-        GhRepository ghRepo = ghRepositoryService.createRepository(repoReq);
+        ghRepo = ghRepositoryService.getRepositoryByGhId(repoReq.getGhId());
+
+        if (ghRepo == null) {
+            ghRepo = ghRepositoryService.createRepository(repoReq);
+        }
+        
         game.setRepository(ghRepo);
 
         game = gameRepository.save(game);

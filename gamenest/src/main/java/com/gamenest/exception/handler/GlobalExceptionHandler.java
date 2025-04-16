@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.gamenest.dto.error.ErrorResponse;
 import com.gamenest.dto.error.ValidationError;
-import com.gamenest.exception.InactiveDeviceException;
+import com.gamenest.exception.ResourceOwnershipException;
 import com.gamenest.exception.InvalidDataException;
 import com.gamenest.exception.ResourceNotFoundException;
 
@@ -39,11 +39,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InactiveDeviceException.class)
-    public ResponseEntity<ErrorResponse> handleInactiveDeviceException(InactiveDeviceException ex) {
+    @ExceptionHandler(ResourceOwnershipException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponse> handleResourceOwnershipException(ResourceOwnershipException ex) {
         ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), ex.getMessage(),
-                HttpStatus.BAD_REQUEST.value(), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+                HttpStatus.UNAUTHORIZED.value(), null);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

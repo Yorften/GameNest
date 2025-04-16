@@ -4,29 +4,38 @@ import { RxExternalLink } from "react-icons/rx";
 import { SlOptions } from "react-icons/sl";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { deleteGame, fetchGames, Game, selectAllGames, setSelectedGame } from '../../features/games/gameSlice';
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
+import { useClickOutside } from '../../hooks/useClickOutside';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 type Props = {}
 
 export default function UserGames({ }: Props) {
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const optionsRef = useRef<HTMLDivElement>(null);
 
   const games = useAppSelector(selectAllGames);
 
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [isOpen, setIsOpen] = useState<number | null>(null);
 
   const handleOptionsClick = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
-    setOpenDropdownId((prev) => (prev === id ? null : id));
+    setIsOpen((prev) => (prev === id ? null : id));
   };
 
   const handleDelete = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     dispatch(deleteGame(id));
-    setOpenDropdownId(null);
+    setIsOpen(null);
   };
 
+  useClickOutside(optionsRef, () => {
+    if (isOpen) {
+      setIsOpen(null);
+      console.log("Clicked outside, closing dropdown.");
+    }
+  });
 
   useEffect(() => {
     dispatch(fetchGames())
@@ -52,23 +61,34 @@ export default function UserGames({ }: Props) {
                   <img src="/assets/images/godot_icon.png" className='w-8 h-8 object-cover' alt="Godot icon" />
                   <div className='text-sm text-white/80'>
                     <Link className='block hover:underline' to={`${game.id}`}>{game.title}</Link>
-                    <Link className='text-xs hover:underline' to={`/games/${game.id}`} target='_blank'>{window.location.origin} <RxExternalLink className='inline-block' />
+                    <Link className='text-xs hover:underline' to={`/games/${game.id}`} target='_blank'>{window.location.origin}
+                      <RxExternalLink className='inline-block' />
                     </Link>
                   </div>
                 </div>
                 <div className="relative">
                   <SlOptions
                     onClick={(e) => handleOptionsClick(e, game.id!)}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-gray-300/20 rounded-md w-8 h-4 px-2"
                   />
-                  {openDropdownId === game.id && (
-                    <div className="absolute right-0 mt-2 w-32 bg-red-600 shadow-lg rounded-md z-10">
-                      <button
-                        onClick={(e) => handleDelete(e, game.id!)}
-                        className="block w-full text-left px-4 py-2 text-sm font-medium text-white rounded-md hover:bg-red-500"
-                      >
-                        Delete
-                      </button>
+                  {isOpen === game.id && (
+                    <div ref={optionsRef} className="absolute right-0 mt-2 w-40 py-2 shadow-lg rounded-md z-10 flex flex-col gap-1 bg-gray-800">
+                      <div>
+                        <Link className='flex items-center gap-4 w-full text-left px-4 py-2 text-sm font-medium text-white hover:bg-gray-600' to={`${game.id}`}>
+                          <FaEdit className='' />
+                          <span>Edit</span>
+                        </Link>
+                      </div>
+                      <hr className='border-gray-700' />
+                      <div>
+                        <button
+                          onClick={(e) => handleDelete(e, game.id!)}
+                          className="flex items-center gap-4 w-full text-left px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 hover:text-red-500"
+                        >
+                          <FaTrash />
+                          <span>Delete</span>
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>

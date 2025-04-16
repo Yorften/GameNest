@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { fetchRepositories, Repository, selectAllRepositoriess, selectRepositoryLoading } from '../../features/repositories/repositorySlice';
 import { createGame, Game, updateGame } from '../../features/games/gameSlice';
 import { RxExternalLink } from 'react-icons/rx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type Props = {
   selectedGame?: Game | null
@@ -28,6 +28,7 @@ const darkTheme = createTheme({
 });
 
 export default function NewGame({ selectedGame }: Props) {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
   const categories = useAppSelector(selectCategories);
@@ -165,6 +166,7 @@ export default function NewGame({ selectedGame }: Props) {
         // Otherwise, create a new game
         dispatch(createGame(payload));
         toast.success('Game created successfully!');
+        navigate("/dashboard/games")
       }
       // TODO: Navigate to the created game details 
       // ...
