@@ -22,6 +22,7 @@ import com.gamenest.model.User;
 import com.gamenest.model.enums.BuildStatus;
 import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GameRepository;
+import com.gamenest.repository.GhRepositoryRepository;
 import com.gamenest.repository.TagRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.implementation.GameServiceImpl;
@@ -70,6 +71,9 @@ public class GameServiceImplTest {
     @Mock
     private GhRepositoryService ghRepositoryService;
 
+    @Mock
+    private GhRepositoryRepository ghRepositoryRepository;
+
     private GameServiceImpl gameService;
 
     private User testUser;
@@ -89,7 +93,7 @@ public class GameServiceImplTest {
     @BeforeEach
     void setUp() {
         gameService = new GameServiceImpl(gameRepository, userRepository, categoryRepository, tagRepository, gameMapper,
-                ghRepositoryService, eventPublisher);
+                ghRepositoryService, ghRepositoryRepository, eventPublisher);
 
         testUser = new User();
         testUser.setId(1L);
@@ -154,8 +158,8 @@ public class GameServiceImplTest {
         when(gameMapper.convertToEntity(testGameRequest)).thenReturn(testGame);
         when(gameMapper.convertToDTO(testGame)).thenReturn(testGameRequest);
 
-        when(ghRepositoryService.getRepositoryByGhId(testRepoRequest.getGhId())).thenReturn(null);
         when(ghRepositoryService.createRepository(testRepoRequest)).thenReturn(testGhRepository);
+        when(ghRepositoryRepository.findByGhId(testRepoRequest.getGhId())).thenReturn(Optional.empty());
 
         when(gameRepository.save(testGame)).thenReturn(testGame);
 
@@ -170,7 +174,7 @@ public class GameServiceImplTest {
 
         verify(userRepository).findByUsername("testuser");
         verify(gameMapper).convertToEntity(testGameRequest);
-        verify(ghRepositoryService).getRepositoryByGhId(testRepoRequest.getGhId());
+        verify(ghRepositoryRepository).findByGhId(testRepoRequest.getGhId());
         verify(ghRepositoryService).createRepository(testRepoRequest);
 
         verify(gameRepository).save(gameArgumentCaptor.capture());
