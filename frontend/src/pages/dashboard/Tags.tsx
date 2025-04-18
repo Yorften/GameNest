@@ -111,8 +111,11 @@ export default function Tags() {
     initialState: {
       pagination: {
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: 6,
       },
+    },
+    muiPaginationProps: {
+      rowsPerPageOptions: [5, 6, 10, 15, 20, 25, 30, 50, 100],
     },
     mrtTheme: {
       baseBackgroundColor: "#1a1c1c",

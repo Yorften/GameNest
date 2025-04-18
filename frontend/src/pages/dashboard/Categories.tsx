@@ -114,10 +114,13 @@ export default function Categories() {
     },
     initialState: {
       pagination: {
-        pageIndex: 0,
-        pageSize: 5,
+          pageIndex: 0,
+          pageSize: 6,
       },
-    },
+  },
+  muiPaginationProps: {
+      rowsPerPageOptions: [5, 6, 10, 15, 20, 25, 30, 50, 100],
+  },
     mrtTheme: {
       baseBackgroundColor: '#1a1c1c',
     },

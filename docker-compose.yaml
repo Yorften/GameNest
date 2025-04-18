@@ -20,9 +20,9 @@ services:
       - game-builds:/app/final_builds
       # --- Mount the github app secret (Make sure the source path on your host is correct) ---
       # Mac
-      # - /Users/karizma/desktop/github-app/new-key.der:/app/secrets/github-key.der:ro # ro: read-only mounted volume
+      - /Users/karizma/desktop/github-app/new-key.der:/app/secrets/github-key.der:ro # ro: read-only mounted volume
       # Windows
-      - C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.der:/app/secrets/github-key.der:ro
+      # - C:\\Users\\Yorften\\Documents\\github\\2222\\gamenestapplication.2025-03-16.private-key.der:/app/secrets/github-key.der:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8085/actuator/health || exit 1"]
       interval: 10s

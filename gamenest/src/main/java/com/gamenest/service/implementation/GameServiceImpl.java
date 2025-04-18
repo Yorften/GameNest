@@ -23,6 +23,7 @@ import com.gamenest.model.Tag;
 import com.gamenest.model.User;
 import com.gamenest.repository.CategoryRepository;
 import com.gamenest.repository.GameRepository;
+import com.gamenest.repository.GhRepositoryRepository;
 import com.gamenest.repository.TagRepository;
 import com.gamenest.repository.UserRepository;
 import com.gamenest.service.interfaces.GameService;
@@ -46,6 +47,7 @@ public class GameServiceImpl implements GameService {
     private final TagRepository tagRepository;
     private final GameMapper gameMapper;
     private final GhRepositoryService ghRepositoryService;
+    private final GhRepositoryRepository ghRepositoryRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -57,7 +59,7 @@ public class GameServiceImpl implements GameService {
         game.setOwner(owner);
 
         GhRepositoryRequest repoReq = gameRequest.getRepository();
-        ghRepo = ghRepositoryService.getRepositoryByGhId(repoReq.getGhId());
+        ghRepo = ghRepositoryRepository.findById(repoReq.getGhId()).orElse(null);
 
         if (ghRepo == null) {
             ghRepo = ghRepositoryService.createRepository(repoReq);

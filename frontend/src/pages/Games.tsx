@@ -110,7 +110,7 @@ export default function Games({ }: Props) {
             <h2 className="text-4xl font-bold mb-6 px-2 pt-4">Games</h2>
             {filteredGames.length === 0 ? (
               <p className="mt-4 text-center text-gray-300">
-                No games found for the selected filters.
+                No games found.
               </p>
             ) : (
               <div className="grid sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 px-2">
